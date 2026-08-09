@@ -1,0 +1,46 @@
+TITLE PAGE
+================================================================================
+
+TITLE
+
+    Interpretable Machine Learning for Predicting GHS Chemical Hazard
+    Classifications: A Multi-Label Approach Using 243,323
+    Compounds and Scaffold-Based Validation
+
+RUNNING TITLE
+
+    Interpretable multi-label prediction of GHS hazard classifications
+
+AUTHORS
+
+    Sareer Ahmad [1]*, Hooi Ling Lee [2]
+
+AFFILIATIONS
+
+    [1] Department of Chemistry, University of Peshawar, Peshawar 25120,
+        Khyber Pakhtunkhwa, Pakistan
+    [2] School of Chemical Sciences, Universiti Sains Malaysia,
+        11800 USM, Penang, Malaysia
+
+    * Corresponding author. Email: [ADD EMAIL]
+
+ORCID
+
+    Sareer Ahmad    [ADD ORCID - register free at orcid.org, required by ACS]
+    Hooi Ling Lee   [ADD ORCID]
+
+KEYWORDS
+
+    GHS classification; multi-label learning; molecular descriptors; SHAP
+    interpretability; chemical safety; scaffold splitting; QSAR
+
+--------------------------------------------------------------------------------
+NOTES BEFORE SUBMISSION
+--------------------------------------------------------------------------------
+1. Affiliations above are placeholders drawn from the project brief. Confirm
+   the exact departmental wording with each institution.
+2. Confirm co-authorship and the author order with Assoc. Prof. Dr. Lee Hooi
+   Ling before submitting. Listing a supervisor without their agreement is a
+   serious breach of publication ethics.
+3. ORCID identifiers are mandatory for the corresponding author at ACS and are
+   strongly encouraged by most other publishers.

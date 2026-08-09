@@ -1,0 +1,38 @@
+# Citation metadata. GitHub reads this file and shows a "Cite this repository"
+# button; Zenodo reads it when minting a DOI.
+cff-version: 1.2.0
+title: >-
+  Interpretable Machine Learning for Predicting GHS Chemical Hazard
+  Classifications
+message: >-
+  If you use this software or the accompanying dataset, please cite both this
+  repository and the associated article once it is published.
+type: software
+authors:
+  - given-names: Sareer
+    family-names: Ahmad
+    affiliation: Department of Chemistry, University of Peshawar
+    # orcid: 'https://orcid.org/XXXX-XXXX-XXXX-XXXX'   # add before archiving
+  - given-names: Hooi Ling
+    family-names: Lee
+    affiliation: School of Chemical Sciences, Universiti Sains Malaysia
+    # orcid: 'https://orcid.org/XXXX-XXXX-XXXX-XXXX'
+repository-code: 'https://github.com/USERNAME/ghs-hazard-classification'
+abstract: >-
+  A multi-label machine learning framework that predicts all nine Globally
+  Harmonized System hazard pictograms from molecular structure. Trained on
+  243,323 compounds whose classifications were reconciled across five
+  regulatory sources, evaluated under a Bemis-Murcko scaffold split, and
+  interpreted with SHAP. Includes a browser-based screening application and a
+  command-line tool.
+keywords:
+  - GHS classification
+  - multi-label learning
+  - molecular descriptors
+  - SHAP interpretability
+  - chemical safety
+  - scaffold splitting
+  - QSAR
+license: MIT
+version: 1.0.0
+date-released: '2026-08-09'

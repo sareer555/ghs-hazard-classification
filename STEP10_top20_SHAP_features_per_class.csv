@@ -1,0 +1,181 @@
+GHS_Column,Hazard_Meaning,Rank,Feature,Mean_Abs_SHAP,Mean_Signed_SHAP,Value_SHAP_Correlation,Direction,Description
+GHS01_Explosive,Explosive (exploding bomb),1,MACCS_70,0.55366,-0.463924,0.8335,higher value -> more hazardous,MACCS substructure key 70: matches SMARTS pattern [!#6;!#1]~[#7]~[!#6;!#1]
+GHS01_Explosive,Explosive (exploding bomb),2,MACCS_124,0.490891,-0.323515,0.9559,higher value -> more hazardous,MACCS substructure key 124: matches SMARTS pattern [!#6;!#1]~[!#6;!#1]
+GHS01_Explosive,Explosive (exploding bomb),3,TPSA,0.275038,-0.269869,0.3653,higher value -> more hazardous,topological polar surface area - the size of the polar region
+GHS01_Explosive,Explosive (exploding bomb),4,MACCS_142,0.166226,-0.160253,0.7921,higher value -> more hazardous,MACCS substructure key 142: matches SMARTS pattern [#7]
+GHS01_Explosive,Explosive (exploding bomb),5,MACCS_102,0.140569,-0.039449,0.9091,higher value -> more hazardous,MACCS substructure key 102: matches SMARTS pattern [!#6;!#1]~[#8]
+GHS01_Explosive,Explosive (exploding bomb),6,Chi2n,0.075281,-0.061007,-0.3611,higher value -> less hazardous,second-order connectivity index
+GHS01_Explosive,Explosive (exploding bomb),7,Kappa3,0.070183,-0.062226,-0.1847,higher value -> less hazardous,third-order shape index - centrality of branching
+GHS01_Explosive,Explosive (exploding bomb),8,MACCS_49,0.067073,-0.058121,0.5316,higher value -> more hazardous,MACCS substructure key 49: matches SMARTS pattern [!+0]
+GHS01_Explosive,Explosive (exploding bomb),9,MACCS_148,0.060744,-0.005539,-0.7309,higher value -> less hazardous,MACCS substructure key 148: matches SMARTS pattern *~[!#6;!#1](~*)~*
+GHS01_Explosive,Explosive (exploding bomb),10,MACCS_83,0.055498,-0.024283,-0.8867,higher value -> less hazardous,MACCS substructure key 83: matches SMARTS pattern [!#6;!#1]1~*~*~*~*~1
+GHS01_Explosive,Explosive (exploding bomb),11,MACCS_90,0.045773,-0.044074,-0.9447,higher value -> less hazardous,"MACCS substructure key 90: matches SMARTS pattern [$([!#6;!#1;!H0]~*~*~[CH2]~*),$([!#6;!#1;!H0;R]1@[R]@[R]@[CH2;R]1),$([!#6;!#1;!H0]~[R]1@[R]@[CH2;R]1)]"
+GHS01_Explosive,Explosive (exploding bomb),12,MACCS_156,0.035559,-0.020667,-0.7006,higher value -> less hazardous,MACCS substructure key 156: matches SMARTS pattern [#7]~*(~*)~*
+GHS01_Explosive,Explosive (exploding bomb),13,Morgan_514,0.035028,-0.034336,-0.9803,higher value -> less hazardous,ECFP4 circular substructure bit 514 (radius 2 atom environment)
+GHS01_Explosive,Explosive (exploding bomb),14,MACCS_154,0.034543,-0.025669,-0.6819,higher value -> less hazardous,MACCS substructure key 154: matches SMARTS pattern [#6]=[#8]
+GHS01_Explosive,Explosive (exploding bomb),15,Morgan_128,0.030807,-0.01278,-0.8952,higher value -> less hazardous,ECFP4 circular substructure bit 128 (radius 2 atom environment)
+GHS01_Explosive,Explosive (exploding bomb),16,MACCS_117,0.03029,-0.013108,-0.8458,higher value -> less hazardous,MACCS substructure key 117: matches SMARTS pattern [#7]~*~[#8]
+GHS01_Explosive,Explosive (exploding bomb),17,MACCS_111,0.02967,-0.020643,-0.8479,higher value -> less hazardous,MACCS substructure key 111: matches SMARTS pattern [#7]~*~[CH2]~*
+GHS01_Explosive,Explosive (exploding bomb),18,MACCS_121,0.029436,-0.021602,-0.8511,higher value -> less hazardous,MACCS substructure key 121: matches SMARTS pattern [#7;R]
+GHS01_Explosive,Explosive (exploding bomb),19,MACCS_161,0.028044,-0.027391,0.6788,higher value -> more hazardous,MACCS substructure key 161: matches SMARTS pattern [#7]
+GHS01_Explosive,Explosive (exploding bomb),20,NumHAcceptors,0.027608,-0.025232,0.3706,higher value -> more hazardous,"number of hydrogen-bond acceptors (O, N lone pairs)"
+GHS02_Flammable,Flammable (flame),1,BertzCT,0.649036,-0.375776,-0.4929,higher value -> less hazardous,structural complexity
+GHS02_Flammable,Flammable (flame),2,TPSA,0.540827,-0.349749,-0.2,higher value -> less hazardous,topological polar surface area - the size of the polar region
+GHS02_Flammable,Flammable (flame),3,LabuteASA,0.439609,-0.25814,-0.2497,higher value -> less hazardous,approximate molecular surface area
+GHS02_Flammable,Flammable (flame),4,NumHDonors,0.233505,-0.07345,-0.4765,higher value -> less hazardous,"number of hydrogen-bond donors (OH, NH groups)"
+GHS02_Flammable,Flammable (flame),5,NHOHCount,0.181492,-0.073873,-0.37,higher value -> less hazardous,number of NH and OH groups
+GHS02_Flammable,Flammable (flame),6,MolWt,0.172027,-0.122351,-0.5196,higher value -> less hazardous,average molecular mass
+GHS02_Flammable,Flammable (flame),7,MACCS_131,0.169805,-0.109887,-0.828,higher value -> less hazardous,MACCS substructure key 131: matches SMARTS pattern [!#6;!#1;!H0]
+GHS02_Flammable,Flammable (flame),8,ExactMolWt,0.161357,-0.122906,-0.5037,higher value -> less hazardous,monoisotopic molecular mass
+GHS02_Flammable,Flammable (flame),9,Morgan_650,0.152775,-0.052726,-0.9659,higher value -> less hazardous,ECFP4 circular substructure bit 650 (radius 2 atom environment)
+GHS02_Flammable,Flammable (flame),10,FractionCSP3,0.152108,-0.069067,0.9241,higher value -> more hazardous,fraction of carbons that are sp3 - three-dimensionality
+GHS02_Flammable,Flammable (flame),11,Morgan_356,0.138924,-0.059179,-0.9511,higher value -> less hazardous,ECFP4 circular substructure bit 356 (radius 2 atom environment)
+GHS02_Flammable,Flammable (flame),12,MACCS_103,0.120147,-0.028014,-0.9699,higher value -> less hazardous,MACCS substructure key 103: matches SMARTS pattern Cl
+GHS02_Flammable,Flammable (flame),13,Chi4n,0.117017,-0.087387,-0.3566,higher value -> less hazardous,fourth-order connectivity index
+GHS02_Flammable,Flammable (flame),14,NumHeteroatoms,0.090413,-0.023964,0.2594,higher value -> more hazardous,number of atoms that are neither carbon nor hydrogen
+GHS02_Flammable,Flammable (flame),15,MACCS_154,0.087076,-0.030397,-0.956,higher value -> less hazardous,MACCS substructure key 154: matches SMARTS pattern [#6]=[#8]
+GHS02_Flammable,Flammable (flame),16,MACCS_88,0.087028,0.000504,-0.9806,higher value -> less hazardous,MACCS substructure key 88: matches SMARTS pattern [#16]
+GHS02_Flammable,Flammable (flame),17,RingCount,0.084934,-0.024075,-0.5217,higher value -> less hazardous,total number of rings
+GHS02_Flammable,Flammable (flame),18,MACCS_124,0.083471,-0.022454,0.9159,higher value -> more hazardous,MACCS substructure key 124: matches SMARTS pattern [!#6;!#1]~[!#6;!#1]
+GHS02_Flammable,Flammable (flame),19,MACCS_149,0.081658,-0.008876,0.9357,higher value -> more hazardous,"MACCS substructure key 149: matches SMARTS pattern [C;H3,H4]"
+GHS02_Flammable,Flammable (flame),20,Chi3n,0.080891,-0.054113,-0.4797,higher value -> less hazardous,third-order connectivity index
+GHS03_Oxidising,Oxidiser (flame over circle),1,Chi3n,0.952689,-0.900104,-0.1573,higher value -> less hazardous,third-order connectivity index
+GHS03_Oxidising,Oxidiser (flame over circle),2,MACCS_102,0.77605,-0.539722,0.9764,higher value -> more hazardous,MACCS substructure key 102: matches SMARTS pattern [!#6;!#1]~[#8]
+GHS03_Oxidising,Oxidiser (flame over circle),3,TPSA,0.611993,-0.58199,0.4994,higher value -> more hazardous,topological polar surface area - the size of the polar region
+GHS03_Oxidising,Oxidiser (flame over circle),4,MACCS_124,0.455176,-0.396334,0.9402,higher value -> more hazardous,MACCS substructure key 124: matches SMARTS pattern [!#6;!#1]~[!#6;!#1]
+GHS03_Oxidising,Oxidiser (flame over circle),5,Kappa3,0.446737,-0.442095,-0.0412,non-monotonic,third-order shape index - centrality of branching
+GHS03_Oxidising,Oxidiser (flame over circle),6,FractionCSP3,0.405366,-0.404242,-0.9091,higher value -> less hazardous,fraction of carbons that are sp3 - three-dimensionality
+GHS03_Oxidising,Oxidiser (flame over circle),7,MACCS_31,0.375778,-0.310106,0.9589,higher value -> more hazardous,"MACCS substructure key 31: matches SMARTS pattern [!#6;!#1]~[F,Cl,Br,I]"
+GHS03_Oxidising,Oxidiser (flame over circle),8,MolLogP,0.373483,-0.373384,-0.0567,higher value -> less hazardous,lipophilicity - how strongly the compound prefers oil to water
+GHS03_Oxidising,Oxidiser (flame over circle),9,BalabanJ,0.365839,-0.365465,-0.2227,higher value -> less hazardous,topological connectivity index - branching pattern
+GHS03_Oxidising,Oxidiser (flame over circle),10,Chi4n,0.350112,-0.331174,-0.169,higher value -> less hazardous,fourth-order connectivity index
+GHS03_Oxidising,Oxidiser (flame over circle),11,Kappa2,0.296654,-0.294025,-0.0131,non-monotonic,second-order shape index - how linear or star-like the skeleton is
+GHS03_Oxidising,Oxidiser (flame over circle),12,BertzCT,0.281685,-0.281145,0.4114,higher value -> more hazardous,structural complexity
+GHS03_Oxidising,Oxidiser (flame over circle),13,MACCS_49,0.2722,-0.182807,0.9272,higher value -> more hazardous,MACCS substructure key 49: matches SMARTS pattern [!+0]
+GHS03_Oxidising,Oxidiser (flame over circle),14,MACCS_146,0.261383,-0.1793,0.9398,higher value -> more hazardous,MACCS substructure key 146: matches SMARTS pattern [#8]
+GHS03_Oxidising,Oxidiser (flame over circle),15,MACCS_88,0.234421,-0.084734,-0.975,higher value -> less hazardous,MACCS substructure key 88: matches SMARTS pattern [#16]
+GHS03_Oxidising,Oxidiser (flame over circle),16,LabuteASA,0.229907,-0.229907,0.1726,higher value -> more hazardous,approximate molecular surface area
+GHS03_Oxidising,Oxidiser (flame over circle),17,Kappa1,0.227362,-0.226283,0.1226,higher value -> more hazardous,first-order shape index - overall size
+GHS03_Oxidising,Oxidiser (flame over circle),18,Morgan_378,0.221343,-0.145816,-0.9781,higher value -> less hazardous,ECFP4 circular substructure bit 378 (radius 2 atom environment)
+GHS03_Oxidising,Oxidiser (flame over circle),19,MACCS_130,0.214334,-0.14282,0.9588,higher value -> more hazardous,MACCS substructure key 130: matches SMARTS pattern [!#6;!#1]~[!#6;!#1]
+GHS03_Oxidising,Oxidiser (flame over circle),20,MolWt,0.203915,-0.203915,-0.0296,non-monotonic,average molecular mass
+GHS04_CompressedGas,Compressed gas (gas cylinder),1,Kappa2,1.79048,-1.78889,-0.0799,higher value -> less hazardous,second-order shape index - how linear or star-like the skeleton is
+GHS04_CompressedGas,Compressed gas (gas cylinder),2,Chi4n,1.539784,-1.39107,-0.1775,higher value -> less hazardous,fourth-order connectivity index
+GHS04_CompressedGas,Compressed gas (gas cylinder),3,LabuteASA,1.355818,-1.354701,-0.3604,higher value -> less hazardous,approximate molecular surface area
+GHS04_CompressedGas,Compressed gas (gas cylinder),4,MolWt,0.767101,-0.766134,-0.4523,higher value -> less hazardous,average molecular mass
+GHS04_CompressedGas,Compressed gas (gas cylinder),5,ExactMolWt,0.74815,-0.746992,-0.3195,higher value -> less hazardous,monoisotopic molecular mass
+GHS04_CompressedGas,Compressed gas (gas cylinder),6,Chi2n,0.684677,-0.682578,-0.24,higher value -> less hazardous,second-order connectivity index
+GHS04_CompressedGas,Compressed gas (gas cylinder),7,TPSA,0.661865,-0.649623,-0.1658,higher value -> less hazardous,topological polar surface area - the size of the polar region
+GHS04_CompressedGas,Compressed gas (gas cylinder),8,BertzCT,0.62329,-0.621016,-0.2034,higher value -> less hazardous,structural complexity
+GHS04_CompressedGas,Compressed gas (gas cylinder),9,Chi3n,0.53796,-0.53156,-0.0436,non-monotonic,third-order connectivity index
+GHS04_CompressedGas,Compressed gas (gas cylinder),10,MolLogP,0.520711,-0.520711,0.0561,higher value -> more hazardous,lipophilicity - how strongly the compound prefers oil to water
+GHS04_CompressedGas,Compressed gas (gas cylinder),11,NumRotatableBonds,0.467301,-0.438768,-0.4521,higher value -> less hazardous,molecular flexibility
+GHS04_CompressedGas,Compressed gas (gas cylinder),12,Kappa3,0.448049,-0.438488,-0.0674,higher value -> less hazardous,third-order shape index - centrality of branching
+GHS04_CompressedGas,Compressed gas (gas cylinder),13,NumHDonors,0.417581,-0.399102,-0.5122,higher value -> less hazardous,"number of hydrogen-bond donors (OH, NH groups)"
+GHS04_CompressedGas,Compressed gas (gas cylinder),14,NumHeteroatoms,0.382897,-0.303319,0.4901,higher value -> more hazardous,number of atoms that are neither carbon nor hydrogen
+GHS04_CompressedGas,Compressed gas (gas cylinder),15,BalabanJ,0.375097,-0.371112,0.4893,higher value -> more hazardous,topological connectivity index - branching pattern
+GHS04_CompressedGas,Compressed gas (gas cylinder),16,Morgan_356,0.294656,-0.287391,-0.8467,higher value -> less hazardous,ECFP4 circular substructure bit 356 (radius 2 atom environment)
+GHS04_CompressedGas,Compressed gas (gas cylinder),17,NumHAcceptors,0.292755,-0.272068,-0.0689,higher value -> less hazardous,"number of hydrogen-bond acceptors (O, N lone pairs)"
+GHS04_CompressedGas,Compressed gas (gas cylinder),18,Morgan_33,0.292084,-0.231596,-0.966,higher value -> less hazardous,ECFP4 circular substructure bit 33 (radius 2 atom environment)
+GHS04_CompressedGas,Compressed gas (gas cylinder),19,Kappa1,0.291974,0.100052,0.2088,higher value -> more hazardous,first-order shape index - overall size
+GHS04_CompressedGas,Compressed gas (gas cylinder),20,NumAromaticRings,0.239348,-0.236859,-0.5298,higher value -> less hazardous,number of aromatic rings
+GHS05_Corrosive,Corrosive (corrosion),1,BertzCT,0.345213,-0.102352,-0.6097,higher value -> less hazardous,structural complexity
+GHS05_Corrosive,Corrosive (corrosion),2,Morgan_514,0.235701,-0.120401,-0.9593,higher value -> less hazardous,ECFP4 circular substructure bit 514 (radius 2 atom environment)
+GHS05_Corrosive,Corrosive (corrosion),3,MACCS_31,0.153432,-0.027762,0.9473,higher value -> more hazardous,"MACCS substructure key 31: matches SMARTS pattern [!#6;!#1]~[F,Cl,Br,I]"
+GHS05_Corrosive,Corrosive (corrosion),4,MACCS_154,0.12328,0.000308,-0.9171,higher value -> less hazardous,MACCS substructure key 154: matches SMARTS pattern [#6]=[#8]
+GHS05_Corrosive,Corrosive (corrosion),5,MACCS_153,0.113646,-0.037132,0.9426,higher value -> more hazardous,MACCS substructure key 153: matches SMARTS pattern [!#6;!#1]~[CH2]~*
+GHS05_Corrosive,Corrosive (corrosion),6,MACCS_117,0.096806,-0.00408,-0.9408,higher value -> less hazardous,MACCS substructure key 117: matches SMARTS pattern [#7]~*~[#8]
+GHS05_Corrosive,Corrosive (corrosion),7,RingCount,0.092477,-0.023207,-0.8218,higher value -> less hazardous,total number of rings
+GHS05_Corrosive,Corrosive (corrosion),8,MACCS_139,0.091429,-0.010479,-0.8855,higher value -> less hazardous,MACCS substructure key 139: matches SMARTS pattern [O;!H0]
+GHS05_Corrosive,Corrosive (corrosion),9,BalabanJ,0.086371,-0.030852,0.7696,higher value -> more hazardous,topological connectivity index - branching pattern
+GHS05_Corrosive,Corrosive (corrosion),10,TPSA,0.084789,-0.007402,-0.2849,higher value -> less hazardous,topological polar surface area - the size of the polar region
+GHS05_Corrosive,Corrosive (corrosion),11,MACCS_100,0.079445,-0.004686,0.8684,higher value -> more hazardous,MACCS substructure key 100: matches SMARTS pattern *~[CH2]~[#7]
+GHS05_Corrosive,Corrosive (corrosion),12,Morgan_659,0.070868,-0.034967,0.8742,higher value -> more hazardous,ECFP4 circular substructure bit 659 (radius 2 atom environment)
+GHS05_Corrosive,Corrosive (corrosion),13,MACCS_96,0.068252,-0.020786,-0.9262,higher value -> less hazardous,MACCS substructure key 96: matches SMARTS pattern *1~*~*~*~*~1
+GHS05_Corrosive,Corrosive (corrosion),14,MACCS_151,0.067597,0.004427,0.8874,higher value -> more hazardous,MACCS substructure key 151: matches SMARTS pattern [#7;!H0]
+GHS05_Corrosive,Corrosive (corrosion),15,FractionCSP3,0.067205,-0.009668,-0.2638,higher value -> less hazardous,fraction of carbons that are sp3 - three-dimensionality
+GHS05_Corrosive,Corrosive (corrosion),16,MACCS_158,0.066705,-0.001137,0.8925,higher value -> more hazardous,MACCS substructure key 158: matches SMARTS pattern [#6]-[#7]
+GHS05_Corrosive,Corrosive (corrosion),17,Morgan_85,0.065138,-0.011784,0.9256,higher value -> more hazardous,ECFP4 circular substructure bit 85 (radius 2 atom environment)
+GHS05_Corrosive,Corrosive (corrosion),18,MACCS_84,0.062641,-0.008013,0.9151,higher value -> more hazardous,MACCS substructure key 84: matches SMARTS pattern [NH2]
+GHS05_Corrosive,Corrosive (corrosion),19,Morgan_251,0.061808,-0.006315,0.9181,higher value -> more hazardous,ECFP4 circular substructure bit 251 (radius 2 atom environment)
+GHS05_Corrosive,Corrosive (corrosion),20,Morgan_356,0.06107,0.001274,-0.9233,higher value -> less hazardous,ECFP4 circular substructure bit 356 (radius 2 atom environment)
+GHS06_AcuteToxicity,Acute toxicity (skull and crossbones),1,ExactMolWt,0.171272,-0.080114,0.5469,higher value -> more hazardous,monoisotopic molecular mass
+GHS06_AcuteToxicity,Acute toxicity (skull and crossbones),2,MACCS_41,0.090883,-0.039571,0.9365,higher value -> more hazardous,MACCS substructure key 41: matches SMARTS pattern [#6]#[#7]
+GHS06_AcuteToxicity,Acute toxicity (skull and crossbones),3,MACCS_164,0.077375,-0.012709,-0.8946,higher value -> less hazardous,MACCS substructure key 164: matches SMARTS pattern [#8]
+GHS06_AcuteToxicity,Acute toxicity (skull and crossbones),4,Chi3n,0.076763,-0.020702,-0.2543,higher value -> less hazardous,third-order connectivity index
+GHS06_AcuteToxicity,Acute toxicity (skull and crossbones),5,Chi2n,0.067517,-0.018624,-0.2645,higher value -> less hazardous,second-order connectivity index
+GHS06_AcuteToxicity,Acute toxicity (skull and crossbones),6,BalabanJ,0.052652,-0.023093,0.7298,higher value -> more hazardous,topological connectivity index - branching pattern
+GHS06_AcuteToxicity,Acute toxicity (skull and crossbones),7,MACCS_119,0.051779,-0.008637,0.8512,higher value -> more hazardous,MACCS substructure key 119: matches SMARTS pattern [#7]=*
+GHS06_AcuteToxicity,Acute toxicity (skull and crossbones),8,MACCS_123,0.050552,-0.015656,-0.8884,higher value -> less hazardous,MACCS substructure key 123: matches SMARTS pattern [#8]~[#6]~[#8]
+GHS06_AcuteToxicity,Acute toxicity (skull and crossbones),9,MACCS_137,0.047352,-0.030456,-0.219,higher value -> less hazardous,MACCS substructure key 137: matches SMARTS pattern [!C;!c;R]
+GHS06_AcuteToxicity,Acute toxicity (skull and crossbones),10,Chi1,0.044922,-0.009751,0.4762,higher value -> more hazardous,first-order connectivity index - bond-level branching
+GHS06_AcuteToxicity,Acute toxicity (skull and crossbones),11,Morgan_926,0.040315,-0.010392,-0.886,higher value -> less hazardous,ECFP4 circular substructure bit 926 (radius 2 atom environment)
+GHS06_AcuteToxicity,Acute toxicity (skull and crossbones),12,MACCS_157,0.035443,-0.008175,-0.9061,higher value -> less hazardous,MACCS substructure key 157: matches SMARTS pattern [#6]-[#8]
+GHS06_AcuteToxicity,Acute toxicity (skull and crossbones),13,MolWt,0.032215,-0.020934,0.4856,higher value -> more hazardous,average molecular mass
+GHS06_AcuteToxicity,Acute toxicity (skull and crossbones),14,Chi4n,0.031492,-0.016013,0.0858,higher value -> more hazardous,fourth-order connectivity index
+GHS06_AcuteToxicity,Acute toxicity (skull and crossbones),15,BertzCT,0.029485,-0.022315,0.2725,higher value -> more hazardous,structural complexity
+GHS06_AcuteToxicity,Acute toxicity (skull and crossbones),16,Chi0,0.027305,-0.001726,0.4435,higher value -> more hazardous,zeroth-order connectivity index - atom count weighted by degree
+GHS06_AcuteToxicity,Acute toxicity (skull and crossbones),17,TPSA,0.026778,-0.009967,-0.3413,higher value -> less hazardous,topological polar surface area - the size of the polar region
+GHS06_AcuteToxicity,Acute toxicity (skull and crossbones),18,MACCS_120,0.026268,-0.010285,-0.5932,higher value -> less hazardous,MACCS substructure key 120: matches SMARTS pattern [!#6;R]
+GHS06_AcuteToxicity,Acute toxicity (skull and crossbones),19,NHOHCount,0.025909,-0.007294,-0.2851,higher value -> less hazardous,number of NH and OH groups
+GHS06_AcuteToxicity,Acute toxicity (skull and crossbones),20,FractionCSP3,0.02488,-0.012069,-0.7518,higher value -> less hazardous,fraction of carbons that are sp3 - three-dimensionality
+GHS07_Irritant,Irritant / harmful (exclamation mark),1,Chi1,0.164398,0.061072,-0.6473,higher value -> less hazardous,first-order connectivity index - bond-level branching
+GHS07_Irritant,Irritant / harmful (exclamation mark),2,MACCS_137,0.153679,0.058604,0.9644,higher value -> more hazardous,MACCS substructure key 137: matches SMARTS pattern [!C;!c;R]
+GHS07_Irritant,Irritant / harmful (exclamation mark),3,LabuteASA,0.13757,0.047797,-0.5737,higher value -> less hazardous,approximate molecular surface area
+GHS07_Irritant,Irritant / harmful (exclamation mark),4,BertzCT,0.11732,0.038474,-0.2757,higher value -> less hazardous,structural complexity
+GHS07_Irritant,Irritant / harmful (exclamation mark),5,MolLogP,0.115468,0.020777,-0.4299,higher value -> less hazardous,lipophilicity - how strongly the compound prefers oil to water
+GHS07_Irritant,Irritant / harmful (exclamation mark),6,RingCount,0.105317,0.034953,0.3881,higher value -> more hazardous,total number of rings
+GHS07_Irritant,Irritant / harmful (exclamation mark),7,Morgan_514,0.098046,0.037188,0.9569,higher value -> more hazardous,ECFP4 circular substructure bit 514 (radius 2 atom environment)
+GHS07_Irritant,Irritant / harmful (exclamation mark),8,MACCS_121,0.097865,0.018133,0.9702,higher value -> more hazardous,MACCS substructure key 121: matches SMARTS pattern [#7;R]
+GHS07_Irritant,Irritant / harmful (exclamation mark),9,NumHDonors,0.090397,0.02289,0.414,higher value -> more hazardous,"number of hydrogen-bond donors (OH, NH groups)"
+GHS07_Irritant,Irritant / harmful (exclamation mark),10,MACCS_65,0.077758,0.019894,0.9306,higher value -> more hazardous,MACCS substructure key 65: matches SMARTS pattern c:n
+GHS07_Irritant,Irritant / harmful (exclamation mark),11,MACCS_31,0.060578,0.021937,-0.9141,higher value -> less hazardous,"MACCS substructure key 31: matches SMARTS pattern [!#6;!#1]~[F,Cl,Br,I]"
+GHS07_Irritant,Irritant / harmful (exclamation mark),12,MACCS_154,0.058368,0.013593,0.916,higher value -> more hazardous,MACCS substructure key 154: matches SMARTS pattern [#6]=[#8]
+GHS07_Irritant,Irritant / harmful (exclamation mark),13,MolWt,0.056935,0.027487,-0.4451,higher value -> less hazardous,average molecular mass
+GHS07_Irritant,Irritant / harmful (exclamation mark),14,MACCS_139,0.052449,0.002712,0.9324,higher value -> more hazardous,MACCS substructure key 139: matches SMARTS pattern [O;!H0]
+GHS07_Irritant,Irritant / harmful (exclamation mark),15,MACCS_123,0.048644,0.017686,0.8624,higher value -> more hazardous,MACCS substructure key 123: matches SMARTS pattern [#8]~[#6]~[#8]
+GHS07_Irritant,Irritant / harmful (exclamation mark),16,NumHeteroatoms,0.046305,0.018333,-0.2595,higher value -> less hazardous,number of atoms that are neither carbon nor hydrogen
+GHS07_Irritant,Irritant / harmful (exclamation mark),17,ExactMolWt,0.044717,0.023948,-0.4629,higher value -> less hazardous,monoisotopic molecular mass
+GHS07_Irritant,Irritant / harmful (exclamation mark),18,Chi4n,0.043983,0.021953,0.1657,higher value -> more hazardous,fourth-order connectivity index
+GHS07_Irritant,Irritant / harmful (exclamation mark),19,Chi3n,0.042163,0.02033,0.3493,higher value -> more hazardous,third-order connectivity index
+GHS07_Irritant,Irritant / harmful (exclamation mark),20,TPSA,0.042063,0.015136,-0.0108,non-monotonic,topological polar surface area - the size of the polar region
+GHS08_HealthHazard,Serious health hazard (health hazard),1,Chi4n,0.175769,-0.100279,0.4837,higher value -> more hazardous,fourth-order connectivity index
+GHS08_HealthHazard,Serious health hazard (health hazard),2,TPSA,0.140887,-0.071943,0.401,higher value -> more hazardous,topological polar surface area - the size of the polar region
+GHS08_HealthHazard,Serious health hazard (health hazard),3,NumHDonors,0.121378,-0.03439,-0.3268,higher value -> less hazardous,"number of hydrogen-bond donors (OH, NH groups)"
+GHS08_HealthHazard,Serious health hazard (health hazard),4,MACCS_121,0.118889,-0.027694,-0.934,higher value -> less hazardous,MACCS substructure key 121: matches SMARTS pattern [#7;R]
+GHS08_HealthHazard,Serious health hazard (health hazard),5,MACCS_119,0.115361,-0.065893,0.8866,higher value -> more hazardous,MACCS substructure key 119: matches SMARTS pattern [#7]=*
+GHS08_HealthHazard,Serious health hazard (health hazard),6,Chi1,0.106844,-0.037051,0.5845,higher value -> more hazardous,first-order connectivity index - bond-level branching
+GHS08_HealthHazard,Serious health hazard (health hazard),7,Chi2n,0.09944,-0.053133,-0.2236,higher value -> less hazardous,second-order connectivity index
+GHS08_HealthHazard,Serious health hazard (health hazard),8,Morgan_893,0.099022,-0.020896,-0.9561,higher value -> less hazardous,ECFP4 circular substructure bit 893 (radius 2 atom environment)
+GHS08_HealthHazard,Serious health hazard (health hazard),9,Morgan_725,0.094818,-0.035108,0.883,higher value -> more hazardous,ECFP4 circular substructure bit 725 (radius 2 atom environment)
+GHS08_HealthHazard,Serious health hazard (health hazard),10,Chi3n,0.083487,-0.056616,0.2278,higher value -> more hazardous,third-order connectivity index
+GHS08_HealthHazard,Serious health hazard (health hazard),11,MACCS_44,0.079207,-0.038349,0.7846,higher value -> more hazardous,MACCS substructure key 44: matches SMARTS pattern [!#1;!#6;!#7;!#8;!#9;!#14;!#15;!#16;!#17;!#35;!#53]
+GHS08_HealthHazard,Serious health hazard (health hazard),12,Chi0,0.076798,-0.037701,0.585,higher value -> more hazardous,zeroth-order connectivity index - atom count weighted by degree
+GHS08_HealthHazard,Serious health hazard (health hazard),13,NumHeteroatoms,0.0735,-0.041089,0.0796,higher value -> more hazardous,number of atoms that are neither carbon nor hydrogen
+GHS08_HealthHazard,Serious health hazard (health hazard),14,RingCount,0.071652,-0.02386,-0.2594,higher value -> less hazardous,total number of rings
+GHS08_HealthHazard,Serious health hazard (health hazard),15,Kappa1,0.071568,-0.029936,-0.1012,higher value -> less hazardous,first-order shape index - overall size
+GHS08_HealthHazard,Serious health hazard (health hazard),16,MACCS_134,0.069779,-0.003579,-0.929,higher value -> less hazardous,"MACCS substructure key 134: matches SMARTS pattern [F,Cl,Br,I]"
+GHS08_HealthHazard,Serious health hazard (health hazard),17,ExactMolWt,0.064652,-0.031146,0.6263,higher value -> more hazardous,monoisotopic molecular mass
+GHS08_HealthHazard,Serious health hazard (health hazard),18,LabuteASA,0.061388,-0.019984,0.4147,higher value -> more hazardous,approximate molecular surface area
+GHS08_HealthHazard,Serious health hazard (health hazard),19,MolWt,0.060529,-0.036814,0.5808,higher value -> more hazardous,average molecular mass
+GHS08_HealthHazard,Serious health hazard (health hazard),20,FractionCSP3,0.058271,-0.030057,-0.2212,higher value -> less hazardous,fraction of carbons that are sp3 - three-dimensionality
+GHS09_Environmental,Environmental hazard (environment),1,MolLogP,0.378431,-0.133164,0.4503,higher value -> more hazardous,lipophilicity - how strongly the compound prefers oil to water
+GHS09_Environmental,Environmental hazard (environment),2,MACCS_137,0.358769,-0.145773,-0.9574,higher value -> less hazardous,MACCS substructure key 137: matches SMARTS pattern [!C;!c;R]
+GHS09_Environmental,Environmental hazard (environment),3,Chi1,0.30195,-0.145785,0.5998,higher value -> more hazardous,first-order connectivity index - bond-level branching
+GHS09_Environmental,Environmental hazard (environment),4,LabuteASA,0.25488,-0.145089,0.5352,higher value -> more hazardous,approximate molecular surface area
+GHS09_Environmental,Environmental hazard (environment),5,MACCS_65,0.129309,-0.055423,-0.8542,higher value -> less hazardous,MACCS substructure key 65: matches SMARTS pattern c:n
+GHS09_Environmental,Environmental hazard (environment),6,NumAromaticRings,0.128962,-0.031911,0.5017,higher value -> more hazardous,number of aromatic rings
+GHS09_Environmental,Environmental hazard (environment),7,Morgan_514,0.12152,-0.055874,-0.985,higher value -> less hazardous,ECFP4 circular substructure bit 514 (radius 2 atom environment)
+GHS09_Environmental,Environmental hazard (environment),8,MACCS_44,0.112232,-0.040265,0.8997,higher value -> more hazardous,MACCS substructure key 44: matches SMARTS pattern [!#1;!#6;!#7;!#8;!#9;!#14;!#15;!#16;!#17;!#35;!#53]
+GHS09_Environmental,Environmental hazard (environment),9,MACCS_18,0.103174,-0.072472,-0.9862,higher value -> less hazardous,"MACCS substructure key 18: matches SMARTS pattern [#5,#13,#31,#49,#81]"
+GHS09_Environmental,Environmental hazard (environment),10,FractionCSP3,0.102216,-0.039803,-0.8724,higher value -> less hazardous,fraction of carbons that are sp3 - three-dimensionality
+GHS09_Environmental,Environmental hazard (environment),11,Kappa2,0.098929,-0.054517,0.0884,higher value -> more hazardous,second-order shape index - how linear or star-like the skeleton is
+GHS09_Environmental,Environmental hazard (environment),12,MACCS_46,0.085896,-0.015112,-0.9794,higher value -> less hazardous,MACCS substructure key 46: matches SMARTS pattern Br
+GHS09_Environmental,Environmental hazard (environment),13,Morgan_378,0.078924,-0.00221,-0.9641,higher value -> less hazardous,ECFP4 circular substructure bit 378 (radius 2 atom environment)
+GHS09_Environmental,Environmental hazard (environment),14,TPSA,0.071746,-0.017135,-0.3328,higher value -> less hazardous,topological polar surface area - the size of the polar region
+GHS09_Environmental,Environmental hazard (environment),15,Morgan_389,0.07161,0.000231,-0.961,higher value -> less hazardous,ECFP4 circular substructure bit 389 (radius 2 atom environment)
+GHS09_Environmental,Environmental hazard (environment),16,MACCS_134,0.068983,-0.004196,-0.9198,higher value -> less hazardous,"MACCS substructure key 134: matches SMARTS pattern [F,Cl,Br,I]"
+GHS09_Environmental,Environmental hazard (environment),17,MACCS_145,0.066914,-0.033925,0.8595,higher value -> more hazardous,MACCS substructure key 145: matches SMARTS pattern *1~*~*~*~*~*~1
+GHS09_Environmental,Environmental hazard (environment),18,NumHeteroatoms,0.0636,-0.018185,-0.1601,higher value -> less hazardous,number of atoms that are neither carbon nor hydrogen
+GHS09_Environmental,Environmental hazard (environment),19,Chi0,0.058698,-0.017893,0.5303,higher value -> more hazardous,zeroth-order connectivity index - atom count weighted by degree
+GHS09_Environmental,Environmental hazard (environment),20,Chi4n,0.058114,-0.02602,-0.4695,higher value -> less hazardous,fourth-order connectivity index

@@ -1,0 +1,126 @@
+
+REFERENCES (ACS style)
+======================
+
+COMPUTATIONAL CHEMISTRY AND CHEMINFORMATICS
+-------------------------------------------
+(1)  Landrum, G. RDKit: Open-Source Cheminformatics Software, 2006.
+     https://www.rdkit.org (accessed 2026-08-05).
+
+(2)  Weininger, D. SMILES, a Chemical Language and Information System. 1.
+     Introduction to Methodology and Encoding Rules. J. Chem. Inf. Comput.
+     Sci. 1988, 28 (1), 31-36. DOI: 10.1021/ci00057a005.
+
+(3)  Kim, S.; Chen, J.; Cheng, T.; Gindulyte, A.; He, J.; He, S.; Li, Q.;
+     Shoemaker, B. A.; Thiessen, P. A.; Yu, B.; et al. PubChem in 2021: New
+     Data Content and Improved Web Interfaces. Nucleic Acids Res. 2021, 49
+     (D1), D1388-D1395. DOI: 10.1093/nar/gkaa971.
+
+(4)  Bemis, G. W.; Murcko, M. A. The Properties of Known Drugs. 1. Molecular
+     Frameworks. J. Med. Chem. 1996, 39 (15), 2887-2893.
+     DOI: 10.1021/jm9602928.
+
+MACHINE LEARNING ALGORITHMS
+---------------------------
+(5)  Breiman, L. Random Forests. Mach. Learn. 2001, 45 (1), 5-32.
+     DOI: 10.1023/A:1010933404324.
+
+(6)  Chen, T.; Guestrin, C. XGBoost: A Scalable Tree Boosting System. In
+     Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge
+     Discovery and Data Mining; ACM: New York, 2016; pp 785-794.
+     DOI: 10.1145/2939672.2939785.
+
+(7)  Cortes, C.; Vapnik, V. Support-Vector Networks. Mach. Learn. 1995, 20
+     (3), 273-297. DOI: 10.1023/A:1022627411411.
+
+(8)  Pedregosa, F.; Varoquaux, G.; Gramfort, A.; Michel, V.; Thirion, B.;
+     Grisel, O.; Blondel, M.; Prettenhofer, P.; Weiss, R.; Dubourg, V.; et al.
+     Scikit-Learn: Machine Learning in Python. J. Mach. Learn. Res. 2011, 12,
+     2825-2830.
+
+CLASS IMBALANCE HANDLING
+------------------------
+(9)  Chawla, N. V.; Bowyer, K. W.; Hall, L. O.; Kegelmeyer, W. P. SMOTE:
+     Synthetic Minority Over-Sampling Technique. J. Artif. Intell. Res. 2002,
+     16, 321-357. DOI: 10.1613/jair.953.
+
+(10) Lemaitre, G.; Nogueira, F.; Aridas, C. K. Imbalanced-Learn: A Python
+     Toolbox to Tackle the Curse of Imbalanced Datasets in Machine Learning.
+     J. Mach. Learn. Res. 2017, 18 (17), 1-5.
+
+SHAP INTERPRETABILITY
+---------------------
+(11) Lundberg, S. M.; Lee, S.-I. A Unified Approach to Interpreting Model
+     Predictions. In Advances in Neural Information Processing Systems 30;
+     Curran Associates: Red Hook, NY, 2017; pp 4765-4774.
+
+(12) Lundberg, S. M.; Erion, G.; Chen, H.; DeGrave, A.; Prutkin, J. M.;
+     Nair, B.; Katz, R.; Himmelfarb, J.; Bansal, N.; Lee, S.-I. From Local
+     Explanations to Global Understanding with Explainable AI for Trees.
+     Nat. Mach. Intell. 2020, 2 (1), 56-67. DOI: 10.1038/s42256-019-0138-9.
+
+GHS AND CHEMICAL SAFETY
+-----------------------
+(13) United Nations. Globally Harmonized System of Classification and
+     Labelling of Chemicals (GHS), 10th revised ed.; United Nations: New York
+     and Geneva, 2023. ISBN 978-92-1-116927-2.
+
+(14) Malaysia Ministry of Human Resources. Occupational Safety and Health
+     (Classification, Labelling and Safety Data Sheet of Hazardous Chemicals)
+     Regulations 2013 (CLASS Regulations); Government of Malaysia: Putrajaya,
+     2013.
+
+RELATED COMPUTATIONAL HAZARD STUDIES
+------------------------------------
+(15) Yang, H.; Sun, L.; Li, W.; Liu, G.; Tang, Y. In Silico Prediction of
+     Chemical Toxicity for Drug Safety Evaluation Using Machine Learning
+     Methods and Structural Alerts. Front. Chem. 2018, 6, 30.
+     DOI: 10.3389/fchem.2018.00030.
+
+(16) Mansouri, K.; Grulke, C. M.; Judson, R. S.; Williams, A. J. OPERA Models
+     for Predicting Physicochemical Properties and Environmental Fate
+     Endpoints. J. Cheminform. 2018, 10, 10. DOI: 10.1186/s13321-018-0263-1.
+
+(17) Zhu, H.; Tropsha, A.; Fourches, D.; Varnek, A.; Papa, E.; Gramatica, P.;
+     Oberg, T.; Dao, P.; Cherkasov, A.; Tetko, I. V. Combinatorial QSAR
+     Modeling of Chemical Toxicants Tested against Tetrahymena Pyriformis.
+     J. Chem. Inf. Model. 2008, 48 (4), 766-784. DOI: 10.1021/ci700443v.
+
+(18) Mayr, A.; Klambauer, G.; Unterthiner, T.; Steijaert, M.; Wegner, J. K.;
+     Ceulemans, H.; Clevert, D.-A.; Hochreiter, S. Large-Scale Comparison of
+     Machine Learning Methods for Drug Target Prediction on ChEMBL. Chem. Sci.
+     2018, 9 (24), 5441-5451. DOI: 10.1039/C8SC00148K.
+
+(19) Schroeter, T.; Schwaighofer, A.; Mika, S.; ter Laak, A.; Suelzle, D.;
+     Ganzer, U.; Heinrich, N.; Muller, K.-R. Estimating the Domain of
+     Applicability for Machine Learning QSAR Models: A Study on Aqueous
+     Solubility of Drug Discovery Molecules. J. Comput.-Aided Mol. Des. 2007,
+     21 (9), 651-664. DOI: 10.1007/s10822-007-9160-9.
+
+(20) Baskin, I. I.; Winkler, D.; Tetko, I. V. A Renaissance of Neural Networks
+     in Drug Discovery. Expert Opin. Drug Discovery 2016, 11 (8), 785-795.
+     DOI: 10.1080/17460441.2016.1201262.
+
+(21) Rogers, D.; Hahn, M. Extended-Connectivity Fingerprints. J. Chem. Inf.
+     Model. 2010, 50 (5), 742-754. DOI: 10.1021/ci100050t.
+
+(22) Moriwaki, H.; Tian, Y.-S.; Kawashita, N.; Takagi, T. Mordred: A Molecular
+     Descriptor Calculator. J. Cheminform. 2018, 10, 4.
+     DOI: 10.1186/s13321-018-0258-y.
+
+EVALUATION METRICS
+------------------
+(23) Matthews, B. W. Comparison of the Predicted and Observed Secondary
+     Structure of T4 Phage Lysozyme. Biochim. Biophys. Acta, Protein Struct.
+     1975, 405 (2), 442-451. DOI: 10.1016/0005-2795(75)90109-9.
+
+(24) Fawcett, T. An Introduction to ROC Analysis. Pattern Recognit. Lett.
+     2006, 27 (8), 861-874. DOI: 10.1016/j.patrec.2005.10.010.
+
+JOHOR 2019 CHEMICAL EMERGENCY
+-----------------------------
+(25) Ministry of Health Malaysia. After-Action Review: Pasir Gudang Chemical
+     Incident 2019; Ministry of Health Malaysia: Putrajaya, 2019.
+
+(26) Ahmad, R.; Ghazali, M. F. Environmental Health Response to the Pasir
+     Gudang Chemical Disaster. Malays. J. Public Health Med. 2019, 19 (2), 1-8.

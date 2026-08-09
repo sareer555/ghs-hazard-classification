@@ -1,0 +1,229 @@
+MATERIALS AND METHODS
+
+Computational environment.
+All computations were performed under Python 3.11.15 on a
+64-bit Windows 10 workstation equipped with an Intel Core i7-6500U processor
+(two physical cores, four logical processors) and 7.9 GB of system memory.
+Cheminformatics operations were carried out with RDKit (2026.03.5),
+machine learning with scikit-learn (1.9.0) and XGBoost
+(3.2.0), class-imbalance correction with imbalanced-learn,
+and model interpretation with the SHAP library. A single random seed of 42 was
+applied to the Python standard library, NumPy, scikit-learn, XGBoost and every
+resampling procedure, so that all results reported here are exactly
+reproducible. The complete environment specification is provided as
+Supporting Information.
+
+Data collection.
+GHS hazard classifications were obtained from the PubChem PUG-View annotation
+service, which aggregates classifications contributed by independent
+regulatory bodies. The complete set of records filed under the heading "GHS
+Classification" was retrieved page by page, comprising contributions from the
+European Chemicals Agency, Regulation (EC) No 1272/2008 (CLP), the Hazardous
+Substances Data Bank, Japan's NITE-CMC and the Hazardous Chemical Information
+System of Safe Work Australia. Requests were rate-limited to five per second in
+accordance with PubChem's usage policy, and failed requests were retried with
+exponential backoff at one, two and four seconds. For every annotation record
+the linked PubChem Compound Identifiers, the assigned pictograms, the GHS
+hazard statement codes and the signal word were extracted. Pictograms were
+identified from the pictogram image references contained in the record markup,
+which encode the official pictogram numbers GHS01 to GHS09 unambiguously.
+Isomeric SMILES strings, molecular formulae, InChIKeys and compound titles were
+subsequently retrieved for every identifier by batched POST requests, and CAS
+Registry Numbers were recovered by pattern-matching the synonym lists. A total
+of 243,707 compound records was assembled.
+
+The numeric pictogram code was treated as authoritative throughout, so that
+data filed under GHS07 correspond to the exclamation-mark (irritant)
+pictogram, GHS08 to the health-hazard pictogram and GHS09 to the environmental
+pictogram, as defined in the tenth revised edition of the GHS. The descriptive
+suffixes attached to three of the nine label columns in the original study
+design did not follow this scheme; because the data were bound to the numeric
+code rather than to the label, the classifications themselves were unaffected,
+and the three columns were subsequently renamed to GHS07_Irritant,
+GHS08_HealthHazard and GHS09_Environmental to match the United Nations
+definitions. The correspondence with the original names is recorded in
+Supporting Information Table S0.
+
+Data cleaning and label reconciliation.
+Every SMILES string was parsed with RDKit, and structures that could not be
+interpreted were discarded (14 records). Duplicate
+structures were identified by InChIKey, with canonical SMILES used as the
+fallback key for the small number of structures for which InChI generation
+failed; the first occurrence of each structure was retained
+(370 duplicates removed). Compounds carrying no hazard
+label were excluded, because such records cannot be distinguished from
+chemicals that have simply not yet been assessed and would otherwise teach the
+model that unassessed chemicals are safe. Where several regulatory bodies had
+classified the same compound, disagreements were resolved by majority vote
+across sources. Ties, which can arise only with an even number of contributing
+sources, were resolved in favour of the hazardous assignment and the affected
+compounds were flagged; 2,307 compounds were affected. The
+cleaned dataset comprised 243,323 unique compounds, of which
+26.2 per cent carried more than one hazard pictogram.
+All 243,323 compounds were used for model development.
+
+Effect of training-set size.
+An earlier version of this work modelled a 40,000-compound subset, drawn
+because the dense descriptor matrix for the complete dataset exceeded the
+memory of the workstation available. Whether that constraint had limited the
+reported performance was tested directly. Four models were trained on nested
+training sets of 32,000, 64,000, 128,000 and 194,658 compounds, each a superset
+of the smaller ones, and all four were evaluated on the same held-out test
+partition with identical hyperparameters, so that training-set size was the
+only quantity that varied. Mean AUC-ROC rose monotonically from 0.8187 to
+0.8738, a gain of 0.0551 against a bootstrap confidence interval of 0.0139, and
+every one of the nine hazard classes improved; the rare classes gained most,
+with the explosive class rising by 0.0918 and the oxidiser class by 0.0610. The
+subset was therefore a genuine limitation rather than a demonstrated
+sufficiency, and all results reported here use the complete dataset.
+
+It is worth noting that a learning curve constructed within the 40,000-compound
+subset alone had suggested the opposite, appearing to plateau. That appearance
+was an artefact of the subset's construction: it had deliberately retained
+every positive example of the rare classes, so those classes could not improve
+with additional data and the aggregate curve flattened prematurely. Learning
+curves computed on a non-representative subsample can therefore be actively
+misleading about the value of further data.
+
+Molecular descriptor computation.
+Each compound was represented by a concatenated feature vector comprising
+three descriptor families. Nineteen physicochemical descriptors were computed
+with RDKit: molecular weight, exact molecular weight, the Crippen
+lipophilicity estimate, topological polar surface area, hydrogen-bond donor
+and acceptor counts, rotatable bond count, aromatic, saturated and aliphatic
+ring counts, total ring count, the fraction of sp3-hybridised carbon atoms,
+heavy atom count, heteroatom count, combined nitrogen and oxygen count,
+combined NH and OH count, the Labute approximate surface area, the Balaban J
+index and the Bertz complexity index. Structural information was encoded as a
+1024-bit Morgan fingerprint of radius two, equivalent to ECFP4, together with
+the 167-bit MACCS substructure key set. Eight topological indices completed the
+representation: the Chi connectivity indices of orders zero to four and the
+Kappa shape indices of orders one to three. Descriptors that could not be
+evaluated for a particular structure were replaced by the median of the
+corresponding column, and 402 descriptors whose
+variance across the dataset fell below 0.01 were removed as uninformative,
+leaving 816 features.
+
+Dataset splitting.
+The dataset was partitioned by Bemis-Murcko scaffold rather than at random. The
+scaffold of each compound, obtained by removing all side chains and retaining
+the ring systems and their connecting linkers, was computed with RDKit, and all
+compounds sharing a scaffold were assigned to the same partition, in the ratio
+80:10:10. Acyclic compounds, whose Murcko scaffold is empty, were each treated
+as an individual group rather than being pooled, since pooling would have
+placed a large fraction of the industrial solvents in the dataset into a single
+partition.
+
+The allocation of groups to partitions requires care, and two simpler schemes
+were found to be inadequate. Filling the training partition to its quota before
+the others causes a single large scaffold group encountered late to overflow
+into the test partition, distorting the intended ratios. Assigning each group
+to whichever partition is furthest below its quota by compound count corrects
+the ratios but starves the rare classes: because groups are processed largest
+first, the ring-bearing scaffolds fill the training quota early, after which
+the single-compound groups are distributed approximately evenly between the
+three partitions. Every acyclic molecule forms a single-compound group, and the
+rare hazard classes consist predominantly of small acyclic molecules, so under
+that scheme only 30 per cent of compressed gases and 39 per cent of oxidisers
+reached the training partition rather than the intended 80 per cent.
+
+Group allocation was therefore performed by a group-wise form of iterative
+stratification for multi-label data. Each scaffold group was scored against
+every partition on the largest fractional overshoot the assignment would cause,
+evaluated simultaneously on overall partition size and on each hazard class the
+group contained, and assigned to the partition with the lowest worst-case
+overshoot. Groups containing compounds of the rarest classes were placed first.
+This procedure returned every hazard class to within one percentage point of
+the intended 80 per cent training share while preserving exact 80:10:10
+partition sizes. The resulting split was verified to contain no scaffold shared
+between partitions, to provide positive examples of all nine hazard classes in
+every partition, and to allocate no class a training share more than fifteen
+percentage points below the overall training share.
+
+Class imbalance handling.
+Class frequencies in the dataset spanned more than three orders of magnitude,
+from 220,020 compounds carrying the irritant pictogram to 184
+carrying the explosive pictogram. Three complementary corrections were
+applied. The Synthetic Minority Over-sampling Technique was applied separately
+for each hazard class to the training partition only, with the number of
+neighbours reduced automatically for classes containing fewer than six
+positive examples; the validation and test partitions were never resampled.
+Class weights, defined as the ratio of negative to positive examples, were
+supplied to each classifier. Finally, decision thresholds were calibrated per
+class rather than fixed at 0.5, as described below.
+
+It should be noted that for the rarest classes the oversampling ratio is
+extreme: balancing the explosive class required expanding 148
+genuine positive examples into approximately 194,619 training rows.
+Synthetic examples generated at that ratio are convex combinations of a very
+small number of real molecules and cannot introduce chemistry absent from
+those originals, so they enlarge the minority class without enriching it. For
+this reason oversampling was not used for the primary models, which rely on
+class weighting instead; the oversampled models were trained separately as an
+ablation so that the two strategies could be compared directly rather than
+assumed equivalent.
+
+Model training and hyperparameter optimisation.
+Three algorithms were trained. A Random Forest classifier was fitted as a
+multi-output model with balanced class weighting. Nine independent XGBoost
+classifiers were trained, one per hazard class, each with the positive-class
+scaling factor set to the ratio of negative to positive examples for that
+class. A support vector machine with a radial basis function kernel was
+trained within a pipeline that applied standardisation before classification.
+Because the computational cost of a kernel machine grows with the square of
+the training set size, the support vector machine was trained on the 100
+highest-ranked features by Random Forest importance and on a stratified
+subsample of the training partition; this constraint is a property of the
+hardware used and is reported so that the support vector machine results are
+interpreted accordingly. Hyperparameters were optimised by randomised search
+with cross-validation on the validation partition, over the search spaces
+reported in Supporting Information Table S2. The number of search draws was
+determined by timing a single fit and selecting the largest number of draws
+compatible with a fixed wall-clock budget.
+
+Evaluation.
+Models were evaluated on the held-out scaffold-split test partition. For each
+algorithm and each hazard class, the area under the receiver operating
+characteristic curve, the average precision, the F1 score, the Matthews
+correlation coefficient, precision, recall and specificity were computed.
+Ninety-five per cent confidence intervals for the area under the curve were
+obtained by bootstrap resampling of the test partition over 1000 iterations.
+Two decision thresholds were derived per class from validation data alone and
+then applied unchanged to the test partition: the threshold maximising the F1
+score, and the highest threshold at which recall remained at or above 0.90, the
+latter representing the safety-first operating point appropriate to regulatory
+screening. The Matthews correlation coefficient was adopted as the primary
+metric for classes with fewer than 500 positive training examples, since it is
+not inflated by a model that predicts the majority class throughout, and the
+area under the receiver operating characteristic curve was used for the
+remainder.
+
+Model interpretation.
+The best-performing model was interpreted with SHAP. Exact Shapley values were
+computed for tree-based models using the TreeExplainer algorithm. For each
+hazard class the descriptors were ranked by mean absolute SHAP value, and the
+direction of each descriptor's influence was determined from the mean signed
+value. Individual predictions were explained with waterfall plots showing the
+additive contribution of each descriptor from the model's base value to its
+final output. MACCS keys appearing among the leading features were annotated
+with their defining SMARTS patterns, and Morgan fingerprint bits with an
+example of the atomic environment that sets them, so that fingerprint
+contributions could be interpreted chemically rather than as opaque indices.
+
+Malaysian industrial validation.
+A validation set was assembled from chemicals used in four Malaysian
+industrial sectors - palm oil processing, rubber processing, petrochemicals
+and semiconductor manufacturing - together with the chemicals identified in
+official and peer-reviewed accounts of the March 2019 Sungai Kim Kim incident
+at Pasir Gudang, Johor. Structures and reference GHS classifications were
+retrieved from PubChem. Entries corresponding to materials rather than
+discrete molecules were represented by a single representative structure, and
+each such substitution was recorded. Predictions were generated with the
+best-performing model and its calibrated thresholds, without any retraining or
+adjustment, and scored against the PubChem classifications for those compounds
+where classifications were available.
+
+Data and code availability.
+All datasets, trained models, figures and analysis code are provided in the
+project repository. The prediction framework is distributed as a Streamlit web
+application and as a command-line tool.

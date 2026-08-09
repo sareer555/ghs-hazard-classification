@@ -1,0 +1,25 @@
+CONTROLLED TRAINING-SIZE EXPERIMENT
+==========================================================================
+Test set: 24,333 compounds, identical in every condition
+Hyperparameters: identical in every condition
+
+ n_train  mean_auc  minutes
+   32000  0.818688     1.60
+   64000  0.846930     2.93
+  128000  0.863321     6.74
+  194658  0.873762     9.16
+
+Change from 32,000 to 194,658: +0.0551
+Bootstrap 95% CI half-width: +/-0.0139
+
+VERDICT: Training on the full dataset gives a real improvement, larger than the uncertainty of the estimate.
+
+Class                      @32,000     @full    change
+GHS01_Explosive             0.8128    0.9047   +0.0918
+GHS02_Flammable             0.9273    0.9403   +0.0130
+GHS03_Oxidising             0.9093    0.9703   +0.0610
+GHS05_Corrosive             0.8329    0.8590   +0.0261
+GHS06_AcuteToxicity         0.7469    0.7867   +0.0398
+GHS07_Irritant              0.7383    0.7617   +0.0234
+GHS08_HealthHazard          0.7917    0.8365   +0.0447
+GHS09_Environmental         0.7901    0.8377   +0.0475

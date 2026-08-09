@@ -1,0 +1,12 @@
+{
+  "raw_rows": 243707,
+  "removed_invalid_smiles": 14,
+  "removed_duplicates": 370,
+  "removed_unlabelled": 0,
+  "removed_by_voting": 0,
+  "final_cleaned_compounds": 243323,
+  "conflicted_compounds": 2307,
+  "multilabel_compounds": 63781,
+  "modelling_subset_compounds": 40000,
+  "elapsed_seconds": 254.6
+}

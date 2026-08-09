@@ -1,0 +1,14 @@
+{
+  "seconds": {
+    "RandomForest": 1050.2,
+    "XGBoost": 513.7,
+    "SVM": 205.3,
+    "RandomForest_NoClassWeight_ablation": 1649.5,
+    "TOTAL": 3445.4
+  },
+  "n_train_compounds": 194619,
+  "n_features": 816,
+  "svm_training_samples": 8000,
+  "svm_n_features": 100,
+  "random_seed": 42
+}

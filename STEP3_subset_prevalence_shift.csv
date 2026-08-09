@@ -1,0 +1,10 @@
+GHS_Column,Percent_full_dataset,Percent_modelling_subset,Percentage_point_change
+GHS01_Explosive,0.076,0.46,0.384
+GHS02_Flammable,4.37,4.812,0.443
+GHS03_Oxidising,0.172,1.048,0.875
+GHS04_CompressedGas,0.117,0.712,0.595
+GHS05_Corrosive,17.81,17.952,0.142
+GHS06_AcuteToxicity,6.247,6.565,0.318
+GHS07_Irritant,90.423,89.75,-0.673
+GHS08_HealthHazard,5.592,6.153,0.561
+GHS09_Environmental,7.289,7.583,0.294

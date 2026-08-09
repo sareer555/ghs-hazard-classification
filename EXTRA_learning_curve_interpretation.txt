@@ -1,0 +1,51 @@
+LEARNING CURVE INTERPRETATION
+==========================================================================
+Mean AUC at 32,000 training compounds: 0.8845
+Bootstrap 95% CI half-width (Step 9)     : +/-0.0139
+
+1. MARGINAL RETURN PER 1,000 ADDITIONAL COMPOUNDS
+--------------------------------------------------------------------------
+    1,600 ->  3,200   +0.00438
+    3,200 ->  6,400   +0.00344
+    6,400 -> 11,200   +0.00315
+   11,200 -> 16,000   +0.00144
+   16,000 -> 22,400   +0.00148
+   22,400 -> 27,200   +0.00094
+   27,200 -> 32,000   +0.00015
+   The marginal return fell by a factor of 30 across the curve.
+
+2. PER-CLASS STATUS AT THE FINAL STEP
+--------------------------------------------------------------------------
+   GHS01_Explosive           0.9774   -0.0019   plateaued
+   GHS02_Flammable           0.9544   +0.0026   plateaued
+   GHS03_Oxidising           0.9961   +0.0011   plateaued
+   GHS04_CompressedGas       0.9982   +0.0004   plateaued
+   GHS05_Corrosive           0.8646   -0.0017   plateaued
+   GHS06_AcuteToxicity       0.7612   +0.0013   plateaued
+   GHS07_Irritant            0.7608   +0.0003   plateaued
+   GHS08_HealthHazard        0.8329   +0.0076   still improving
+   GHS09_Environmental       0.8149   -0.0033   plateaued
+   8 of 9 classes have stopped improving.
+
+3. EXTRAPOLATION TO THE FULL DATASET (TREAT WITH CAUTION)
+--------------------------------------------------------------------------
+   A log-linear fit to the last four points predicts
+   0.9261 at 194,658 training compounds, a gain
+   of +0.0416.
+   This extrapolates roughly six times beyond the measured
+   range, so it is an indication and not a result.
+
+CONCLUSION
+--------------------------------------------------------------------------
+   The evidence is genuinely mixed and should be reported
+   as such. Returns have all but stopped at the measured
+   scale - the last increment of data changed the mean AUC
+   by +0.0007, far inside the confidence interval - and
+   8 of the 9 classes have flattened. Against that, the
+   extrapolation suggests the full dataset could still add
+   about +0.042, which would be larger than the
+   confidence interval.
+
+   The curve narrows the question but does not settle it.
+   The only way to settle it is to train on the full
+   dataset, which the accompanying Colab notebook does.

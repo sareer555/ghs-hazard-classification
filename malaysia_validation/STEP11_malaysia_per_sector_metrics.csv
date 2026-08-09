@@ -1,0 +1,6 @@
+Sector,N_Compounds,Label_Accuracy,Hazard_Recall,N_Actual_Hazard_Labels,N_Hazards_Correctly_Flagged
+Johor 2019 Emergency,12,0.9074,0.8364,55,46
+Palm Oil Processing,7,0.9048,0.9,20,18
+Petrochemicals,9,0.8765,0.8387,31,26
+Rubber Processing,7,0.7619,0.7083,24,17
+Semiconductor (Penang),8,0.7361,0.6579,38,25

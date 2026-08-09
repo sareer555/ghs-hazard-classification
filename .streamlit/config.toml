@@ -1,0 +1,16 @@
+# Streamlit settings for the GHS hazard screening application.
+
+[browser]
+# Do not send usage statistics to Streamlit's servers. This is a chemical
+# safety tool; no information about the chemicals a user submits should leave
+# the machine.
+gatherUsageStats = false
+
+[server]
+port = 8501
+# headless = true stops Streamlit trying to open a browser itself and, more
+# importantly, stops it prompting on the terminal at startup.
+headless = true
+
+[theme]
+primaryColor = "#1a4d7a"

@@ -1,0 +1,159 @@
+SUBMISSION CHECKLIST
+Journal of Chemical Information and Modeling (ACS Publications)
+================================================================
+Prepared 06 August 2026
+
+--------------------------------------------------------------------------
+1. COVER LETTER (draft)
+--------------------------------------------------------------------------
+Dear Editor,
+
+We are pleased to submit our manuscript entitled "Interpretable Machine
+Learning for Predicting GHS Chemical Hazard Classifications: A Multi-Label
+Classification Approach Using PubChem Molecular Descriptors" for
+consideration as a research article in the Journal of Chemical Information
+and Modeling.
+
+Chemical hazard classification under the Globally Harmonized System governs
+how chemicals are labelled, stored, transported and handled worldwide, yet the
+experimental testing it depends on has been completed for only a small
+fraction of chemicals in industrial use. The consequences of that gap are not
+hypothetical: in March 2019 improperly identified chemical waste discharged
+into the Sungai Kim Kim river at Pasir Gudang, Johor, Malaysia, affected more
+than 2,500 people, most of them schoolchildren.
+
+Our manuscript makes three contributions that we believe will interest the
+readership of this journal. First, we assemble and release a multi-label GHS
+dataset of 243,323 unique compounds reconciled across five
+independent regulatory sources by majority voting. Second, we evaluate under a
+Bemis-Murcko scaffold split rather than a random split, so the reported
+performance reflects generalisation to genuinely novel chemotypes rather than
+to near-duplicates of the training data; we regard this as essential for any
+claim that a hazard model is deployable. Third, we use SHAP to show that the
+learned decision rules recover established structure-hazard relationships,
+which is a prerequisite for regulatory acceptance of any computational
+screening tool.
+
+We further validate the framework on chemicals drawn from four Malaysian
+industrial sectors and on the chemicals implicated in the Johor 2019 incident.
+The complete analysis code, the curated dataset, the trained models and a
+browser-based screening interface are released as open-source software, so
+that every result in the manuscript can be reproduced and the tool can be run
+by any reader on their own machine.
+
+This manuscript has not been published elsewhere and is not under
+consideration by any other journal. All authors have approved the manuscript
+and agree with its submission.
+
+Yours sincerely,
+Sareer Ahmad
+MSc Physical Chemistry, University of Peshawar
+
+--------------------------------------------------------------------------
+2. AUTHOR CONTRIBUTIONS (CRediT taxonomy)
+--------------------------------------------------------------------------
+Sareer Ahmad: Conceptualization; Data curation; Formal analysis;
+  Investigation; Methodology; Software; Validation; Visualization;
+  Writing - original draft; Writing - review and editing.
+Lee Hooi Ling: Supervision; Resources; Writing - review and editing;
+  Project administration.
+
+[Adjust before submission to reflect the final author list.]
+
+--------------------------------------------------------------------------
+3. DATA AVAILABILITY STATEMENT
+--------------------------------------------------------------------------
+All data supporting the findings of this study are derived from the PubChem
+database (https://pubchem.ncbi.nlm.nih.gov), which is in the public domain.
+The curated multi-label GHS dataset, the computed descriptor matrix, the
+scaffold split indices and all trained model files are provided in the project
+repository. GHS classifications originate with the European Chemicals Agency,
+Regulation (EC) No 1272/2008, the Hazardous Substances Data Bank, NITE-CMC and
+the Hazardous Chemical Information System of Safe Work Australia, and remain
+subject to those bodies' terms of use.
+
+--------------------------------------------------------------------------
+4. CODE AVAILABILITY STATEMENT
+--------------------------------------------------------------------------
+All analysis code is provided in the project repository as documented Python
+scripts, one per methodological step, together with the exact environment
+specification required to reproduce the results. A single random seed of 42 is
+applied throughout.
+
+The prediction framework is distributed as source code in two forms: a
+Streamlit application providing a browser-based interface, and a command-line
+tool. Both run locally after installing the pinned environment; no hosted
+service is required, and no data leaves the user's machine. The trained
+gradient-boosting models are included in the repository.
+
+[BEFORE SUBMISSION: deposit the repository with Zenodo or a comparable archive
+to obtain a permanent DOI, and cite that DOI here. ACS journals accept a
+repository citation; a live deployment is not required. If the application is
+later hosted publicly, add the URL to this statement.]
+
+--------------------------------------------------------------------------
+5. COMPETING INTERESTS DECLARATION
+--------------------------------------------------------------------------
+The authors declare no competing financial or non-financial interests.
+
+--------------------------------------------------------------------------
+6. ETHICAL STATEMENT
+--------------------------------------------------------------------------
+This research involved no human participants, no animal subjects and no
+personally identifiable data. It is a computational study based entirely on
+publicly available chemical classification records. No ethical approval was
+required.
+
+--------------------------------------------------------------------------
+7. FUNDING
+--------------------------------------------------------------------------
+[To be completed. State any funding received, or "This research received no
+specific grant from any funding agency in the public, commercial or
+not-for-profit sectors."]
+
+--------------------------------------------------------------------------
+8. SUPPORTING INFORMATION LIST
+--------------------------------------------------------------------------
+Table S0.  GHS label schema: column names, pictogram codes, their
+           authoritative United Nations meanings, and the correspondence with
+           the names used in the original study design.
+Table S1.  Full dataset statistics after cleaning: compound counts,
+           percentages and imbalance ratios per hazard class.
+Table S2.  Complete hyperparameter search results for all three algorithms.
+Table S3.  Full performance metrics: every model, class, metric and decision
+           threshold, with bootstrap confidence intervals.
+Table S4.  The twenty most influential SHAP features per hazard class, with
+           chemical interpretation.
+Table S5.  Malaysian industrial validation results by sector, including the
+           Johor 2019 incident chemicals.
+File S1.   STEP1_environment_requirements.txt - the complete software
+           environment.
+
+--------------------------------------------------------------------------
+9. PRE-SUBMISSION CHECKLIST
+--------------------------------------------------------------------------
+[ ] Manuscript formatted to the JCIM template, double-spaced, line-numbered
+[ ] Abstract within the 250-word limit (current draft: 226 words)
+[ ] All figures at 300 dpi minimum, 12 pt minimum type
+[ ] Figure captions below each figure, complete and self-contained
+[ ] All references formatted in ACS style with DOIs
+[ ] Supporting Information compiled as a single PDF plus the Excel workbook
+[ ] TOC graphic prepared (JCIM requires one)
+[ ] ORCID identifiers registered for all authors
+[ ] Corresponding author and institutional affiliations confirmed
+[ ] Funding statement completed
+[x] RESOLVED: the three label columns whose descriptive suffixes did not match
+    the official UN pictogram meanings have been renamed to GHS07_Irritant,
+    GHS08_HealthHazard and GHS09_Environmental. The data were bound to the
+    numeric codes and were unaffected; the mapping to the original names is in
+    Table S0.
+[ ] ACTION REQUIRED: deposit the repository with Zenodo (or figshare) to get a
+    permanent DOI, and cite it in the Data and Code Availability statements.
+    This is what ACS journals actually require - a live web deployment is NOT
+    required and its absence is not a barrier to publication. Keep the wording
+    "released as open-source software with a browser-based interface"; do not
+    claim a hosted service unless one exists and its URL is given.
+[ ] ACTION REQUIRED: state explicitly in the Limitations section that the
+    support vector machine was trained on a reduced feature set and a
+    subsampled training partition owing to hardware constraints, and is
+    therefore not strictly comparable with the other two algorithms.

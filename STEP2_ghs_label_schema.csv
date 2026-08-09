@@ -1,0 +1,10 @@
+column_name,pictogram_code,authoritative_UN_PubChem_meaning,name_in_original_proposal,was_renamed
+GHS01_Explosive,GHS01,Explosive (exploding bomb),GHS01_Explosive,no
+GHS02_Flammable,GHS02,Flammable (flame),GHS02_Flammable,no
+GHS03_Oxidising,GHS03,Oxidiser (flame over circle),GHS03_Oxidising,no
+GHS04_CompressedGas,GHS04,Compressed gas (gas cylinder),GHS04_CompressedGas,no
+GHS05_Corrosive,GHS05,Corrosive (corrosion),GHS05_Corrosive,no
+GHS06_AcuteToxicity,GHS06,Acute toxicity (skull and crossbones),GHS06_AcuteToxicity,no
+GHS07_Irritant,GHS07,Irritant / harmful (exclamation mark),GHS07_HealthHazard,YES
+GHS08_HealthHazard,GHS08,Serious health hazard (health hazard),GHS08_Environmental,YES
+GHS09_Environmental,GHS09,Environmental hazard (environment),GHS09_Irritant,YES

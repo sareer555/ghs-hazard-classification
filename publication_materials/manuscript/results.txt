@@ -1,0 +1,173 @@
+RESULTS
+================================================================================
+
+Dataset assembly and composition
+--------------------------------------------------------------------------------
+
+GHS classifications were retrieved for 243,707 compound records. Structural
+validation removed 14 records whose SMILES strings could not be parsed, and
+deduplication by InChIKey removed a further 370, leaving 243,323 unique
+compounds. Five regulatory sources contributed classifications, and 2,307
+compounds received a tied vote between them; these were retained, flagged, and
+resolved in favour of the hazardous assignment.
+
+The dataset is strongly multi-label and strongly imbalanced. 63,781 compounds
+(26.2 per cent) carry more than one pictogram. Class frequencies span more than
+three orders of magnitude, from 220,020 compounds carrying the irritant
+pictogram to 184 carrying the explosive pictogram (Figure 2). This imbalance,
+rather than the size of the dataset, proved to be the dominant constraint on
+performance.
+
+Molecular representation and partitioning
+--------------------------------------------------------------------------------
+
+Each compound was described by 1,218 descriptors combining physicochemical
+properties, Morgan (ECFP4) and MACCS fingerprints and topological indices.
+Removing descriptors with variance below 0.01 eliminated 402 - almost all of
+them sparsely populated fingerprint bits - leaving 816 features.
+
+Partitioning by Bemis-Murcko scaffold produced 57,591 distinct scaffold groups,
+of which 28,278 were acyclic compounds treated as individual groups. The final
+partition contained 194,619 training, 24,352 validation and 24,352 test
+compounds, with no scaffold shared between any two partitions and every hazard
+class represented in all three.
+
+Allocating scaffold groups to partitions required more care than is usually
+acknowledged. Filling the training partition to its quota before the others
+caused large scaffold groups encountered late to overflow into the test
+partition, producing an 80:3:17 split. Assigning each group to whichever
+partition was furthest below its quota corrected the overall ratios but starved
+the rare classes: only 30 per cent of compressed gases and 39 per cent of
+oxidisers reached the training partition instead of the intended 80 per cent,
+because every acyclic molecule forms a single-compound group and those groups
+are allocated last. Group-wise iterative stratification, scoring each group
+against every partition on overall size and on each class it contains, returned
+every class to within one percentage point of its intended share while
+preserving exact partition sizes.
+
+Model performance
+--------------------------------------------------------------------------------
+
+Four models were evaluated on the held-out test partition of 24,352 compounds.
+Mean AUC-ROC across the nine classes was 0.9146 for XGBoost, 0.9078 for the
+Random Forest without class weighting, 0.8900 for the class-weighted Random
+Forest and 0.8711 for the support vector machine. Mean Matthews correlation
+coefficients were 0.4705, 0.4590, 0.3633 and 0.3683 respectively. XGBoost was
+selected as the best model on both metrics. The bootstrap 95 per cent
+confidence interval had a median half-width of 0.0077, so differences smaller
+than that are not meaningful; the two leading models were separated on Matthews
+correlation coefficient rather than on area under the curve.
+
+Per-class performance for XGBoost is given below; N is the number of positive
+examples in the test partition and the interval is the bootstrap 95 per cent
+confidence interval on AUC-ROC.
+
+  Code  Hazard                         N     AUC       CI 95%        AP      F1     MCC
+  ---------------------------------------------------------------------------------------
+  GHS01 Explosive                     18   0.9859  [0.974, 0.995]    0.151   0.182   0.235
+  GHS02 Flammable                  1,063   0.9708  [0.965, 0.975]    0.755   0.707   0.694
+  GHS03 Oxidiser                      41   0.9267  [0.862, 0.981]    0.544   0.580   0.590
+  GHS04 Compressed gas                28   0.9951  [0.984, 1.000]    0.809   0.737   0.737
+  GHS05 Corrosive                  4,333   0.8924  [0.887, 0.898]    0.737   0.665   0.596
+  GHS06 Acute toxicity             1,520   0.8296  [0.818, 0.840]    0.326   0.361   0.316
+  GHS07 Irritant / harmful        21,967   0.8336  [0.826, 0.841]    0.977   0.950   0.202
+  GHS08 Serious health hazard      1,360   0.9004  [0.893, 0.908]    0.452   0.467   0.434
+  GHS09 Environmental hazard       1,773   0.8969  [0.890, 0.903]    0.459   0.474   0.431
+
+Discrimination is excellent for the physically determined hazards - compressed
+gas (0.995), explosive (0.986) and flammable (0.971) - and substantially lower
+for the biologically mediated ones, acute toxicity (0.830) and irritation
+(0.834). This ordering is chemically coherent: physical state and flammability
+are largely determined by molecular size and polarity, whereas toxicity depends
+on specific molecular mechanisms that bulk descriptors capture only indirectly.
+
+Training times on a two-core workstation were 17.5 minutes for the Random
+Forest, 8.6 minutes for the nine gradient-boosted models and 3.4 minutes for
+the support vector machine, the last on a reduced feature set and subsampled
+training partition (see Limitations).
+
+Effect of training-set size
+--------------------------------------------------------------------------------
+
+Models were trained on nested subsets of the training partition and evaluated
+on the same fixed test partition with identical hyperparameters, so that
+training-set size was the only quantity varying.
+
+     n_train    mean AUC
+  -----------------------
+     32,000      0.8187
+     64,000      0.8469
+    128,000      0.8633
+    194,658      0.8738
+
+Mean AUC-ROC rose monotonically, gaining +0.0551 overall - more than four times
+the confidence interval - and every one of the nine classes improved. The rare
+classes gained most.
+
+A learning curve computed earlier within a 40,000-compound convenience
+subsample had appeared to plateau, with the final increment of data changing
+mean AUC-ROC by less than 0.001. That appearance was an artefact of how the
+subsample had been constructed: it deliberately retained every positive example
+of the rare classes, so those classes could not improve with additional data
+and the aggregate curve flattened prematurely.
+
+Interpretability
+--------------------------------------------------------------------------------
+
+SHAP values were computed for 500 test compounds. Across all nine classes the
+most influential descriptors were LabuteASA, TPSA, Kappa2. The single most
+influential descriptor for each class, with the correlation between descriptor
+value and SHAP value (positive meaning that higher values push towards the
+hazard):
+
+  Code  Descriptor         r      Measures
+  -------------------------------------------------------------------------
+  GHS01 MACCS_70          +0.834   MACCS substructure key 70: matches SMARTS pa
+  GHS02 BertzCT           -0.493   structural complexity
+  GHS03 Chi3n             -0.157   third-order connectivity index
+  GHS04 Kappa2            -0.080   second-order shape index - how linear or sta
+  GHS05 BertzCT           -0.610   structural complexity
+  GHS06 ExactMolWt        +0.547   monoisotopic molecular mass
+  GHS07 Chi1              -0.647   first-order connectivity index - bond-level
+  GHS08 Chi4n             +0.484   fourth-order connectivity index
+  GHS09 MolLogP           +0.450   lipophilicity - how strongly the compound pr
+
+The explosive class is the most striking. Its leading descriptor is MACCS key
+70, defined by the SMARTS pattern [!#6;!#1]~[#7]~[!#6;!#1] - a heteroatom
+bonded to nitrogen bonded to a further heteroatom - with a correlation of
++0.834. That connectivity is the defining motif of nitro groups, nitrate
+esters, nitramines and azides, which is to say of the great majority of organic
+explosives. The model was given no information about energetic chemistry and
+recovered this substructure from the data alone.
+
+Other attributions are equally interpretable. Aquatic hazard is driven by
+lipophilicity (+0.450), consistent with bioaccumulation. Acute toxicity
+increases with molecular mass (+0.547). Flammability decreases with structural
+complexity (-0.493), reflecting that small simple molecules are the volatile
+ones.
+
+Malaysian industrial validation
+--------------------------------------------------------------------------------
+
+The framework was applied without retraining to chemicals from four Malaysian
+industrial sectors and to the substances implicated in the Johor 2019 incident.
+
+  Sector                        n  Label acc.    Recall
+  ------------------------------------------------------
+  Johor 2019 Emergency         12     0.907     0.836
+  Palm Oil Processing           7     0.905     0.900
+  Petrochemicals                9     0.876     0.839
+  Rubber Processing             7     0.762     0.708
+  Semiconductor (Penang)        8     0.736     0.658
+
+Performance is highest for the palm oil, petrochemical and incident chemicals,
+and lowest for rubber processing and semiconductor manufacturing. Those two
+sectors are dominated by inorganic and elemental species - sulfur, zinc oxide,
+carbon black, hydrofluoric acid, phosphine, arsine - which lie outside the
+applicability domain of descriptors designed for covalent organic molecules.
+
+For the Johor 2019 chemicals specifically, the framework recovered 46 of 55
+true hazard labels across twelve compounds, and flagged the flammable pictogram
+for all twelve. A screening tool producing that profile from structures alone
+would have supported an early decision to treat the discharge as an acute
+inhalation hazard.

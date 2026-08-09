@@ -1,0 +1,17 @@
+{
+  "best_model_explained": "XGBoost",
+  "n_compounds_explained": 500,
+  "n_features": 816,
+  "shap_sample_used": true,
+  "top3_features_overall": [
+    "LabuteASA",
+    "TPSA",
+    "Kappa2"
+  ],
+  "waterfall_class": "GHS04_CompressedGas",
+  "n_bar_plots": 9,
+  "n_beeswarm_plots": 9,
+  "n_waterfall_plots": 5,
+  "random_seed": 42,
+  "elapsed_seconds": 51.5
+}

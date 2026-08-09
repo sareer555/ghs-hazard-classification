@@ -1,0 +1,10 @@
+GHS_Column,Pictogram_Code,Meaning,N_True_Positive_In_Set,Accuracy,Precision,Recall,F1,MCC
+GHS01_Explosive,GHS01,Explosive (exploding bomb),0,1.0,0.0,0.0,0.0,
+GHS02_Flammable,GHS02,Flammable (flame),28,0.8837,0.871,0.9643,0.9153,0.7413
+GHS03_Oxidising,GHS03,Oxidiser (flame over circle),2,1.0,1.0,1.0,1.0,1.0
+GHS04_CompressedGas,GHS04,Compressed gas (gas cylinder),10,0.9535,0.8333,1.0,0.9091,0.8848
+GHS05_Corrosive,GHS05,Corrosive (corrosion),14,0.8605,0.8333,0.7143,0.7692,0.6742
+GHS06_AcuteToxicity,GHS06,Acute toxicity (skull and crossbones),16,0.7907,0.6522,0.9375,0.7692,0.6214
+GHS07_Irritant,GHS07,Irritant / harmful (exclamation mark),37,0.8605,0.9429,0.8919,0.9167,0.4974
+GHS08_HealthHazard,GHS08,Serious health hazard (health hazard),36,0.7674,0.8611,0.8611,0.8611,0.1468
+GHS09_Environmental,GHS09,Environmental hazard (environment),25,0.4884,0.8,0.16,0.2667,0.1607

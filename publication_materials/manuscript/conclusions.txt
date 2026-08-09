@@ -1,0 +1,30 @@
+CONCLUSIONS
+================================================================================
+
+A multi-label machine learning framework was developed to predict all nine GHS
+hazard pictograms from molecular structure, trained on 243,323 compounds whose
+classifications were reconciled across five regulatory sources. Evaluated on a
+Bemis-Murcko scaffold split that guarantees no shared chemical skeleton between
+training and test data, gradient boosting achieved a mean AUC-ROC of 0.915
+across the nine classes, ranging from 0.830 for the irritant class to 0.995 for
+compressed gases.
+
+SHAP analysis showed that the model recovered established structure-hazard
+relationships, most notably identifying the heteroatom-nitrogen-heteroatom
+connectivity of nitro, nitrate, nitramine and azide groups as the dominant
+predictor of explosivity without any prior chemical input. Applied without
+retraining to chemicals from four Malaysian industrial sectors and to the
+substances implicated in the 2019 Sungai Kim Kim incident, the framework
+recovered the majority of true hazard labels.
+
+Two methodological findings extend beyond this application. Scaffold group
+allocation can systematically deprive rare classes of training data while
+passing every conventional validity check, and per-class training share should
+therefore be audited routinely. Learning curves computed on deliberately
+enriched subsamples can indicate saturation that a controlled experiment
+disproves.
+
+The framework is released as open-source software with a browser-based
+screening interface. It is intended for prioritising which chemicals warrant
+laboratory assessment, and does not replace testing or regulatory
+classification under Malaysia's CLASS Regulations 2013.

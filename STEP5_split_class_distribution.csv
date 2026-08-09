@@ -1,0 +1,10 @@
+GHS_Column,Meaning,Train_Positives,Val_Positives,Test_Positives,Train_Percent,Val_Percent,Test_Percent
+GHS01_Explosive,Explosive (exploding bomb),148,18,18,0.076,0.074,0.074
+GHS02_Flammable,Flammable (flame),8506,1063,1063,4.371,4.365,4.365
+GHS03_Oxidising,Oxidiser (flame over circle),336,42,41,0.173,0.172,0.168
+GHS04_CompressedGas,Compressed gas (gas cylinder),229,28,28,0.118,0.115,0.115
+GHS05_Corrosive,Corrosive (corrosion),34670,4333,4333,17.814,17.793,17.793
+GHS06_AcuteToxicity,Acute toxicity (skull and crossbones),12161,1520,1520,6.249,6.242,6.242
+GHS07_Irritant,Irritant / harmful (exclamation mark),176165,21888,21967,90.518,89.882,90.206
+GHS08_HealthHazard,Serious health hazard (health hazard),10886,1360,1360,5.593,5.585,5.585
+GHS09_Environmental,Environmental hazard (environment),14189,1773,1773,7.291,7.281,7.281

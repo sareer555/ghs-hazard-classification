@@ -1,0 +1,40 @@
+{
+  "best_model": "XGBoost",
+  "model_selection": {
+    "highest_mean_auc_model": "XGBoost",
+    "highest_mean_auc": 0.9146,
+    "tie_tolerance_from_bootstrap": 0.0077,
+    "statistically_indistinguishable": [
+      "RandomForest_SMOTE",
+      "XGBoost"
+    ],
+    "tie_broken_on": "mean MCC"
+  },
+  "mean_auc_per_model": {
+    "RandomForest": 0.89,
+    "RandomForest_SMOTE": 0.9078,
+    "SVM": 0.8711,
+    "XGBoost": 0.9146
+  },
+  "mean_mcc_per_model": {
+    "RandomForest": 0.3633,
+    "RandomForest_SMOTE": 0.459,
+    "SVM": 0.3683,
+    "XGBoost": 0.4705
+  },
+  "auc_per_class_best_model": {
+    "GHS01_Explosive": 0.9859,
+    "GHS02_Flammable": 0.9708,
+    "GHS03_Oxidising": 0.9267,
+    "GHS04_CompressedGas": 0.9951,
+    "GHS05_Corrosive": 0.8924,
+    "GHS06_AcuteToxicity": 0.8296,
+    "GHS07_Irritant": 0.8336,
+    "GHS08_HealthHazard": 0.9004,
+    "GHS09_Environmental": 0.8969
+  },
+  "n_test_compounds": 24352,
+  "n_bootstrap_iterations": 1000,
+  "random_seed": 42,
+  "elapsed_seconds": 1000.3
+}

@@ -1,0 +1,26 @@
+ABSTRACT
+
+Chemical hazard classification under the Globally Harmonized System (GHS)
+depends on experimental testing that is slow, costly and unavailable for most
+chemicals in industrial circulation. The March 2019 Sungai Kim Kim incident at
+Pasir Gudang, Johor, in which improperly identified chemical waste affected
+over 2,500 people, illustrates the cost of that gap. This work asked whether
+the nine GHS pictograms can be predicted from molecular structure alone, and
+made interpretable enough for regulatory use. GHS classifications for
+243,707 compound records were harvested from PubChem, contributed by
+five regulatory bodies, and reduced by structural validation, InChIKey
+deduplication and multi-source majority voting to 243,323 unique
+compounds, each described by 816
+descriptors combining physicochemical properties, Morgan (ECFP4) and MACCS
+fingerprints, and topological indices. Random Forest, XGBoost and support
+vector machine classifiers were trained as multi-label predictors and evaluated
+on a Bemis-Murcko scaffold split, so that no chemical skeleton was shared
+between training and test sets. XGBoost performed best, achieving a mean AUC-ROC
+of 0.915 across the nine classes (range
+0.830-0.995). SHAP analysis showed the model had recovered recognised structure-hazard relationships, most clearly the dependence of explosivity on the substructure [!#6;!#1]~[#7]~[!#6;!#1], flammability on low structural complexity, and aquatic hazard on high lipophilicity. Validation on
+44 chemicals from four Malaysian industrial sectors and the
+Johor 2019 incident confirmed transferability. The framework is released as
+open-source software with a browser-based screening interface.
+
+KEYWORDS: GHS classification; multi-label learning; molecular descriptors;
+SHAP interpretability; chemical safety; scaffold splitting; QSAR

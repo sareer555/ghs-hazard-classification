@@ -1,0 +1,10 @@
+GHS_Column,Meaning,Train_Positives_Before,Train_Total_Before,Train_Positives_After,Train_Total_After,Method
+GHS01_Explosive,Explosive (exploding bomb),148,194619,148,194619,none (memory budget - class weights used)
+GHS02_Flammable,Flammable (flame),8506,194619,8506,194619,none (memory budget - class weights used)
+GHS03_Oxidising,Oxidiser (flame over circle),336,194619,336,194619,none (memory budget - class weights used)
+GHS04_CompressedGas,Compressed gas (gas cylinder),229,194619,229,194619,none (memory budget - class weights used)
+GHS05_Corrosive,Corrosive (corrosion),34670,194619,34670,194619,none (memory budget - class weights used)
+GHS06_AcuteToxicity,Acute toxicity (skull and crossbones),12161,194619,12161,194619,none (memory budget - class weights used)
+GHS07_Irritant,Irritant / harmful (exclamation mark),176165,194619,176165,194619,none (memory budget - class weights used)
+GHS08_HealthHazard,Serious health hazard (health hazard),10886,194619,10886,194619,none (memory budget - class weights used)
+GHS09_Environmental,Environmental hazard (environment),14189,194619,14189,194619,none (memory budget - class weights used)

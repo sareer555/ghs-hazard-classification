@@ -1,0 +1,98 @@
+{
+  "class_weights": {
+    "GHS01_Explosive": 1313.9932,
+    "GHS02_Flammable": 21.8802,
+    "GHS03_Oxidising": 578.2232,
+    "GHS04_CompressedGas": 848.8646,
+    "GHS05_Corrosive": 4.6135,
+    "GHS06_AcuteToxicity": 15.0035,
+    "GHS07_Irritant": 0.1048,
+    "GHS08_HealthHazard": 16.8779,
+    "GHS09_Environmental": 12.7162
+  },
+  "threshold_calibration_framework": {
+    "fit_on": "validation set only",
+    "applied_to": "test set",
+    "thresholds_computed_per_class": [
+      {
+        "name": "threshold_f1",
+        "rule": "argmax of F1 over the precision-recall curve",
+        "use_case": "balanced screening"
+      },
+      {
+        "name": "threshold_recall90",
+        "rule": "highest threshold whose recall is still >= 0.90",
+        "use_case": "safety-first regulatory screening"
+      },
+      {
+        "name": "threshold_default",
+        "rule": "fixed at 0.5",
+        "use_case": "baseline for comparison"
+      }
+    ],
+    "rationale": "A fixed 0.5 cut-off is inappropriate for imbalanced data. Both thresholds are fitted on validation data only and then applied unchanged to the test set."
+  },
+  "primary_metrics": {
+    "GHS01_Explosive": {
+      "primary_metric": "MCC",
+      "train_positives": 148,
+      "is_rare": true,
+      "reason": "fewer than 500 training positives - MCC resists the all-negative trap"
+    },
+    "GHS02_Flammable": {
+      "primary_metric": "AUC-ROC",
+      "train_positives": 8506,
+      "is_rare": false,
+      "reason": "500 or more training positives - AUC-ROC is stable and comparable with the literature"
+    },
+    "GHS03_Oxidising": {
+      "primary_metric": "MCC",
+      "train_positives": 336,
+      "is_rare": true,
+      "reason": "fewer than 500 training positives - MCC resists the all-negative trap"
+    },
+    "GHS04_CompressedGas": {
+      "primary_metric": "MCC",
+      "train_positives": 229,
+      "is_rare": true,
+      "reason": "fewer than 500 training positives - MCC resists the all-negative trap"
+    },
+    "GHS05_Corrosive": {
+      "primary_metric": "AUC-ROC",
+      "train_positives": 34670,
+      "is_rare": false,
+      "reason": "500 or more training positives - AUC-ROC is stable and comparable with the literature"
+    },
+    "GHS06_AcuteToxicity": {
+      "primary_metric": "AUC-ROC",
+      "train_positives": 12161,
+      "is_rare": false,
+      "reason": "500 or more training positives - AUC-ROC is stable and comparable with the literature"
+    },
+    "GHS07_Irritant": {
+      "primary_metric": "AUC-ROC",
+      "train_positives": 176165,
+      "is_rare": false,
+      "reason": "500 or more training positives - AUC-ROC is stable and comparable with the literature"
+    },
+    "GHS08_HealthHazard": {
+      "primary_metric": "AUC-ROC",
+      "train_positives": 10886,
+      "is_rare": false,
+      "reason": "500 or more training positives - AUC-ROC is stable and comparable with the literature"
+    },
+    "GHS09_Environmental": {
+      "primary_metric": "AUC-ROC",
+      "train_positives": 14189,
+      "is_rare": false,
+      "reason": "500 or more training positives - AUC-ROC is stable and comparable with the literature"
+    }
+  },
+  "rare_class_threshold": 500,
+  "smote_max_output_rows": 120000,
+  "random_seed": 42,
+  "n_train": 194619,
+  "n_val": 24352,
+  "n_test": 24352,
+  "elapsed_seconds": 34.6
+}

@@ -1,0 +1,181 @@
+{
+  "_meta": {
+    "cv_folds": 3,
+    "random_seed": 42,
+    "tuned_on": "validation set",
+    "n_validation_compounds": 24352,
+    "n_features": 816,
+    "total_seconds": 4406.4
+  },
+  "RandomForest": {
+    "best_params": {
+      "estimator__n_estimators": 500,
+      "estimator__min_samples_split": 5,
+      "estimator__min_samples_leaf": 1,
+      "estimator__max_features": "log2",
+      "estimator__max_depth": 50
+    },
+    "best_cv_weighted_auc": 0.8246,
+    "n_iter": 5,
+    "cv_folds": 3,
+    "search_seconds": 706.5,
+    "refitted_on": "training set",
+    "applied_params": {
+      "n_estimators": "500",
+      "min_samples_split": "5",
+      "min_samples_leaf": "71",
+      "max_features": "log2",
+      "max_depth": "40",
+      "class_weight": "balanced",
+      "random_state": "42",
+      "n_jobs": "3"
+    }
+  },
+  "XGBoost": {
+    "per_class": {
+      "GHS01_Explosive": {
+        "best_params": {
+          "subsample": 0.9,
+          "reg_lambda": 10.0,
+          "reg_alpha": 1.0,
+          "n_estimators": 200,
+          "max_depth": 10,
+          "learning_rate": 0.01,
+          "colsample_bytree": 0.9
+        },
+        "best_score": 0.8917,
+        "n_iter": 5,
+        "cv_folds": 3
+      },
+      "GHS02_Flammable": {
+        "best_params": {
+          "subsample": 0.6,
+          "reg_lambda": 10.0,
+          "reg_alpha": 0.01,
+          "n_estimators": 300,
+          "max_depth": 6,
+          "learning_rate": 0.05,
+          "colsample_bytree": 0.7
+        },
+        "best_score": 0.9625,
+        "n_iter": 5,
+        "cv_folds": 3
+      },
+      "GHS03_Oxidising": {
+        "best_params": {
+          "subsample": 0.6,
+          "reg_lambda": 10.0,
+          "reg_alpha": 0.01,
+          "n_estimators": 300,
+          "max_depth": 6,
+          "learning_rate": 0.05,
+          "colsample_bytree": 0.7
+        },
+        "best_score": 0.9879,
+        "n_iter": 5,
+        "cv_folds": 3
+      },
+      "GHS04_CompressedGas": {
+        "best_params": {
+          "subsample": 0.6,
+          "reg_lambda": 10.0,
+          "reg_alpha": 0.01,
+          "n_estimators": 300,
+          "max_depth": 6,
+          "learning_rate": 0.05,
+          "colsample_bytree": 0.7
+        },
+        "best_score": 0.9972,
+        "n_iter": 5,
+        "cv_folds": 3
+      },
+      "GHS05_Corrosive": {
+        "best_params": {
+          "subsample": 0.6,
+          "reg_lambda": 10.0,
+          "reg_alpha": 0.01,
+          "n_estimators": 300,
+          "max_depth": 6,
+          "learning_rate": 0.05,
+          "colsample_bytree": 0.7
+        },
+        "best_score": 0.8565,
+        "n_iter": 5,
+        "cv_folds": 3
+      },
+      "GHS06_AcuteToxicity": {
+        "best_params": {
+          "subsample": 0.9,
+          "reg_lambda": 10.0,
+          "reg_alpha": 1.0,
+          "n_estimators": 200,
+          "max_depth": 10,
+          "learning_rate": 0.01,
+          "colsample_bytree": 0.9
+        },
+        "best_score": 0.7775,
+        "n_iter": 5,
+        "cv_folds": 3
+      },
+      "GHS07_Irritant": {
+        "best_params": {
+          "subsample": 0.6,
+          "reg_lambda": 10.0,
+          "reg_alpha": 0.01,
+          "n_estimators": 300,
+          "max_depth": 6,
+          "learning_rate": 0.05,
+          "colsample_bytree": 0.7
+        },
+        "best_score": 0.7775,
+        "n_iter": 5,
+        "cv_folds": 3
+      },
+      "GHS08_HealthHazard": {
+        "best_params": {
+          "subsample": 0.6,
+          "reg_lambda": 10.0,
+          "reg_alpha": 0.01,
+          "n_estimators": 300,
+          "max_depth": 6,
+          "learning_rate": 0.05,
+          "colsample_bytree": 0.7
+        },
+        "best_score": 0.8831,
+        "n_iter": 5,
+        "cv_folds": 3
+      },
+      "GHS09_Environmental": {
+        "best_params": {
+          "subsample": 0.6,
+          "reg_lambda": 10.0,
+          "reg_alpha": 0.01,
+          "n_estimators": 300,
+          "max_depth": 6,
+          "learning_rate": 0.05,
+          "colsample_bytree": 0.7
+        },
+        "best_score": 0.851,
+        "n_iter": 5,
+        "cv_folds": 3
+      }
+    },
+    "search_seconds": 1437.0,
+    "n_iter": 5,
+    "cv_folds": 3,
+    "refitted_on": "training set"
+  },
+  "SVM": {
+    "best_params": {
+      "estimator__svm__kernel": "rbf",
+      "estimator__svm__gamma": 0.01,
+      "estimator__svm__C": 0.1
+    },
+    "best_cv_weighted_auc": 0.745,
+    "n_iter": 30,
+    "cv_folds": 3,
+    "search_seconds": 245.4,
+    "n_features_used": 100,
+    "note": "searched with probability=False for speed. The Step 7 SVM, which already carries probability=True, is the model scored in Step 9; these settings are reported for the record."
+  }
+}

@@ -1,0 +1,45 @@
+Query_Name,CID,SMILES,MolecularFormula,PubChem_Name,Found,GHS_Found,GHS01_Explosive,GHS02_Flammable,GHS03_Oxidising,GHS04_CompressedGas,GHS05_Corrosive,GHS06_AcuteToxicity,GHS07_Irritant,GHS08_HealthHazard,GHS09_Environmental,Sector,Requested_Name,Substitution_Note,Incident_Role
+hexane,8058,CCCCCC,C6H14,Hexane,True,True,0,1,0,0,0,0,1,1,1,Palm Oil Processing,hexane,,
+phosphoric acid,1004,OP(=O)(O)O,H3O4P,Phosphoric Acid,True,True,0,0,0,0,1,1,1,1,0,Palm Oil Processing,phosphoric acid,,
+montmorillonite,71586775,O.[O-2].[O-2].[O-2].O=[Si]=O.O=[Si]=O.O=[Si]=O.O=[Si]=O.[Al+3].[Al+3],Al2H2O12Si4,Bentonite,True,True,0,0,0,0,0,0,1,0,0,Palm Oil Processing,bleaching earth,'bleaching earth' is a material rather than a single molecule; 'montmorillonite' used as a representative structure,
+sodium hydroxide,14798,[OH-].[Na+],HNaO,Sodium Hydroxide,True,True,0,0,0,0,1,0,1,1,0,Palm Oil Processing,sodium hydroxide,,
+citric acid,311,C(C(=O)O)C(CC(=O)O)(C(=O)O)O,C6H8O7,Citric Acid,True,True,0,0,0,0,0,0,1,0,0,Palm Oil Processing,citric acid,,
+hydrogen peroxide,784,OO,H2O2,Hydrogen Peroxide,True,True,0,0,1,0,1,1,1,1,1,Palm Oil Processing,hydrogen peroxide,,
+palmitic acid,985,CCCCCCCCCCCCCCCC(=O)O,C16H32O2,Palmitic Acid,True,True,0,0,0,0,0,0,1,0,0,Palm Oil Processing,fatty acids,'fatty acids' is a material rather than a single molecule; 'palmitic acid' used as a representative structure,
+glycerol,753,C(C(CO)O)O,C3H8O3,Glycerol,True,False,0,0,0,0,0,0,0,0,0,Palm Oil Processing,glycerol,,
+sulfur,5362487,[S],S,Sulfur,True,True,0,1,0,0,0,0,1,1,0,Rubber Processing,sulfur,,
+zinc oxide,3007857,[O-2].[Zn+2],OZn,Zinc Oxide,True,True,0,0,0,0,0,0,0,1,1,Rubber Processing,zinc oxide,,
+2-mercaptobenzothiazole,697993,C1=CC=C2C(=C1)NC(=S)S2,C7H5NS2,2-Mercaptobenzothiazole,True,True,0,0,0,0,0,0,1,1,1,Rubber Processing,mercaptobenzothiazole,'mercaptobenzothiazole' is a material rather than a single molecule; '2-mercaptobenzothiazole' used as a representative structure,
+ammonia,222,N,H3N,Ammonia,True,True,0,1,0,1,1,1,1,1,1,Rubber Processing,ammonia,,
+acetic acid,176,CC(=O)O,C2H4O2,Acetic Acid,True,True,0,1,0,0,1,0,1,1,0,Rubber Processing,acetic acid,,
+graphite,5462310,[C],C,Carbon,True,True,0,0,0,0,0,0,1,0,0,Rubber Processing,carbon black,'carbon black' is a material rather than a single molecule; 'graphite' used as a representative structure,
+tetramethylthiuram disulfide,5455,CN(C)C(=S)SSC(=S)N(C)C,C6H12N2S4,Thiram,True,True,0,0,0,0,0,1,1,1,1,Rubber Processing,tetramethylthiuram disulfide,,
+benzene,241,C1=CC=CC=C1,C6H6,Benzene,True,True,0,1,0,0,0,0,1,1,1,Petrochemicals,benzene,,
+toluene,1140,CC1=CC=CC=C1,C7H8,Toluene,True,True,0,1,0,0,0,0,1,1,0,Petrochemicals,toluene,,
+p-xylene,7809,CC1=CC=C(C=C1)C,C8H10,P-Xylene,True,True,0,1,0,0,0,0,1,1,1,Petrochemicals,xylene,'xylene' is a material rather than a single molecule; 'p-xylene' used as a representative structure,
+ethylene,6325,C=C,C2H4,Ethylene,True,True,0,1,0,1,0,0,1,0,0,Petrochemicals,ethylene,,
+propylene,8252,CC=C,C3H6,Propylene,True,True,0,1,0,1,0,0,1,0,0,Petrochemicals,propylene,,
+methanol,887,CO,CH4O,Methanol,True,True,0,1,0,0,0,1,1,1,0,Petrochemicals,methanol,,
+ethanol,702,CCO,C2H6O,Ethanol,True,True,0,1,0,0,0,0,1,1,0,Petrochemicals,ethanol,,
+acetone,180,CC(=O)C,C3H6O,Acetone,True,True,0,1,0,0,0,0,1,1,0,Petrochemicals,acetone,,
+cyclohexane,8078,C1CCCCC1,C6H12,Cyclohexane,True,True,0,1,0,0,0,0,1,1,1,Petrochemicals,cyclohexane,,
+hydrofluoric acid,14917,F,FH,Hydrofluoric Acid,True,True,0,0,0,1,1,1,1,1,0,Semiconductor (Penang),hydrofluoric acid,,
+sulfuric acid,1118,OS(=O)(=O)O,H2O4S,Sulfuric Acid,True,True,0,0,0,0,1,1,0,1,1,Semiconductor (Penang),sulfuric acid,,
+hydrogen peroxide,784,OO,H2O2,Hydrogen Peroxide,True,True,0,0,1,0,1,1,1,1,1,Semiconductor (Penang),hydrogen peroxide,,
+acetone,180,CC(=O)C,C3H6O,Acetone,True,True,0,1,0,0,0,0,1,1,0,Semiconductor (Penang),acetone,,
+isopropanol,3776,CC(C)O,C3H8O,Isopropanol,True,True,0,1,0,0,1,0,1,1,1,Semiconductor (Penang),isopropanol,,
+phosphine,24404,P,H3P,Phosphine,True,True,0,1,0,1,1,1,0,1,1,Semiconductor (Penang),phosphine,,
+arsine,23969,[AsH3],AsH3,Arsine,True,True,0,1,0,1,0,1,0,1,1,Semiconductor (Penang),arsine,,
+tetramethylammonium hydroxide,60966,C[N+](C)(C)C.[OH-],C4H13NO,Tetramethylammonium hydroxide,True,True,0,0,0,0,1,1,0,1,1,Semiconductor (Penang),tetramethylammonium hydroxide,,
+acrylonitrile,7855,C=CC#N,C3H3N,Acrylonitrile,True,True,0,1,0,0,1,1,1,1,1,Johor 2019 Emergency,acrylonitrile,,principal agent identified by the Ministry of Health
+acrolein,7847,C=CC=O,C3H4O,Acrolein,True,True,0,1,0,0,1,1,1,1,1,Johor 2019 Emergency,acrolein,,principal agent; a severe respiratory irritant
+benzene,241,C1=CC=CC=C1,C6H6,Benzene,True,True,0,1,0,0,0,0,1,1,1,Johor 2019 Emergency,benzene,,volatile aromatic detected in air and water samples
+toluene,1140,CC1=CC=CC=C1,C7H8,Toluene,True,True,0,1,0,0,0,0,1,1,0,Johor 2019 Emergency,toluene,,volatile aromatic detected in air samples
+p-xylene,7809,CC1=CC=C(C=C1)C,C8H10,P-Xylene,True,True,0,1,0,0,0,0,1,1,1,Johor 2019 Emergency,xylene,'xylene' is an isomer mixture rather than a single compound; 'p-xylene' used as a representative structure,volatile aromatic detected in air samples
+ethylbenzene,7500,CCC1=CC=CC=C1,C8H10,Ethylbenzene,True,True,0,1,0,0,0,0,1,1,1,Johor 2019 Emergency,ethylbenzene,,volatile aromatic detected in air samples
+hydrogen sulfide,402,S,H2S,Hydrogen Sulfide,True,True,0,1,0,1,0,1,1,1,1,Johor 2019 Emergency,hydrogen sulfide,,released from the anaerobic river sediment
+methane,297,C,CH4,Methane,True,True,0,1,0,1,0,0,0,0,0,Johor 2019 Emergency,methane,,released from the anaerobic river sediment
+methyl mercaptan,878,CS,CH4S,Methanethiol,True,True,0,1,0,1,0,1,1,1,1,Johor 2019 Emergency,methyl mercaptan,,odorous sulfur compound reported at the site
+d-limonene,440917,CC1=CC[C@@H](CC1)C(=C)C,C10H16,(+)-Limonene,True,True,0,1,0,0,0,0,1,1,1,Johor 2019 Emergency,d-limonene,,solvent component reported in the waste mixture
+hydrogen chloride,313,Cl,ClH,Hydrochloric Acid,True,True,0,0,0,1,1,1,1,1,1,Johor 2019 Emergency,hydrogen chloride,,acid gas reported in the waste mixture
+styrene,7501,C=CC1=CC=CC=C1,C8H8,Styrene,True,True,0,1,0,0,0,0,1,1,1,Johor 2019 Emergency,styrene,,monomer reported among the solvent residues

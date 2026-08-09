@@ -1,0 +1,120 @@
+DISCUSSION
+================================================================================
+
+Ranking ability and decision quality are not the same thing
+--------------------------------------------------------------------------------
+
+The most important result in this work is a disagreement between two metrics.
+The explosive class achieves an AUC-ROC of 0.9859, which would ordinarily be
+described as near-perfect discrimination, yet its Matthews correlation
+coefficient at the calibrated decision threshold is only 0.2355. Both numbers
+are correct, and the gap between them is the practical finding.
+
+AUC-ROC measures ranking: given one explosive and one non-explosive compound,
+how often does the model score the explosive higher? By that measure the model
+is excellent. The Matthews correlation coefficient measures the quality of the
+actual yes-or-no decision, and it is sensitive to prevalence. The test
+partition contains 18 explosives among 24,352 compounds. At that prevalence,
+any threshold permissive enough to catch most explosives also admits many times
+their number in false positives.
+
+This has a direct consequence for deployment. A model with these
+characteristics is well suited to prioritising which chemicals to test first,
+because ranking is what prioritisation requires. It is not suited to issuing an
+unsupervised yes-or-no verdict on whether a novel compound is explosive. Papers
+that report AUC alone for rare-class problems obscure this distinction, and we
+would encourage the routine reporting of a prevalence-sensitive metric
+alongside it.
+
+The splitting algorithm can silently determine the result
+--------------------------------------------------------------------------------
+
+Scaffold splitting is widely recommended, but how scaffold groups are allocated
+to partitions receives little attention. Two allocation strategies were tried
+here before a third succeeded, and both failures passed every check that is
+normally applied. Overall partition sizes were correct, no scaffold appeared in
+two partitions, and every class had positive examples everywhere. Only a per-
+class audit of training share revealed that 70 per cent of compressed gases and
+61 per cent of oxidisers had been diverted away from the training partition.
+
+The mechanism is general rather than particular to this dataset. Groups are
+processed in descending size order so that large groups can be placed while
+room remains; single-compound groups are therefore allocated last, when the
+training quota is already close to full. Any chemical property that correlates
+with belonging to a small scaffold group will be systematically under-
+represented in training. Here that property was being a small acyclic molecule,
+which describes most compressed gases and many oxidisers. We would expect the
+same effect wherever rare classes are structurally atypical, and we recommend
+that per-class training share be reported as a routine diagnostic.
+
+Dataset size, and the hazard of learning curves on subsamples
+--------------------------------------------------------------------------------
+
+The controlled experiment showed that training on the full dataset improves
+mean AUC-ROC by more than four times the confidence interval, with every class
+benefiting. That result is unsurprising in itself. What is instructive is that
+a learning curve computed within a 40,000-compound subsample had suggested the
+opposite, appearing to saturate.
+
+The explanation is that the subsample had been constructed to retain every
+positive example of the rare classes, a reasonable decision when working under
+a memory constraint. Those classes consequently could not improve with
+additional data, and their flat curves dominated the aggregate. A learning
+curve is only informative about the full dataset if the subsample it is
+computed on is representative of that dataset; where a subsample has been
+deliberately enriched, the curve measures the enrichment rather than the
+underlying scaling behaviour.
+
+What the model learned
+--------------------------------------------------------------------------------
+
+The SHAP attributions are consistent with established chemistry to a degree
+that is reassuring rather than merely decorative. The recovery of the
+heteroatom-nitrogen-heteroatom motif as the dominant explosive predictor is the
+clearest example: this is the connectivity shared by nitro compounds, nitrate
+esters, nitramines and azides, and it was identified without any prior
+information about energetic materials. Similarly, aquatic hazard is driven by
+lipophilicity, consistent with bioaccumulation, and flammability by low
+structural complexity, consistent with volatility.
+
+This matters for regulatory acceptance. A model whose stated reasons align with
+known structure-hazard relationships can be audited by a chemist, and its
+failures can be diagnosed. The per-compound waterfall explanations provided by
+the deployed interface allow a safety officer to see precisely which structural
+features drove a particular prediction, and to reject it if the reasoning is
+chemically implausible.
+
+Limitations
+--------------------------------------------------------------------------------
+
+The support vector machine results are not directly comparable with the other
+two algorithms. An RBF kernel matrix scales with the square of the training set
+size, requiring approximately 300 GB at full scale, so the support vector
+machine was trained on 100 features and 8,000 compounds rather than the full
+816 and 194,619. This is a property of the algorithm, not of the hardware, and
+no increase in memory would resolve it; a linear kernel or a Nystroem
+approximation would be required.
+
+Inorganic, organometallic and elemental species lie outside the applicability
+domain. The descriptors used here characterise covalent organic structures, and
+the two Malaysian sectors dominated by such species - rubber processing and
+semiconductor manufacturing - show markedly lower recall. Predictions for
+mineral acids, metal oxides and coordination compounds should be treated with
+corresponding caution.
+
+The environmental class performed poorly on the Malaysian validation set,
+recovering only 0.16 of true labels despite an AUC of 0.897 on the global test
+set. The Malaysian set contains many industrial commodity chemicals whose
+aquatic classification depends on data the model cannot infer from structure.
+
+Exact agreement across all nine classes simultaneously was achieved for only
+about a fifth of recognisable multi-label test compounds. Per-class performance
+is considerably better than that figure suggests, but users should understand
+that the framework identifies individual hazards well and complete hazard
+profiles less reliably.
+
+Finally, the labels are regulatory classifications rather than experimental
+measurements. They reflect what regulatory bodies have recorded, including
+their own inconsistencies - which is why multi-source majority voting was
+necessary, and why 2,307 compounds required tie-breaking. The model can be no
+more accurate than the classifications it was trained on.

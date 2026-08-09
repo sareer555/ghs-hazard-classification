@@ -1,0 +1,15 @@
+{
+  "n_compounds": 243323,
+  "n_train": 194619,
+  "n_val": 24352,
+  "n_test": 24352,
+  "train_fraction": 0.7998,
+  "val_fraction": 0.1001,
+  "test_fraction": 0.1001,
+  "n_distinct_scaffolds": 57591,
+  "n_acyclic_compounds": 28278,
+  "split_method": "Bemis-Murcko scaffold split",
+  "all_checks_passed": true,
+  "random_seed": 42,
+  "elapsed_seconds": 118.0
+}

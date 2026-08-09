@@ -1,0 +1,262 @@
+{
+  "RandomForest": {
+    "GHS01_Explosive": {
+      "threshold_f1": 0.879101,
+      "f1_at_threshold": 0.3429,
+      "threshold_recall90": 0.152825,
+      "recall_at_recall90": 0.9444,
+      "precision_at_recall90": 0.0035
+    },
+    "GHS02_Flammable": {
+      "threshold_f1": 0.797954,
+      "f1_at_threshold": 0.6312,
+      "threshold_recall90": 0.497792,
+      "recall_at_recall90": 0.9003,
+      "precision_at_recall90": 0.2612
+    },
+    "GHS03_Oxidising": {
+      "threshold_f1": 0.93163,
+      "f1_at_threshold": 0.4286,
+      "threshold_recall90": 0.205989,
+      "recall_at_recall90": 0.9048,
+      "precision_at_recall90": 0.0192
+    },
+    "GHS04_CompressedGas": {
+      "threshold_f1": 0.96652,
+      "f1_at_threshold": 0.566,
+      "threshold_recall90": 0.851522,
+      "recall_at_recall90": 0.9286,
+      "precision_at_recall90": 0.243
+    },
+    "GHS05_Corrosive": {
+      "threshold_f1": 0.561174,
+      "f1_at_threshold": 0.5718,
+      "threshold_recall90": 0.351714,
+      "recall_at_recall90": 0.9001,
+      "precision_at_recall90": 0.2762
+    },
+    "GHS06_AcuteToxicity": {
+      "threshold_f1": 0.601884,
+      "f1_at_threshold": 0.3416,
+      "threshold_recall90": 0.369084,
+      "recall_at_recall90": 0.9007,
+      "precision_at_recall90": 0.1029
+    },
+    "GHS07_Irritant": {
+      "threshold_f1": 0.232387,
+      "f1_at_threshold": 0.9473,
+      "threshold_recall90": 0.354999,
+      "recall_at_recall90": 0.9,
+      "precision_at_recall90": 0.9301
+    },
+    "GHS08_HealthHazard": {
+      "threshold_f1": 0.686155,
+      "f1_at_threshold": 0.4081,
+      "threshold_recall90": 0.37313,
+      "recall_at_recall90": 0.9,
+      "precision_at_recall90": 0.1255
+    },
+    "GHS09_Environmental": {
+      "threshold_f1": 0.664859,
+      "f1_at_threshold": 0.4054,
+      "threshold_recall90": 0.412591,
+      "recall_at_recall90": 0.9002,
+      "precision_at_recall90": 0.1731
+    }
+  },
+  "XGBoost": {
+    "GHS01_Explosive": {
+      "threshold_f1": 0.912269,
+      "f1_at_threshold": 0.3846,
+      "threshold_recall90": 0.067481,
+      "recall_at_recall90": 0.9444,
+      "precision_at_recall90": 0.0008
+    },
+    "GHS02_Flammable": {
+      "threshold_f1": 0.891765,
+      "f1_at_threshold": 0.7338,
+      "threshold_recall90": 0.535326,
+      "recall_at_recall90": 0.9003,
+      "precision_at_recall90": 0.4155
+    },
+    "GHS03_Oxidising": {
+      "threshold_f1": 0.978498,
+      "f1_at_threshold": 0.5882,
+      "threshold_recall90": 0.040324,
+      "recall_at_recall90": 0.9048,
+      "precision_at_recall90": 0.152
+    },
+    "GHS04_CompressedGas": {
+      "threshold_f1": 0.969746,
+      "f1_at_threshold": 0.7368,
+      "threshold_recall90": 0.730721,
+      "recall_at_recall90": 0.9286,
+      "precision_at_recall90": 0.5778
+    },
+    "GHS05_Corrosive": {
+      "threshold_f1": 0.637968,
+      "f1_at_threshold": 0.6632,
+      "threshold_recall90": 0.258556,
+      "recall_at_recall90": 0.9001,
+      "precision_at_recall90": 0.3505
+    },
+    "GHS06_AcuteToxicity": {
+      "threshold_f1": 0.633534,
+      "f1_at_threshold": 0.3961,
+      "threshold_recall90": 0.30901,
+      "recall_at_recall90": 0.9,
+      "precision_at_recall90": 0.1174
+    },
+    "GHS07_Irritant": {
+      "threshold_f1": 0.111349,
+      "f1_at_threshold": 0.9487,
+      "threshold_recall90": 0.295102,
+      "recall_at_recall90": 0.9,
+      "precision_at_recall90": 0.9369
+    },
+    "GHS08_HealthHazard": {
+      "threshold_f1": 0.782329,
+      "f1_at_threshold": 0.4912,
+      "threshold_recall90": 0.270562,
+      "recall_at_recall90": 0.9,
+      "precision_at_recall90": 0.1511
+    },
+    "GHS09_Environmental": {
+      "threshold_f1": 0.792764,
+      "f1_at_threshold": 0.4709,
+      "threshold_recall90": 0.295801,
+      "recall_at_recall90": 0.9002,
+      "precision_at_recall90": 0.1971
+    }
+  },
+  "SVM": {
+    "GHS01_Explosive": {
+      "threshold_f1": 0.922207,
+      "f1_at_threshold": 0.3333,
+      "threshold_recall90": 0.000997,
+      "recall_at_recall90": 0.9444,
+      "precision_at_recall90": 0.0012
+    },
+    "GHS02_Flammable": {
+      "threshold_f1": 0.230508,
+      "f1_at_threshold": 0.5906,
+      "threshold_recall90": 0.024989,
+      "recall_at_recall90": 0.9003,
+      "precision_at_recall90": 0.2062
+    },
+    "GHS03_Oxidising": {
+      "threshold_f1": 0.808422,
+      "f1_at_threshold": 0.3853,
+      "threshold_recall90": 0.02138,
+      "recall_at_recall90": 0.9048,
+      "precision_at_recall90": 0.044
+    },
+    "GHS04_CompressedGas": {
+      "threshold_f1": 0.875264,
+      "f1_at_threshold": 0.4828,
+      "threshold_recall90": 0.316053,
+      "recall_at_recall90": 0.9286,
+      "precision_at_recall90": 0.1884
+    },
+    "GHS05_Corrosive": {
+      "threshold_f1": 0.276596,
+      "f1_at_threshold": 0.5907,
+      "threshold_recall90": 0.058622,
+      "recall_at_recall90": 0.9001,
+      "precision_at_recall90": 0.2888
+    },
+    "GHS06_AcuteToxicity": {
+      "threshold_f1": 0.134883,
+      "f1_at_threshold": 0.2783,
+      "threshold_recall90": 0.026945,
+      "recall_at_recall90": 0.9,
+      "precision_at_recall90": 0.0895
+    },
+    "GHS07_Irritant": {
+      "threshold_f1": 0.316579,
+      "f1_at_threshold": 0.9467,
+      "threshold_recall90": 0.740947,
+      "recall_at_recall90": 0.9,
+      "precision_at_recall90": 0.9241
+    },
+    "GHS08_HealthHazard": {
+      "threshold_f1": 0.153138,
+      "f1_at_threshold": 0.3643,
+      "threshold_recall90": 0.022405,
+      "recall_at_recall90": 0.9,
+      "precision_at_recall90": 0.1011
+    },
+    "GHS09_Environmental": {
+      "threshold_f1": 0.292824,
+      "f1_at_threshold": 0.3795,
+      "threshold_recall90": 0.035971,
+      "recall_at_recall90": 0.9002,
+      "precision_at_recall90": 0.156
+    }
+  },
+  "RandomForest_NoClassWeight": {
+    "GHS01_Explosive": {
+      "threshold_f1": 0.089656,
+      "f1_at_threshold": 0.3448,
+      "threshold_recall90": 0.000488,
+      "recall_at_recall90": 0.9444,
+      "precision_at_recall90": 0.0028
+    },
+    "GHS02_Flammable": {
+      "threshold_f1": 0.280639,
+      "f1_at_threshold": 0.6913,
+      "threshold_recall90": 0.08159,
+      "recall_at_recall90": 0.9003,
+      "precision_at_recall90": 0.3104
+    },
+    "GHS03_Oxidising": {
+      "threshold_f1": 0.223356,
+      "f1_at_threshold": 0.5714,
+      "threshold_recall90": 0.007893,
+      "recall_at_recall90": 0.9048,
+      "precision_at_recall90": 0.0596
+    },
+    "GHS04_CompressedGas": {
+      "threshold_f1": 0.124921,
+      "f1_at_threshold": 0.5333,
+      "threshold_recall90": 0.100491,
+      "recall_at_recall90": 0.9286,
+      "precision_at_recall90": 0.3421
+    },
+    "GHS05_Corrosive": {
+      "threshold_f1": 0.284526,
+      "f1_at_threshold": 0.6432,
+      "threshold_recall90": 0.108706,
+      "recall_at_recall90": 0.9001,
+      "precision_at_recall90": 0.3274
+    },
+    "GHS06_AcuteToxicity": {
+      "threshold_f1": 0.166874,
+      "f1_at_threshold": 0.3896,
+      "threshold_recall90": 0.038515,
+      "recall_at_recall90": 0.9,
+      "precision_at_recall90": 0.1104
+    },
+    "GHS07_Irritant": {
+      "threshold_f1": 0.645515,
+      "f1_at_threshold": 0.9493,
+      "threshold_recall90": 0.79188,
+      "recall_at_recall90": 0.9,
+      "precision_at_recall90": 0.9383
+    },
+    "GHS08_HealthHazard": {
+      "threshold_f1": 0.258257,
+      "f1_at_threshold": 0.4757,
+      "threshold_recall90": 0.035427,
+      "recall_at_recall90": 0.9,
+      "precision_at_recall90": 0.1289
+    },
+    "GHS09_Environmental": {
+      "threshold_f1": 0.231742,
+      "f1_at_threshold": 0.439,
+      "threshold_recall90": 0.081373,
+      "recall_at_recall90": 0.9002,
+      "precision_at_recall90": 0.1846
+    }
+  }
+}

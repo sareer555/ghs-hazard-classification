@@ -1,0 +1,9 @@
+{
+  "ablation_model_name": "RandomForest_NoClassWeight",
+  "ablation_model_file": "STEP7_rf_noclassweight_ablation.pkl",
+  "smote_actually_applied": false,
+  "what_this_ablation_measures": "the effect of REMOVING class weighting. SMOTE was requested but skipped for every class because the oversampled matrices exceeded the memory budget at this dataset size, so no synthetic examples were generated",
+  "primary_randomforest_uses": "class_weight='balanced'",
+  "ablation_randomforest_uses": "class_weight=None",
+  "verified_from": "STEP6_smote_report.csv and the saved estimator's class_weight attribute"
+}

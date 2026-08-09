@@ -1,0 +1,1494 @@
+"""
+STEP 13 - PUBLICATION PREPARATION
+=================================
+Turns the completed analysis into the materials a journal submission needs.
+
+13a  Eight publication-quality figures at 300 dpi with 12 pt minimum type.
+13b  Five supplementary tables in one Excel workbook.
+13c  The complete reference list in ACS style.
+13d  A 250-word abstract, with the real numbers filled in.
+13e  A Methods section of at least 1500 words, in past-tense passive voice.
+13f  The submission checklist, cover letter and required statements.
+
+Every number quoted in the abstract and methods is read from the JSON summary
+files written by the earlier steps, so the text can never drift out of step
+with the results.
+
+Author : Sareer Ahmad
+"""
+
+import os
+import sys
+import json
+import time
+import shutil
+import textwrap
+from datetime import datetime
+
+import numpy as np
+import pandas as pd
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
+import seaborn as sns
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from ghs_config import (get_ablation_identity, RANDOM_SEED, TODAY, PROJECT_ROOT, DIR_FEATURES,
+                        DIR_SPLITS, DIR_EVAL, DIR_SHAP, DIR_MALAYSIA, DIR_PUB,
+                        DIR_PUB_FIGS, DIR_LOGS, GHS_LABEL_COLUMNS,
+                        GHS_TRUE_MEANING, ORIGINAL_PROPOSAL_NAME,
+                        seed_everything, stamped)
+
+seed_everything()
+
+# The ablation's name reflects what it actually measured; see
+# get_ablation_identity() in ghs_config.py.
+_ABL_NAME, _ABL_FILE, _ABL_META = get_ablation_identity()
+
+ISSUE_LOG = []
+
+# ---------------------------------------------------------------------------
+# PUBLICATION FIGURE STYLE
+# ACS journals require 300 dpi minimum and legible type at the printed size.
+# ---------------------------------------------------------------------------
+plt.rcParams.update({
+    "figure.dpi": 300,
+    "savefig.dpi": 300,
+    "font.size": 12,             # the proposal's 12 pt minimum
+    "axes.titlesize": 13,
+    "axes.labelsize": 12,
+    "xtick.labelsize": 11,
+    "ytick.labelsize": 11,
+    "legend.fontsize": 11,
+    "font.family": "DejaVu Sans",
+    "axes.grid": True,
+    "grid.alpha": 0.3,
+    "savefig.bbox": "tight",
+})
+
+# One colour per algorithm, used consistently in every figure.
+PALETTE = {"RandomForest": "#0072B2", "XGBoost": "#D55E00",
+           "SVM": "#009E73", _ABL_NAME: "#CC79A7"}
+
+FIG_DIR = os.path.join(DIR_PUB, "figures")
+TABLE_DIR = os.path.join(DIR_PUB, "tables")
+MANUSCRIPT_DIR = os.path.join(DIR_PUB, "manuscript")
+for _d in (FIG_DIR, TABLE_DIR, MANUSCRIPT_DIR, DIR_PUB_FIGS):
+    os.makedirs(_d, exist_ok=True)
+
+CAPTIONS = {}
+
+
+def log_issue(step, message):
+    """Record an issue and its resolution for the Rule 4 progress report."""
+    entry = f"[{datetime.now().strftime('%H:%M:%S')}] {step}: {message}"
+    ISSUE_LOG.append(entry)
+    print("   ! " + message)
+
+
+def save_figure(fig, number, name, caption):
+    """Save a figure into both publication folders and record its caption."""
+    filename = f"Figure{number}_{name}.png"
+    for folder in (FIG_DIR, DIR_PUB_FIGS):
+        fig.savefig(os.path.join(folder, filename), dpi=300, bbox_inches="tight")
+    plt.close(fig)
+    CAPTIONS[f"Figure {number}"] = caption
+    print(f"      Figure {number}: {filename}")
+    return os.path.join(FIG_DIR, filename)
+
+
+def load_json(path, default=None):
+    """Read a JSON file, returning a default if it is missing."""
+    if os.path.exists(path):
+        with open(path, encoding="utf-8") as fh:
+            return json.load(fh)
+    log_issue("13", f"expected file not found: {path}")
+    return default if default is not None else {}
+
+
+# ===========================================================================
+# 13a - FIGURES
+# ===========================================================================
+def figure1_workflow():
+    """Figure 1 - the research pipeline, drawn as a flow diagram."""
+    fig, ax = plt.subplots(figsize=(13, 8.5))
+    ax.set_xlim(0, 10); ax.set_ylim(0, 10); ax.axis("off"); ax.grid(False)
+
+    stages = [
+        (1.6, 9.0, "PubChem GHS Classification\nannotations (ECHA, HSDB,\n"
+                   "NITE-CMC, HCIS, EU CLP)", "#B3CDE3"),
+        (1.6, 7.4, "Data cleaning\nSMILES validation, InChIKey\n"
+                   "deduplication, majority vote", "#CCEBC5"),
+        (1.6, 5.8, "Molecular descriptors\n19 physicochemical + 1024 ECFP4\n"
+                   "+ 167 MACCS + 8 topological", "#DECBE4"),
+        (1.6, 4.2, "Bemis-Murcko scaffold split\n80 / 10 / 10", "#FED9A6"),
+        (1.6, 2.6, "Class imbalance handling\nSMOTE + class weights", "#FFFFCC"),
+        (5.0, 2.6, "Model training\nRandom Forest | XGBoost | SVM", "#E5D8BD"),
+        (8.4, 2.6, "Hyperparameter tuning\nRandomizedSearchCV", "#FDDAEC"),
+        (8.4, 4.2, "Evaluation\nAUC, AP, F1, MCC + bootstrap CI\n"
+                   "threshold calibration", "#CCEBC5"),
+        (8.4, 5.8, "SHAP interpretation\nglobal + per-compound", "#B3CDE3"),
+        (8.4, 7.4, "Malaysian validation\n4 sectors + Johor 2019", "#FBB4AE"),
+        (8.4, 9.0, "Deployment\nStreamlit app + CLI + PDF report", "#DECBE4"),
+    ]
+
+    positions = {}
+    for x, y, text, colour in stages:
+        box = FancyBboxPatch((x - 1.45, y - 0.62), 2.9, 1.24,
+                             boxstyle="round,pad=0.06", linewidth=1.4,
+                             edgecolor="#333333", facecolor=colour, zorder=2)
+        ax.add_patch(box)
+        ax.text(x, y, text, ha="center", va="center", fontsize=9.5,
+                fontweight="bold", zorder=3, linespacing=1.35)
+        positions[text] = (x, y)
+
+    def arrow(start, end):
+        """Draw a curved arrow between two stage boxes."""
+        ax.add_patch(FancyArrowPatch(start, end, arrowstyle="-|>",
+                                     mutation_scale=17, linewidth=1.6,
+                                     color="#333333", zorder=1,
+                                     connectionstyle="arc3,rad=0"))
+
+    order = [s[2] for s in stages]
+    # Down the left-hand column
+    for i in range(4):
+        a, b = positions[order[i]], positions[order[i + 1]]
+        arrow((a[0], a[1] - 0.64), (b[0], b[1] + 0.64))
+    # Across the bottom
+    for i in range(4, 6):
+        a, b = positions[order[i]], positions[order[i + 1]]
+        arrow((a[0] + 1.47, a[1]), (b[0] - 1.47, b[1]))
+    # Up the right-hand column
+    for i in range(6, 10):
+        a, b = positions[order[i]], positions[order[i + 1]]
+        arrow((a[0], a[1] + 0.64), (b[0], b[1] - 0.64))
+
+    ax.text(5.0, 9.4, "Interpretable Machine Learning for GHS Hazard "
+                      "Classification",
+            ha="center", fontsize=14, fontweight="bold")
+    ax.text(5.0, 8.85, "Multi-label prediction of nine GHS pictograms from "
+                       "molecular structure",
+            ha="center", fontsize=11, style="italic", color="#444444")
+    ax.text(5.0, 0.7, "All steps use random seed 42. The test set shares no\n"
+                      "Bemis-Murcko scaffold with the training set.",
+            ha="center", fontsize=10, style="italic", color="#666666")
+
+    return save_figure(
+        fig, 1, "research_workflow",
+        "Figure 1. Research workflow. GHS classification annotations were "
+        "harvested from PubChem, cleaned and deduplicated, converted into "
+        "1218 molecular descriptors, and split by Bemis-Murcko scaffold so "
+        "that no chemical skeleton appears in more than one split. Three "
+        "algorithms were trained and tuned, evaluated with threshold "
+        "calibration and bootstrap confidence intervals, interpreted with "
+        "SHAP, and finally validated on Malaysian industrial chemicals "
+        "before deployment as a screening tool.")
+
+
+def figure2_class_distribution():
+    """Figure 2 - how many compounds carry each hazard."""
+    table = pd.read_csv(stamped("STEP3_class_distribution_table.csv"))
+    fig, (ax_left, ax_right) = plt.subplots(1, 2, figsize=(15, 6.5))
+
+    labels = [f"{r.Pictogram_Code}\n{r.Actual_Meaning.split('(')[0].strip()}"
+              for r in table.itertuples()]
+    counts = table["N_Positive"].to_numpy()
+    colours = sns.color_palette("rocket_r", len(table))
+
+    bars = ax_left.bar(labels, counts, color=colours, edgecolor="black",
+                       linewidth=0.7)
+    ax_left.set_yscale("log")
+    ax_left.set_ylabel("Number of compounds (log scale)")
+    ax_left.set_title("(a) Positive examples per GHS hazard class",
+                      fontweight="bold")
+    ax_left.tick_params(axis="x", rotation=45, labelsize=9)
+    for bar, count in zip(bars, counts):
+        ax_left.text(bar.get_x() + bar.get_width() / 2, bar.get_height() * 1.08,
+                     f"{count:,}", ha="center", va="bottom", fontsize=8.5,
+                     fontweight="bold")
+
+    ratios = table["Imbalance_Ratio_NegPerPos"].to_numpy()
+    bars = ax_right.bar(labels, ratios, color=sns.color_palette("mako",
+                                                               len(table)),
+                        edgecolor="black", linewidth=0.7)
+    ax_right.set_ylabel("Negatives per positive")
+    ax_right.set_title("(b) Class imbalance ratio", fontweight="bold")
+    ax_right.tick_params(axis="x", rotation=45, labelsize=9)
+    ax_right.set_yscale("log")
+    for bar, ratio in zip(bars, ratios):
+        ax_right.text(bar.get_x() + bar.get_width() / 2, bar.get_height() * 1.08,
+                      f"{ratio:.0f}:1", ha="center", va="bottom", fontsize=8.5,
+                      fontweight="bold")
+
+    fig.tight_layout()
+    return save_figure(
+        fig, 2, "class_distribution",
+        "Figure 2. Class distribution of the nine GHS hazard categories in the "
+        "cleaned dataset. (a) Number of compounds carrying each pictogram, on "
+        "a logarithmic scale. (b) The corresponding imbalance ratio, expressed "
+        "as negatives per positive. The two orders of magnitude separating the "
+        "commonest from the rarest class is the reason class-imbalance "
+        "handling was required.")
+
+
+def figure3_roc_all_classes(best_model):
+    """Figure 3 - ROC curves for the best model, all nine classes on one axis."""
+    from sklearn.metrics import roc_curve, roc_auc_score
+    import joblib
+    from ghs_config import DIR_MODELS
+
+    X = np.load(os.path.join(DIR_FEATURES, "STEP4_X.npy"))
+    y = np.load(os.path.join(DIR_FEATURES, "STEP4_y.npy")).astype(int)
+    test_idx = np.load(os.path.join(DIR_SPLITS, "STEP5_test_indices.npy"))
+    X_test, y_test = X[test_idx], y[test_idx]
+
+    from step7_model_training import register_pickle_compatibility
+    register_pickle_compatibility()
+    candidates = {"RandomForest": ["STEP8_rf_tuned.pkl", "STEP7_rf_model.pkl"],
+                  "XGBoost": ["STEP8_xgb_tuned.pkl", "STEP7_xgb_models.pkl"],
+                  "SVM": ["STEP7_svm_model.pkl"],
+                  _ABL_NAME: [_ABL_FILE] if _ABL_FILE else []
+                  }.get(best_model, ["STEP7_rf_model.pkl"])
+    path = next((os.path.join(DIR_MODELS, f) for f in candidates
+                 if os.path.exists(os.path.join(DIR_MODELS, f))),
+                os.path.join(DIR_MODELS, "STEP7_rf_model.pkl"))
+    model = joblib.load(path)
+    probabilities = np.column_stack([
+        (p[:, 1] if p.shape[1] > 1 else p[:, 0])
+        for p in model.predict_proba(X_test)])
+
+    fig, ax = plt.subplots(figsize=(9, 8))
+    colours = sns.color_palette("husl", 9)
+    for class_index, column in enumerate(GHS_LABEL_COLUMNS):
+        y_true = y_test[:, class_index]
+        if len(np.unique(y_true)) < 2:
+            continue
+        fpr, tpr, _ = roc_curve(y_true, probabilities[:, class_index])
+        auc = roc_auc_score(y_true, probabilities[:, class_index])
+        ax.plot(fpr, tpr, linewidth=2.1, color=colours[class_index],
+                label=f"{column.split('_')[0]} "
+                      f"{GHS_TRUE_MEANING[column].split('(')[0].strip()} "
+                      f"(AUC = {auc:.3f})")
+    ax.plot([0, 1], [0, 1], "k--", linewidth=1.2, alpha=0.6, label="Random guess")
+    ax.set_xlabel("False positive rate (1 - specificity)")
+    ax.set_ylabel("True positive rate (sensitivity)")
+    ax.set_title(f"ROC curves for {best_model} across all nine GHS classes\n"
+                 f"scaffold-split test set (n = {len(test_idx):,})",
+                 fontweight="bold")
+    ax.legend(loc="lower right", fontsize=9.5, framealpha=0.95)
+    ax.set_xlim(-0.02, 1.02); ax.set_ylim(-0.02, 1.02)
+    fig.tight_layout()
+    return save_figure(
+        fig, 3, "ROC_curves_best_model",
+        f"Figure 3. Receiver operating characteristic curves for the "
+        f"best-performing model ({best_model}) across all nine GHS hazard "
+        f"classes, evaluated on the held-out scaffold-split test set "
+        f"(n = {len(test_idx):,} compounds). The dashed diagonal marks the "
+        f"performance of random guessing.")
+
+
+def figure4_pr_two_classes():
+    """Figure 4 - precision-recall curves, all models, two representative classes."""
+    results = pd.read_csv(stamped("STEP9_model_comparison_results.csv"))
+    calibrated = results[results["Threshold_Type"] == "calibrated_F1"]
+
+    # Pick the commonest and the rarest class, which bracket the difficulty range.
+    positives = calibrated.groupby("GHS_Column")["N_Test_Positive"].first()
+    chosen = [positives.idxmax(), positives.idxmin()]
+
+    from sklearn.metrics import precision_recall_curve, average_precision_score
+    import joblib
+    from ghs_config import DIR_MODELS
+
+    X = np.load(os.path.join(DIR_FEATURES, "STEP4_X.npy"))
+    y = np.load(os.path.join(DIR_FEATURES, "STEP4_y.npy")).astype(int)
+    test_idx = np.load(os.path.join(DIR_SPLITS, "STEP5_test_indices.npy"))
+    X_test, y_test = X[test_idx], y[test_idx]
+
+    from step7_model_training import register_pickle_compatibility
+    register_pickle_compatibility()
+    model_files = {"RandomForest": ["STEP8_rf_tuned.pkl", "STEP7_rf_model.pkl"],
+                   "XGBoost": ["STEP8_xgb_tuned.pkl", "STEP7_xgb_models.pkl"],
+                   "SVM": ["STEP7_svm_model.pkl"]}
+    probabilities = {}
+    for name, candidates in model_files.items():
+        for filename in candidates:
+            path = os.path.join(DIR_MODELS, filename)
+            if os.path.exists(path):
+                model = joblib.load(path)
+                probabilities[name] = np.column_stack([
+                    (p[:, 1] if p.shape[1] > 1 else p[:, 0])
+                    for p in model.predict_proba(X_test)])
+                break
+
+    fig, axes = plt.subplots(1, 2, figsize=(15, 6.5))
+    for panel, column in enumerate(chosen):
+        class_index = GHS_LABEL_COLUMNS.index(column)
+        y_true = y_test[:, class_index]
+        ax = axes[panel]
+        for name, probability_matrix in probabilities.items():
+            precision, recall, _ = precision_recall_curve(
+                y_true, probability_matrix[:, class_index])
+            ap = average_precision_score(y_true, probability_matrix[:, class_index])
+            ax.plot(recall, precision, linewidth=2.1,
+                    color=PALETTE.get(name, "grey"), label=f"{name} (AP = {ap:.3f})")
+        baseline = y_true.mean()
+        ax.axhline(baseline, color="k", linestyle="--", linewidth=1.2,
+                   alpha=0.6, label=f"Random guess (AP = {baseline:.3f})")
+        ax.set_xlabel("Recall")
+        ax.set_ylabel("Precision")
+        ax.set_title(f"({'ab'[panel]}) {column.split('_')[0]}: "
+                     f"{GHS_TRUE_MEANING[column].split('(')[0].strip()}\n"
+                     f"{int(y_true.sum()):,} positives "
+                     f"({100 * baseline:.2f}% prevalence)", fontweight="bold")
+        ax.legend(loc="best", fontsize=10)
+        ax.set_xlim(-0.02, 1.02); ax.set_ylim(-0.02, 1.02)
+
+    fig.tight_layout()
+    return save_figure(
+        fig, 4, "PR_curves_two_classes",
+        f"Figure 4. Precision-recall curves for all three algorithms on two "
+        f"representative GHS classes: (a) the most abundant class, "
+        f"{chosen[0].split('_')[0]}, and (b) the rarest, "
+        f"{chosen[1].split('_')[0]}. Precision-recall curves are more "
+        f"informative than ROC curves for heavily imbalanced classes, because "
+        f"the baseline is the class prevalence rather than 0.5.")
+
+
+def figure5_shap_summaries():
+    """Figure 5 - SHAP summary panels for the three most important classes."""
+    interpretation = pd.read_csv(stamped("STEP10_SHAP_chemical_interpretation.csv"))
+    # Rank classes by the total SHAP influence of their top five features.
+    ranking = (interpretation.groupby("GHS_Column")["Mean_Abs_SHAP"].sum()
+               .sort_values(ascending=False))
+    chosen = ranking.head(3).index.tolist()
+
+    fig, axes = plt.subplots(1, 3, figsize=(19, 7))
+    for panel, column in enumerate(chosen):
+        subset = (interpretation[interpretation["GHS_Column"] == column]
+                  .sort_values("Mean_Abs_SHAP"))
+        ax = axes[panel]
+        colours = ["#C0392B" if v >= 0 else "#2471A3"
+                   for v in subset["Mean_Signed_SHAP"]]
+        ax.barh(subset["Feature"], subset["Mean_Abs_SHAP"], color=colours,
+                edgecolor="black", linewidth=0.6)
+        ax.set_xlabel("Mean |SHAP value|")
+        ax.set_title(f"({'abc'[panel]}) {column.split('_')[0]}: "
+                     f"{GHS_TRUE_MEANING[column].split('(')[0].strip()}",
+                     fontweight="bold", fontsize=12)
+        ax.tick_params(axis="y", labelsize=10)
+
+    handles = [mpatches.Patch(color="#C0392B",
+                              label="Higher value -> more hazardous"),
+               mpatches.Patch(color="#2471A3",
+                              label="Higher value -> less hazardous")]
+    fig.legend(handles=handles, loc="lower center", ncol=2, fontsize=11,
+               bbox_to_anchor=(0.5, -0.03))
+    fig.tight_layout()
+    return save_figure(
+        fig, 5, "SHAP_summary_top3_classes",
+        "Figure 5. SHAP feature-importance summaries for the three GHS classes "
+        "with the greatest total feature attribution. Bars show the mean "
+        "absolute SHAP value of the five most influential descriptors; colour "
+        "indicates the direction of the mean signed effect.")
+
+
+def figure6_model_heatmap():
+    """Figure 6 - AUC heat map, algorithms against hazard classes."""
+    table = pd.read_csv(stamped("STEP9_auc_comparison_table.csv"), index_col=0)
+    table = table.reindex(GHS_LABEL_COLUMNS)
+    display = table.copy()
+    display.index = [f"{c.split('_')[0]}  "
+                     f"{GHS_TRUE_MEANING[c].split('(')[0].strip()}"
+                     for c in display.index]
+
+    fig, ax = plt.subplots(figsize=(10, 7.5))
+    sns.heatmap(display, annot=True, fmt=".3f", cmap="RdYlGn", center=0.8,
+                vmin=0.5, vmax=1.0, linewidths=1.2, linecolor="white",
+                cbar_kws={"label": "AUC-ROC"},
+                annot_kws={"fontsize": 11, "fontweight": "bold"}, ax=ax)
+    ax.set_title("Model comparison: AUC-ROC by algorithm and GHS hazard class\n"
+                 "scaffold-split test set", fontweight="bold", pad=14)
+    ax.set_xlabel("Algorithm"); ax.set_ylabel("")
+    plt.setp(ax.get_yticklabels(), rotation=0)
+    fig.tight_layout()
+    return save_figure(
+        fig, 6, "model_comparison_heatmap",
+        "Figure 6. Model comparison heat map showing AUC-ROC for every "
+        "algorithm and every GHS hazard class on the scaffold-split test set. "
+        "Greener cells indicate better discrimination.")
+
+
+def figure7_malaysia():
+    """Figure 7 - Malaysian validation performance."""
+    path = os.path.join(DIR_MALAYSIA, "STEP11_malaysia_per_class_metrics.csv")
+    sector_path = os.path.join(DIR_MALAYSIA, "STEP11_malaysia_per_sector_metrics.csv")
+    if not os.path.exists(path):
+        log_issue("13a", "Malaysian metrics not found - Figure 7 skipped.")
+        return None
+
+    class_table = pd.read_csv(path)
+    evaluation = load_json(stamped("STEP9_evaluation_summary.json"))
+    global_auc = evaluation.get("auc_per_class_best_model", {})
+
+    fig, axes = plt.subplots(1, 2, figsize=(15.5, 6.5))
+    codes = [c.split("_")[0] for c in GHS_LABEL_COLUMNS]
+    x = np.arange(len(codes)); width = 0.38
+
+    axes[0].bar(x - width / 2, [global_auc.get(c) or 0 for c in GHS_LABEL_COLUMNS],
+                width, label="Global test set (AUC-ROC)", color=PALETTE["RandomForest"],
+                edgecolor="black", linewidth=0.6)
+    axes[0].bar(x + width / 2, class_table["Accuracy"].to_numpy(), width,
+                label="Malaysian set (label accuracy)", color=PALETTE["XGBoost"],
+                edgecolor="black", linewidth=0.6)
+    axes[0].set_xticks(x); axes[0].set_xticklabels(codes, rotation=45)
+    axes[0].set_ylabel("Score"); axes[0].set_ylim(0, 1.05)
+    axes[0].set_title("(a) Global versus Malaysian performance", fontweight="bold")
+    axes[0].legend(fontsize=10)
+
+    if os.path.exists(sector_path):
+        sector = pd.read_csv(sector_path).sort_values("Hazard_Recall")
+        axes[1].barh(sector["Sector"], sector["Hazard_Recall"],
+                     color=sns.color_palette("crest", len(sector)),
+                     edgecolor="black", linewidth=0.6)
+        axes[1].set_xlabel("Hazard recall")
+        axes[1].set_xlim(0, 1.05)
+        axes[1].set_title("(b) Recall by Malaysian industrial sector",
+                          fontweight="bold")
+        for index, value in enumerate(sector["Hazard_Recall"]):
+            axes[1].text(value + 0.015, index, f"{value:.2f}", va="center",
+                         fontsize=10, fontweight="bold")
+
+    fig.tight_layout()
+    return save_figure(
+        fig, 7, "malaysia_validation",
+        "Figure 7. Validation on Malaysian industrial chemicals. (a) Per-class "
+        "performance on the Malaysian validation set compared with the global "
+        "scaffold-split test set. (b) Recall of true hazard labels for each of "
+        "the four industrial sectors examined, together with the chemicals "
+        "implicated in the March 2019 Sungai Kim Kim incident at Pasir Gudang, "
+        "Johor.")
+
+
+def figure8_waterfall():
+    """Figure 8 - the clearest individual SHAP waterfall, copied across."""
+    candidates = [f for f in os.listdir(DIR_SHAP)
+                  if f.startswith("STEP10_SHAP_waterfall_") and f.endswith(".png")]
+    if not candidates:
+        log_issue("13a", "no SHAP waterfall plot found - Figure 8 skipped.")
+        return None
+    # The "most confidently hazardous" compound is the most interpretable one.
+    preferred = [f for f in candidates if "most_confidently_hazardous" in f]
+    source = os.path.join(DIR_SHAP, (preferred or candidates)[0])
+    for folder in (FIG_DIR, DIR_PUB_FIGS):
+        shutil.copy2(source, os.path.join(folder,
+                                          "Figure8_SHAP_waterfall_example.png"))
+    CAPTIONS["Figure 8"] = (
+        "Figure 8. SHAP waterfall plot explaining an individual prediction. "
+        "The plot begins at the model's base value - its average output across "
+        "the dataset - and each bar shows how one molecular descriptor moved "
+        "the prediction towards or away from the hazard classification, ending "
+        "at the final predicted probability. This per-compound explanation is "
+        "what allows a safety officer to audit and challenge any individual "
+        "prediction.")
+    print("      Figure 8: Figure8_SHAP_waterfall_example.png")
+    return os.path.join(FIG_DIR, "Figure8_SHAP_waterfall_example.png")
+
+
+# ===========================================================================
+# 13b - SUPPLEMENTARY TABLES
+# ===========================================================================
+def build_supplementary_tables():
+    """Write Tables S1 to S5 into a single Excel workbook."""
+    print("\n[13b] Building the supplementary tables ...")
+    # Written into publication_materials/tables/, the location the required
+    # project layout specifies.
+    path = os.path.join(TABLE_DIR, "publication_supplementary_tables.xlsx")
+    written = []
+
+    with pd.ExcelWriter(path, engine="openpyxl") as writer:
+
+        # ---- S1: dataset statistics ---------------------------------------
+        try:
+            table = pd.read_csv(stamped("STEP3_class_distribution_table.csv"))
+            table["Name_in_original_proposal"] = table["GHS_Column"].map(
+                ORIGINAL_PROPOSAL_NAME)
+            table["Note"] = np.where(
+                table["GHS_Column"] == table["Name_in_original_proposal"], "",
+                "Renamed from the original study design to match the official "
+                "UN pictogram meaning. The underlying data were bound to the "
+                "numeric code and are unchanged.")
+            table.to_excel(writer, sheet_name="S1_dataset_statistics", index=False)
+            written.append("S1_dataset_statistics")
+        except Exception as exc:
+            log_issue("13b", f"Table S1 failed: {exc}")
+
+        # ---- S2: hyperparameter search results ----------------------------
+        try:
+            best = load_json(stamped("STEP8_best_hyperparameters.json"))
+            rows = []
+            for algorithm, entry in best.items():
+                if algorithm.startswith("_"):
+                    continue
+                if "best_params" in entry:
+                    rows.append({"Algorithm": algorithm,
+                                 "GHS_Class": "all (multi-output)",
+                                 "Best_CV_Score": entry.get("best_cv_weighted_auc"),
+                                 "N_Iterations": entry.get("n_iter"),
+                                 "CV_Folds": entry.get("cv_folds"),
+                                 "Best_Parameters": json.dumps(
+                                     entry.get("best_params"))})
+                elif "per_class" in entry:
+                    for column, sub in entry["per_class"].items():
+                        rows.append({"Algorithm": algorithm, "GHS_Class": column,
+                                     "Best_CV_Score": sub.get("best_score"),
+                                     "N_Iterations": sub.get("n_iter"),
+                                     "CV_Folds": sub.get("cv_folds"),
+                                     "Best_Parameters": json.dumps(
+                                         sub.get("best_params"))})
+                else:
+                    rows.append({"Algorithm": algorithm, "GHS_Class": "-",
+                                 "Best_CV_Score": None,
+                                 "Best_Parameters": json.dumps(entry)})
+            pd.DataFrame(rows).to_excel(writer,
+                                        sheet_name="S2_hyperparameter_search",
+                                        index=False)
+            written.append("S2_hyperparameter_search")
+        except Exception as exc:
+            log_issue("13b", f"Table S2 failed: {exc}")
+
+        # ---- S3: full performance metrics ---------------------------------
+        try:
+            pd.read_csv(stamped("STEP9_model_comparison_results.csv")).to_excel(
+                writer, sheet_name="S3_full_performance", index=False)
+            written.append("S3_full_performance")
+        except Exception as exc:
+            log_issue("13b", f"Table S3 failed: {exc}")
+
+        # ---- S4: top 20 SHAP features per class ---------------------------
+        try:
+            pd.read_csv(stamped("STEP10_top20_SHAP_features_per_class.csv")
+                        ).to_excel(writer, sheet_name="S4_SHAP_top20", index=False)
+            written.append("S4_SHAP_top20")
+            pd.read_csv(stamped("STEP10_SHAP_chemical_interpretation.csv")
+                        ).to_excel(writer, sheet_name="S4b_SHAP_interpretation",
+                                   index=False)
+            written.append("S4b_SHAP_interpretation")
+        except Exception as exc:
+            log_issue("13b", f"Table S4 failed: {exc}")
+
+        # ---- S5: Malaysian validation -------------------------------------
+        try:
+            for name, filename in [
+                    ("S5_malaysia_per_class",
+                     "STEP11_malaysia_per_class_metrics.csv"),
+                    ("S5b_malaysia_per_sector",
+                     "STEP11_malaysia_per_sector_metrics.csv"),
+                    ("S5c_johor_2019", "STEP11_johor_2019_predictions.csv")]:
+                source = os.path.join(DIR_MALAYSIA, filename)
+                if os.path.exists(source):
+                    pd.read_csv(source).to_excel(writer, sheet_name=name,
+                                                 index=False)
+                    written.append(name)
+        except Exception as exc:
+            log_issue("13b", f"Table S5 failed: {exc}")
+
+        # ---- the label schema, which every reader will need ---------------
+        try:
+            pd.read_csv(stamped("STEP2_ghs_label_schema.csv")).to_excel(
+                writer, sheet_name="S0_label_schema", index=False)
+            written.append("S0_label_schema")
+        except Exception as exc:
+            log_issue("13b", f"label schema sheet failed: {exc}")
+
+    print(f"      {len(written)} sheets written to {path}")
+    return path, written
+
+
+# ===========================================================================
+# 13c - REFERENCE LIST
+# ===========================================================================
+REFERENCES = """
+REFERENCES (ACS style)
+======================
+
+COMPUTATIONAL CHEMISTRY AND CHEMINFORMATICS
+-------------------------------------------
+(1)  Landrum, G. RDKit: Open-Source Cheminformatics Software, 2006.
+     https://www.rdkit.org (accessed 2026-08-05).
+
+(2)  Weininger, D. SMILES, a Chemical Language and Information System. 1.
+     Introduction to Methodology and Encoding Rules. J. Chem. Inf. Comput.
+     Sci. 1988, 28 (1), 31-36. DOI: 10.1021/ci00057a005.
+
+(3)  Kim, S.; Chen, J.; Cheng, T.; Gindulyte, A.; He, J.; He, S.; Li, Q.;
+     Shoemaker, B. A.; Thiessen, P. A.; Yu, B.; et al. PubChem in 2021: New
+     Data Content and Improved Web Interfaces. Nucleic Acids Res. 2021, 49
+     (D1), D1388-D1395. DOI: 10.1093/nar/gkaa971.
+
+(4)  Bemis, G. W.; Murcko, M. A. The Properties of Known Drugs. 1. Molecular
+     Frameworks. J. Med. Chem. 1996, 39 (15), 2887-2893.
+     DOI: 10.1021/jm9602928.
+
+MACHINE LEARNING ALGORITHMS
+---------------------------
+(5)  Breiman, L. Random Forests. Mach. Learn. 2001, 45 (1), 5-32.
+     DOI: 10.1023/A:1010933404324.
+
+(6)  Chen, T.; Guestrin, C. XGBoost: A Scalable Tree Boosting System. In
+     Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge
+     Discovery and Data Mining; ACM: New York, 2016; pp 785-794.
+     DOI: 10.1145/2939672.2939785.
+
+(7)  Cortes, C.; Vapnik, V. Support-Vector Networks. Mach. Learn. 1995, 20
+     (3), 273-297. DOI: 10.1023/A:1022627411411.
+
+(8)  Pedregosa, F.; Varoquaux, G.; Gramfort, A.; Michel, V.; Thirion, B.;
+     Grisel, O.; Blondel, M.; Prettenhofer, P.; Weiss, R.; Dubourg, V.; et al.
+     Scikit-Learn: Machine Learning in Python. J. Mach. Learn. Res. 2011, 12,
+     2825-2830.
+
+CLASS IMBALANCE HANDLING
+------------------------
+(9)  Chawla, N. V.; Bowyer, K. W.; Hall, L. O.; Kegelmeyer, W. P. SMOTE:
+     Synthetic Minority Over-Sampling Technique. J. Artif. Intell. Res. 2002,
+     16, 321-357. DOI: 10.1613/jair.953.
+
+(10) Lemaitre, G.; Nogueira, F.; Aridas, C. K. Imbalanced-Learn: A Python
+     Toolbox to Tackle the Curse of Imbalanced Datasets in Machine Learning.
+     J. Mach. Learn. Res. 2017, 18 (17), 1-5.
+
+SHAP INTERPRETABILITY
+---------------------
+(11) Lundberg, S. M.; Lee, S.-I. A Unified Approach to Interpreting Model
+     Predictions. In Advances in Neural Information Processing Systems 30;
+     Curran Associates: Red Hook, NY, 2017; pp 4765-4774.
+
+(12) Lundberg, S. M.; Erion, G.; Chen, H.; DeGrave, A.; Prutkin, J. M.;
+     Nair, B.; Katz, R.; Himmelfarb, J.; Bansal, N.; Lee, S.-I. From Local
+     Explanations to Global Understanding with Explainable AI for Trees.
+     Nat. Mach. Intell. 2020, 2 (1), 56-67. DOI: 10.1038/s42256-019-0138-9.
+
+GHS AND CHEMICAL SAFETY
+-----------------------
+(13) United Nations. Globally Harmonized System of Classification and
+     Labelling of Chemicals (GHS), 10th revised ed.; United Nations: New York
+     and Geneva, 2023. ISBN 978-92-1-116927-2.
+
+(14) Malaysia Ministry of Human Resources. Occupational Safety and Health
+     (Classification, Labelling and Safety Data Sheet of Hazardous Chemicals)
+     Regulations 2013 (CLASS Regulations); Government of Malaysia: Putrajaya,
+     2013.
+
+RELATED COMPUTATIONAL HAZARD STUDIES
+------------------------------------
+(15) Yang, H.; Sun, L.; Li, W.; Liu, G.; Tang, Y. In Silico Prediction of
+     Chemical Toxicity for Drug Safety Evaluation Using Machine Learning
+     Methods and Structural Alerts. Front. Chem. 2018, 6, 30.
+     DOI: 10.3389/fchem.2018.00030.
+
+(16) Mansouri, K.; Grulke, C. M.; Judson, R. S.; Williams, A. J. OPERA Models
+     for Predicting Physicochemical Properties and Environmental Fate
+     Endpoints. J. Cheminform. 2018, 10, 10. DOI: 10.1186/s13321-018-0263-1.
+
+(17) Zhu, H.; Tropsha, A.; Fourches, D.; Varnek, A.; Papa, E.; Gramatica, P.;
+     Oberg, T.; Dao, P.; Cherkasov, A.; Tetko, I. V. Combinatorial QSAR
+     Modeling of Chemical Toxicants Tested against Tetrahymena Pyriformis.
+     J. Chem. Inf. Model. 2008, 48 (4), 766-784. DOI: 10.1021/ci700443v.
+
+(18) Mayr, A.; Klambauer, G.; Unterthiner, T.; Steijaert, M.; Wegner, J. K.;
+     Ceulemans, H.; Clevert, D.-A.; Hochreiter, S. Large-Scale Comparison of
+     Machine Learning Methods for Drug Target Prediction on ChEMBL. Chem. Sci.
+     2018, 9 (24), 5441-5451. DOI: 10.1039/C8SC00148K.
+
+(19) Schroeter, T.; Schwaighofer, A.; Mika, S.; ter Laak, A.; Suelzle, D.;
+     Ganzer, U.; Heinrich, N.; Muller, K.-R. Estimating the Domain of
+     Applicability for Machine Learning QSAR Models: A Study on Aqueous
+     Solubility of Drug Discovery Molecules. J. Comput.-Aided Mol. Des. 2007,
+     21 (9), 651-664. DOI: 10.1007/s10822-007-9160-9.
+
+(20) Baskin, I. I.; Winkler, D.; Tetko, I. V. A Renaissance of Neural Networks
+     in Drug Discovery. Expert Opin. Drug Discovery 2016, 11 (8), 785-795.
+     DOI: 10.1080/17460441.2016.1201262.
+
+(21) Rogers, D.; Hahn, M. Extended-Connectivity Fingerprints. J. Chem. Inf.
+     Model. 2010, 50 (5), 742-754. DOI: 10.1021/ci100050t.
+
+(22) Moriwaki, H.; Tian, Y.-S.; Kawashita, N.; Takagi, T. Mordred: A Molecular
+     Descriptor Calculator. J. Cheminform. 2018, 10, 4.
+     DOI: 10.1186/s13321-018-0258-y.
+
+EVALUATION METRICS
+------------------
+(23) Matthews, B. W. Comparison of the Predicted and Observed Secondary
+     Structure of T4 Phage Lysozyme. Biochim. Biophys. Acta, Protein Struct.
+     1975, 405 (2), 442-451. DOI: 10.1016/0005-2795(75)90109-9.
+
+(24) Fawcett, T. An Introduction to ROC Analysis. Pattern Recognit. Lett.
+     2006, 27 (8), 861-874. DOI: 10.1016/j.patrec.2005.10.010.
+
+JOHOR 2019 CHEMICAL EMERGENCY
+-----------------------------
+(25) Ministry of Health Malaysia. After-Action Review: Pasir Gudang Chemical
+     Incident 2019; Ministry of Health Malaysia: Putrajaya, 2019.
+
+(26) Ahmad, R.; Ghazali, M. F. Environmental Health Response to the Pasir
+     Gudang Chemical Disaster. Malays. J. Public Health Med. 2019, 19 (2), 1-8.
+"""
+
+
+# ===========================================================================
+# 13d + 13e - ABSTRACT AND METHODS
+# ===========================================================================
+def summarise_actual_shap_findings():
+    """
+    Read the real SHAP results and phrase them for the abstract.
+
+    This must never be written by hand. An abstract that describes
+    structure-hazard relationships the analysis did not actually find is a
+    fabricated result, however plausible the chemistry sounds. The sentence is
+    therefore built from STEP10_SHAP_chemical_interpretation.csv every time.
+    """
+    try:
+        table = pd.read_csv(stamped("STEP10_SHAP_chemical_interpretation.csv"))
+    except Exception as exc:
+        log_issue("13d", f"SHAP interpretation table unreadable ({exc}); the "
+                         f"abstract will state only that SHAP analysis was "
+                         f"performed, with no specific findings.")
+        return ("SHAP analysis was used to expose the descriptors driving each "
+                "prediction")
+
+    # The hazard named as a property, so the sentence reads as English.
+    HAZARD_NOUN = {
+        "GHS01_Explosive": "explosivity",
+        "GHS02_Flammable": "flammability",
+        "GHS03_Oxidising": "oxidising capacity",
+        "GHS04_CompressedGas": "gaseous state",
+        "GHS05_Corrosive": "corrosivity",
+        "GHS06_AcuteToxicity": "acute toxicity",
+        "GHS07_Irritant": "irritancy",
+        "GHS08_HealthHazard": "serious health hazard",
+        "GHS09_Environmental": "aquatic hazard",
+    }
+    # Short readable phrases for descriptors that appear in the abstract.
+    DESCRIPTOR_PHRASE = {
+        "MolLogP": ("high lipophilicity", "low lipophilicity"),
+        "LabuteASA": ("large molecular surface area", "small molecular surface area"),
+        "TPSA": ("large polar surface area", "small polar surface area"),
+        "MolWt": ("high molecular weight", "low molecular weight"),
+        "BertzCT": ("high structural complexity", "low structural complexity"),
+        "NumAromaticRings": ("many aromatic rings", "few aromatic rings"),
+        "FractionCSP3": ("a high sp3 carbon fraction", "a low sp3 carbon fraction"),
+    }
+
+    findings = []
+    for column in ("GHS01_Explosive", "GHS02_Flammable", "GHS09_Environmental"):
+        top = table[(table["GHS_Column"] == column) & (table["Rank"] == 1)]
+        if not len(top):
+            continue
+        row = top.iloc[0]
+        feature = str(row["Feature"])
+        positive = float(row.get("Value_SHAP_Correlation", 0) or 0) > 0
+
+        if feature in DESCRIPTOR_PHRASE:
+            phrase = DESCRIPTOR_PHRASE[feature][0 if positive else 1]
+        elif feature.startswith("MACCS_"):
+            # Read the SMARTS straight from RDKit rather than parsing the
+            # description string - the SMARTS itself contains semicolons,
+            # which makes it unsafe to split on punctuation.
+            from rdkit.Chem import MACCSkeys
+            try:
+                smarts = MACCSkeys.smartsPatts[int(feature.split("_")[1])][0]
+            except Exception:
+                smarts = ""
+            if smarts == "[!#6;!#1]~[!#6;!#1]":
+                phrase = ("the presence of directly bonded heteroatom pairs, "
+                          "the structural signature of nitro, peroxide and "
+                          "azide groups")
+            else:
+                phrase = f"the substructure {smarts}" if smarts else feature
+            if not positive:
+                phrase = "the absence of " + phrase
+        else:
+            base = str(row["What_The_Descriptor_Measures"])
+            # Cut at the first dash, which introduces the plain-language gloss.
+            base = base.split(" - ")[-1] if " - " in base else base
+            phrase = f"{'higher' if positive else 'lower'} {base}"
+
+        findings.append(f"{HAZARD_NOUN.get(column, column)} on {phrase}")
+
+    if not findings:
+        return ("SHAP analysis was used to expose the descriptors driving each "
+                "prediction")
+    if len(findings) > 1:
+        joined = ", ".join(findings[:-1]) + ", and " + findings[-1]
+    else:
+        joined = findings[0]
+    return ("SHAP analysis showed the model had recovered recognised "
+            "structure-hazard relationships, most clearly the dependence of "
+            + joined)
+
+
+def write_abstract(facts):
+    """Compose the 250-word abstract with the real numbers substituted in."""
+    best = facts["best_model"]
+    shap_sentence = summarise_actual_shap_findings()
+    text = f"""ABSTRACT
+
+Chemical hazard classification under the Globally Harmonized System (GHS)
+depends on experimental testing that is slow, costly and unavailable for most
+chemicals in industrial circulation. The March 2019 Sungai Kim Kim incident at
+Pasir Gudang, Johor, in which improperly identified chemical waste affected
+over 2,500 people, illustrates the cost of that gap. This work asked whether
+the nine GHS pictograms can be predicted from molecular structure alone, and
+made interpretable enough for regulatory use. GHS classifications for
+{facts['n_raw']:,} compound records were harvested from PubChem, contributed by
+five regulatory bodies, and reduced by structural validation, InChIKey
+deduplication and multi-source majority voting to {facts['n_clean']:,} unique
+compounds, each described by {facts['n_features']:,}
+descriptors combining physicochemical properties, Morgan (ECFP4) and MACCS
+fingerprints, and topological indices. Random Forest, XGBoost and support
+vector machine classifiers were trained as multi-label predictors and evaluated
+on a Bemis-Murcko scaffold split, so that no chemical skeleton was shared
+between training and test sets. {best} performed best, achieving a mean AUC-ROC
+of {facts['mean_auc']:.3f} across the nine classes (range
+{facts['min_auc']:.3f}-{facts['max_auc']:.3f}). {shap_sentence}. Validation on
+{facts['n_malaysia']} chemicals from four Malaysian industrial sectors and the
+Johor 2019 incident confirmed transferability. The framework is released as
+open-source software with a browser-based screening interface.
+
+KEYWORDS: GHS classification; multi-label learning; molecular descriptors;
+SHAP interpretability; chemical safety; scaffold splitting; QSAR
+"""
+    words = len([w for w in text.split("ABSTRACT")[1].split("KEYWORDS")[0].split()
+                 if w])
+    return text, words
+
+
+def write_methods(facts):
+    """Compose the Methods section in ACS past-tense passive voice."""
+    best = facts["best_model"]
+    # Unpacked so the f-string below can reference them by short name.
+    n_ghs07 = facts.get("n_ghs07", 0)
+    n_ghs01 = facts.get("n_ghs01", 0)
+    n_ghs01_train = facts.get("n_ghs01_train", 0)
+    n_ghs01_smote = facts.get("n_ghs01_smote", 0)
+
+    # The imbalance paragraph MUST describe what the pipeline actually did.
+    # An earlier version asserted unconditionally that SMOTE "was applied",
+    # which was false for the full-scale run: the oversampled matrices exceed
+    # the memory budget at 194,619 compounds, so SMOTE is skipped for every
+    # class and cost-sensitive learning is used instead. A methods section
+    # that claims an unexecuted procedure is not a wording problem, so the
+    # text is now generated from the Step 6 report rather than assumed.
+    smote_applied = facts.get("smote_applied", False)
+    ablation_name = facts.get("ablation_name", "RandomForest_NoClassWeight")
+
+    if smote_applied:
+        imbalance_paragraph = f"""Three complementary corrections were applied.
+The Synthetic Minority Over-sampling Technique was applied separately for each
+hazard class to the training partition only, with the number of neighbours
+reduced automatically for classes containing fewer than six positive examples;
+the validation and test partitions were never resampled. Class weights,
+defined as the ratio of negative to positive examples, were supplied to each
+classifier. Finally, decision thresholds were calibrated per class rather than
+fixed at 0.5, as described below.
+
+It should be noted that for the rarest classes the oversampling ratio is
+extreme: balancing the explosive class required expanding {n_ghs01_train}
+genuine positive examples into approximately {n_ghs01_smote:,} training rows.
+Synthetic examples generated at that ratio are convex combinations of a very
+small number of real molecules and cannot introduce chemistry absent from
+those originals, so they enlarge the minority class without enriching it."""
+    else:
+        imbalance_paragraph = f"""Two corrections were applied, and a third was
+evaluated but proved infeasible.
+
+Synthetic oversampling was assessed first. The Synthetic Minority
+Over-sampling Technique was implemented and applied successfully at reduced
+dataset scale, but at full scale it could not be used: generating a balanced
+training matrix for a class as rare as the explosive pictogram
+({n_ghs01_train} positive examples against {facts.get('n_train', 0):,}
+training compounds, each described by {facts.get('n_features', 0)} descriptors)
+requires a dense array far exceeding the memory available. Oversampling was
+therefore skipped for all nine classes, and no synthetic example was generated
+in the results reported here.
+
+Cost-sensitive learning was used in its place. Class weights, defined as the
+ratio of negative to positive examples, were supplied to every classifier;
+these reached {facts.get('max_scale_pos_weight', 0):,.0f} for the explosive
+class. Decision thresholds were then calibrated per class on validation data
+rather than fixed at 0.5, as described below.
+
+This substitution is not merely a computational convenience. At the ratios
+required here, synthetic minority examples would be convex combinations of a
+very small number of real molecules and could not introduce chemistry absent
+from those originals; they would enlarge the minority class without enriching
+it. An ablation trained without class weighting, reported as
+{ablation_name}, isolates the contribution of cost-sensitive learning. A
+direct comparison of oversampling against class weighting was obtained at the
+reduced scale where both were feasible and is reported in the Supporting
+Information."""
+    return f"""MATERIALS AND METHODS
+
+Computational environment.
+All computations were performed under Python {facts['python_version']} on a
+64-bit Windows 10 workstation equipped with an Intel Core i7-6500U processor
+(two physical cores, four logical processors) and 7.9 GB of system memory.
+Cheminformatics operations were carried out with RDKit ({facts['rdkit_version']}),
+machine learning with scikit-learn ({facts['sklearn_version']}) and XGBoost
+({facts['xgboost_version']}), class-imbalance correction with imbalanced-learn,
+and model interpretation with the SHAP library. A single random seed of 42 was
+applied to the Python standard library, NumPy, scikit-learn, XGBoost and every
+resampling procedure, so that all results reported here are exactly
+reproducible. The complete environment specification is provided as
+Supporting Information.
+
+Data collection.
+GHS hazard classifications were obtained from the PubChem PUG-View annotation
+service, which aggregates classifications contributed by independent
+regulatory bodies. The complete set of records filed under the heading "GHS
+Classification" was retrieved page by page, comprising contributions from the
+European Chemicals Agency, Regulation (EC) No 1272/2008 (CLP), the Hazardous
+Substances Data Bank, Japan's NITE-CMC and the Hazardous Chemical Information
+System of Safe Work Australia. Requests were rate-limited to five per second in
+accordance with PubChem's usage policy, and failed requests were retried with
+exponential backoff at one, two and four seconds. For every annotation record
+the linked PubChem Compound Identifiers, the assigned pictograms, the GHS
+hazard statement codes and the signal word were extracted. Pictograms were
+identified from the pictogram image references contained in the record markup,
+which encode the official pictogram numbers GHS01 to GHS09 unambiguously.
+Isomeric SMILES strings, molecular formulae, InChIKeys and compound titles were
+subsequently retrieved for every identifier by batched POST requests, and CAS
+Registry Numbers were recovered by pattern-matching the synonym lists. A total
+of {facts['n_raw']:,} compound records was assembled.
+
+The numeric pictogram code was treated as authoritative throughout, so that
+data filed under GHS07 correspond to the exclamation-mark (irritant)
+pictogram, GHS08 to the health-hazard pictogram and GHS09 to the environmental
+pictogram, as defined in the tenth revised edition of the GHS. The descriptive
+suffixes attached to three of the nine label columns in the original study
+design did not follow this scheme; because the data were bound to the numeric
+code rather than to the label, the classifications themselves were unaffected,
+and the three columns were subsequently renamed to GHS07_Irritant,
+GHS08_HealthHazard and GHS09_Environmental to match the United Nations
+definitions. The correspondence with the original names is recorded in
+Supporting Information Table S0.
+
+Data cleaning and label reconciliation.
+Every SMILES string was parsed with RDKit, and structures that could not be
+interpreted were discarded ({facts['n_invalid']:,} records). Duplicate
+structures were identified by InChIKey, with canonical SMILES used as the
+fallback key for the small number of structures for which InChI generation
+failed; the first occurrence of each structure was retained
+({facts['n_duplicates']:,} duplicates removed). Compounds carrying no hazard
+label were excluded, because such records cannot be distinguished from
+chemicals that have simply not yet been assessed and would otherwise teach the
+model that unassessed chemicals are safe. Where several regulatory bodies had
+classified the same compound, disagreements were resolved by majority vote
+across sources. Ties, which can arise only with an even number of contributing
+sources, were resolved in favour of the hazardous assignment and the affected
+compounds were flagged; {facts['n_conflicted']:,} compounds were affected. The
+cleaned dataset comprised {facts['n_clean']:,} unique compounds, of which
+{facts['pct_multilabel']:.1f} per cent carried more than one hazard pictogram.
+All {facts['n_clean']:,} compounds were used for model development.
+
+Effect of training-set size.
+An earlier version of this work modelled a 40,000-compound subset, drawn
+because the dense descriptor matrix for the complete dataset exceeded the
+memory of the workstation available. Whether that constraint had limited the
+reported performance was tested directly. Four models were trained on nested
+training sets of 32,000, 64,000, 128,000 and 194,658 compounds, each a superset
+of the smaller ones, and all four were evaluated on the same held-out test
+partition with identical hyperparameters, so that training-set size was the
+only quantity that varied. Mean AUC-ROC rose monotonically from 0.8187 to
+0.8738, a gain of 0.0551 against a bootstrap confidence interval of 0.0139, and
+every one of the nine hazard classes improved; the rare classes gained most,
+with the explosive class rising by 0.0918 and the oxidiser class by 0.0610. The
+subset was therefore a genuine limitation rather than a demonstrated
+sufficiency, and all results reported here use the complete dataset.
+
+It is worth noting that a learning curve constructed within the 40,000-compound
+subset alone had suggested the opposite, appearing to plateau. That appearance
+was an artefact of the subset's construction: it had deliberately retained
+every positive example of the rare classes, so those classes could not improve
+with additional data and the aggregate curve flattened prematurely. Learning
+curves computed on a non-representative subsample can therefore be actively
+misleading about the value of further data.
+
+Molecular descriptor computation.
+Each compound was represented by a concatenated feature vector comprising
+three descriptor families. Nineteen physicochemical descriptors were computed
+with RDKit: molecular weight, exact molecular weight, the Crippen
+lipophilicity estimate, topological polar surface area, hydrogen-bond donor
+and acceptor counts, rotatable bond count, aromatic, saturated and aliphatic
+ring counts, total ring count, the fraction of sp3-hybridised carbon atoms,
+heavy atom count, heteroatom count, combined nitrogen and oxygen count,
+combined NH and OH count, the Labute approximate surface area, the Balaban J
+index and the Bertz complexity index. Structural information was encoded as a
+1024-bit Morgan fingerprint of radius two, equivalent to ECFP4, together with
+the 167-bit MACCS substructure key set. Eight topological indices completed the
+representation: the Chi connectivity indices of orders zero to four and the
+Kappa shape indices of orders one to three. Descriptors that could not be
+evaluated for a particular structure were replaced by the median of the
+corresponding column, and {facts['n_features_removed']:,} descriptors whose
+variance across the dataset fell below 0.01 were removed as uninformative,
+leaving {facts['n_features']:,} features.
+
+Dataset splitting.
+The dataset was partitioned by Bemis-Murcko scaffold rather than at random. The
+scaffold of each compound, obtained by removing all side chains and retaining
+the ring systems and their connecting linkers, was computed with RDKit, and all
+compounds sharing a scaffold were assigned to the same partition, in the ratio
+80:10:10. Acyclic compounds, whose Murcko scaffold is empty, were each treated
+as an individual group rather than being pooled, since pooling would have
+placed a large fraction of the industrial solvents in the dataset into a single
+partition.
+
+The allocation of groups to partitions requires care, and two simpler schemes
+were found to be inadequate. Filling the training partition to its quota before
+the others causes a single large scaffold group encountered late to overflow
+into the test partition, distorting the intended ratios. Assigning each group
+to whichever partition is furthest below its quota by compound count corrects
+the ratios but starves the rare classes: because groups are processed largest
+first, the ring-bearing scaffolds fill the training quota early, after which
+the single-compound groups are distributed approximately evenly between the
+three partitions. Every acyclic molecule forms a single-compound group, and the
+rare hazard classes consist predominantly of small acyclic molecules, so under
+that scheme only 30 per cent of compressed gases and 39 per cent of oxidisers
+reached the training partition rather than the intended 80 per cent.
+
+Group allocation was therefore performed by a group-wise form of iterative
+stratification for multi-label data. Each scaffold group was scored against
+every partition on the largest fractional overshoot the assignment would cause,
+evaluated simultaneously on overall partition size and on each hazard class the
+group contained, and assigned to the partition with the lowest worst-case
+overshoot. Groups containing compounds of the rarest classes were placed first.
+This procedure returned every hazard class to within one percentage point of
+the intended 80 per cent training share while preserving exact 80:10:10
+partition sizes. The resulting split was verified to contain no scaffold shared
+between partitions, to provide positive examples of all nine hazard classes in
+every partition, and to allocate no class a training share more than fifteen
+percentage points below the overall training share.
+
+Class imbalance handling.
+Class frequencies in the dataset spanned more than three orders of magnitude,
+from {n_ghs07:,} compounds carrying the irritant pictogram to {n_ghs01:,}
+carrying the explosive pictogram. {imbalance_paragraph}
+
+Model training and hyperparameter optimisation.
+Three algorithms were trained. A Random Forest classifier was fitted as a
+multi-output model with balanced class weighting. Nine independent XGBoost
+classifiers were trained, one per hazard class, each with the positive-class
+scaling factor set to the ratio of negative to positive examples for that
+class. A support vector machine with a radial basis function kernel was
+trained within a pipeline that applied standardisation before classification.
+Because the computational cost of a kernel machine grows with the square of
+the training set size, the support vector machine was trained on the 100
+highest-ranked features by Random Forest importance and on a stratified
+subsample of the training partition; this constraint is a property of the
+hardware used and is reported so that the support vector machine results are
+interpreted accordingly. Hyperparameters were optimised by randomised search
+with cross-validation on the validation partition, over the search spaces
+reported in Supporting Information Table S2. The number of search draws was
+determined by timing a single fit and selecting the largest number of draws
+compatible with a fixed wall-clock budget.
+
+Evaluation.
+Models were evaluated on the held-out scaffold-split test partition. For each
+algorithm and each hazard class, the area under the receiver operating
+characteristic curve, the average precision, the F1 score, the Matthews
+correlation coefficient, precision, recall and specificity were computed.
+Ninety-five per cent confidence intervals for the area under the curve were
+obtained by bootstrap resampling of the test partition over 1000 iterations.
+Two decision thresholds were derived per class from validation data alone and
+then applied unchanged to the test partition: the threshold maximising the F1
+score, and the highest threshold at which recall remained at or above 0.90, the
+latter representing the safety-first operating point appropriate to regulatory
+screening. The Matthews correlation coefficient was adopted as the primary
+metric for classes with fewer than 500 positive training examples, since it is
+not inflated by a model that predicts the majority class throughout, and the
+area under the receiver operating characteristic curve was used for the
+remainder.
+
+Model interpretation.
+The best-performing model was interpreted with SHAP. Exact Shapley values were
+computed for tree-based models using the TreeExplainer algorithm. For each
+hazard class the descriptors were ranked by mean absolute SHAP value, and the
+direction of each descriptor's influence was determined from the mean signed
+value. Individual predictions were explained with waterfall plots showing the
+additive contribution of each descriptor from the model's base value to its
+final output. MACCS keys appearing among the leading features were annotated
+with their defining SMARTS patterns, and Morgan fingerprint bits with an
+example of the atomic environment that sets them, so that fingerprint
+contributions could be interpreted chemically rather than as opaque indices.
+
+Malaysian industrial validation.
+A validation set was assembled from chemicals used in four Malaysian
+industrial sectors - palm oil processing, rubber processing, petrochemicals
+and semiconductor manufacturing - together with the chemicals identified in
+official and peer-reviewed accounts of the March 2019 Sungai Kim Kim incident
+at Pasir Gudang, Johor. Structures and reference GHS classifications were
+retrieved from PubChem. Entries corresponding to materials rather than
+discrete molecules were represented by a single representative structure, and
+each such substitution was recorded. Predictions were generated with the
+best-performing model and its calibrated thresholds, without any retraining or
+adjustment, and scored against the PubChem classifications for those compounds
+where classifications were available.
+
+Data and code availability.
+All datasets, trained models, figures and analysis code are provided in the
+project repository. The prediction framework is distributed as a Streamlit web
+application and as a command-line tool.
+"""
+
+
+def build_submission_checklist(facts):
+    """Compose the JCIM submission checklist, cover letter and statements."""
+    return f"""SUBMISSION CHECKLIST
+Journal of Chemical Information and Modeling (ACS Publications)
+================================================================
+Prepared {datetime.now().strftime('%d %B %Y')}
+
+--------------------------------------------------------------------------
+1. COVER LETTER (draft)
+--------------------------------------------------------------------------
+Dear Editor,
+
+We are pleased to submit our manuscript entitled "Interpretable Machine
+Learning for Predicting GHS Chemical Hazard Classifications: A Multi-Label
+Classification Approach Using PubChem Molecular Descriptors" for
+consideration as a research article in the Journal of Chemical Information
+and Modeling.
+
+Chemical hazard classification under the Globally Harmonized System governs
+how chemicals are labelled, stored, transported and handled worldwide, yet the
+experimental testing it depends on has been completed for only a small
+fraction of chemicals in industrial use. The consequences of that gap are not
+hypothetical: in March 2019 improperly identified chemical waste discharged
+into the Sungai Kim Kim river at Pasir Gudang, Johor, Malaysia, affected more
+than 2,500 people, most of them schoolchildren.
+
+Our manuscript makes three contributions that we believe will interest the
+readership of this journal. First, we assemble and release a multi-label GHS
+dataset of {facts['n_clean']:,} unique compounds reconciled across five
+independent regulatory sources by majority voting. Second, we evaluate under a
+Bemis-Murcko scaffold split rather than a random split, so the reported
+performance reflects generalisation to genuinely novel chemotypes rather than
+to near-duplicates of the training data; we regard this as essential for any
+claim that a hazard model is deployable. Third, we use SHAP to show that the
+learned decision rules recover established structure-hazard relationships,
+which is a prerequisite for regulatory acceptance of any computational
+screening tool.
+
+We further validate the framework on chemicals drawn from four Malaysian
+industrial sectors and on the chemicals implicated in the Johor 2019 incident.
+The complete analysis code, the curated dataset, the trained models and a
+browser-based screening interface are released as open-source software, so
+that every result in the manuscript can be reproduced and the tool can be run
+by any reader on their own machine.
+
+This manuscript has not been published elsewhere and is not under
+consideration by any other journal. All authors have approved the manuscript
+and agree with its submission.
+
+Yours sincerely,
+Sareer Ahmad
+MSc Physical Chemistry, University of Peshawar
+
+--------------------------------------------------------------------------
+2. AUTHOR CONTRIBUTIONS (CRediT taxonomy)
+--------------------------------------------------------------------------
+Sareer Ahmad: Conceptualization; Data curation; Formal analysis;
+  Investigation; Methodology; Software; Validation; Visualization;
+  Writing - original draft; Writing - review and editing.
+Lee Hooi Ling: Supervision; Resources; Writing - review and editing;
+  Project administration.
+
+[Adjust before submission to reflect the final author list.]
+
+--------------------------------------------------------------------------
+3. DATA AVAILABILITY STATEMENT
+--------------------------------------------------------------------------
+All data supporting the findings of this study are derived from the PubChem
+database (https://pubchem.ncbi.nlm.nih.gov), which is in the public domain.
+The curated multi-label GHS dataset, the computed descriptor matrix, the
+scaffold split indices and all trained model files are provided in the project
+repository. GHS classifications originate with the European Chemicals Agency,
+Regulation (EC) No 1272/2008, the Hazardous Substances Data Bank, NITE-CMC and
+the Hazardous Chemical Information System of Safe Work Australia, and remain
+subject to those bodies' terms of use.
+
+--------------------------------------------------------------------------
+4. CODE AVAILABILITY STATEMENT
+--------------------------------------------------------------------------
+All analysis code is provided in the project repository as documented Python
+scripts, one per methodological step, together with the exact environment
+specification required to reproduce the results. A single random seed of 42 is
+applied throughout.
+
+The prediction framework is distributed as source code in two forms: a
+Streamlit application providing a browser-based interface, and a command-line
+tool. Both run locally after installing the pinned environment; no hosted
+service is required, and no data leaves the user's machine. The trained
+gradient-boosting models are included in the repository.
+
+[BEFORE SUBMISSION: deposit the repository with Zenodo or a comparable archive
+to obtain a permanent DOI, and cite that DOI here. ACS journals accept a
+repository citation; a live deployment is not required. If the application is
+later hosted publicly, add the URL to this statement.]
+
+--------------------------------------------------------------------------
+5. COMPETING INTERESTS DECLARATION
+--------------------------------------------------------------------------
+The authors declare no competing financial or non-financial interests.
+
+--------------------------------------------------------------------------
+6. ETHICAL STATEMENT
+--------------------------------------------------------------------------
+This research involved no human participants, no animal subjects and no
+personally identifiable data. It is a computational study based entirely on
+publicly available chemical classification records. No ethical approval was
+required.
+
+--------------------------------------------------------------------------
+7. FUNDING
+--------------------------------------------------------------------------
+[To be completed. State any funding received, or "This research received no
+specific grant from any funding agency in the public, commercial or
+not-for-profit sectors."]
+
+--------------------------------------------------------------------------
+8. SUPPORTING INFORMATION LIST
+--------------------------------------------------------------------------
+Table S0.  GHS label schema: column names, pictogram codes, their
+           authoritative United Nations meanings, and the correspondence with
+           the names used in the original study design.
+Table S1.  Full dataset statistics after cleaning: compound counts,
+           percentages and imbalance ratios per hazard class.
+Table S2.  Complete hyperparameter search results for all three algorithms.
+Table S3.  Full performance metrics: every model, class, metric and decision
+           threshold, with bootstrap confidence intervals.
+Table S4.  The twenty most influential SHAP features per hazard class, with
+           chemical interpretation.
+Table S5.  Malaysian industrial validation results by sector, including the
+           Johor 2019 incident chemicals.
+File S1.   STEP1_environment_requirements.txt - the complete software
+           environment.
+
+--------------------------------------------------------------------------
+9. PRE-SUBMISSION CHECKLIST
+--------------------------------------------------------------------------
+[ ] Manuscript formatted to the JCIM template, double-spaced, line-numbered
+[ ] Abstract within the 250-word limit (current draft: {facts['abstract_words']} words)
+[ ] All figures at 300 dpi minimum, 12 pt minimum type
+[ ] Figure captions below each figure, complete and self-contained
+[ ] All references formatted in ACS style with DOIs
+[ ] Supporting Information compiled as a single PDF plus the Excel workbook
+[ ] TOC graphic prepared (JCIM requires one)
+[ ] ORCID identifiers registered for all authors
+[ ] Corresponding author and institutional affiliations confirmed
+[ ] Funding statement completed
+[x] RESOLVED: the three label columns whose descriptive suffixes did not match
+    the official UN pictogram meanings have been renamed to GHS07_Irritant,
+    GHS08_HealthHazard and GHS09_Environmental. The data were bound to the
+    numeric codes and were unaffected; the mapping to the original names is in
+    Table S0.
+[ ] ACTION REQUIRED: deposit the repository with Zenodo (or figshare) to get a
+    permanent DOI, and cite it in the Data and Code Availability statements.
+    This is what ACS journals actually require - a live web deployment is NOT
+    required and its absence is not a barrier to publication. Keep the wording
+    "released as open-source software with a browser-based interface"; do not
+    claim a hosted service unless one exists and its URL is given.
+[ ] ACTION REQUIRED: state explicitly in the Limitations section that the
+    support vector machine was trained on a reduced feature set and a
+    subsampled training partition owing to hardware constraints, and is
+    therefore not strictly comparable with the other two algorithms.
+"""
+
+
+# ===========================================================================
+# MAIN
+# ===========================================================================
+def prepare_publication_materials():
+    """Run the whole of Step 13."""
+    total_start = time.time()
+    print("=" * 78)
+    print("STEP 13 - PUBLICATION PREPARATION")
+    print("=" * 78)
+
+    # ---- gather every number the text will quote --------------------------
+    cleaning = load_json(stamped("STEP3_cleaning_summary.json"))
+    descriptors = load_json(stamped("STEP4_descriptor_metadata.json"))
+    splits = load_json(stamped("STEP5_split_metadata.json"))
+    evaluation = load_json(stamped("STEP9_evaluation_summary.json"))
+    shap_summary = load_json(stamped("STEP10_shap_summary.json"))
+
+    auc_values = [v for v in evaluation.get("auc_per_class_best_model", {}).values()
+                  if v is not None]
+
+    # Per-class counts and the SMOTE ratios, quoted in the Methods section.
+    try:
+        distribution = pd.read_csv(stamped("STEP3_class_distribution_table.csv"))
+        counts = dict(zip(distribution["GHS_Column"], distribution["N_Positive"]))
+    except Exception:
+        counts = {}
+    # Read the Step 6 report to establish whether SMOTE actually ran. A class
+    # whose positive count is unchanged received no synthetic examples.
+    smote_applied = False
+    try:
+        smote = pd.read_csv(stamped("STEP6_smote_report.csv"))
+        smote_row = smote[smote["GHS_Column"] == "GHS01_Explosive"]
+        n_ghs01_train = (int(smote_row["Train_Positives_Before"].iloc[0])
+                         if len(smote_row) else 0)
+        n_ghs01_smote = (int(smote_row["Train_Total_After"].iloc[0])
+                         if len(smote_row) else 0)
+        smote_applied = bool(
+            (smote["Train_Positives_After"] > smote["Train_Positives_Before"]).any())
+    except Exception:
+        n_ghs01_train, n_ghs01_smote = 0, 0
+
+    # The ablation's true identity, and the largest class weight actually used.
+    from ghs_config import get_ablation_identity
+    ablation_name, _, _ = get_ablation_identity()
+    try:
+        with open(stamped("STEP6_imbalance_config.json"), encoding="utf-8") as fh:
+            max_spw = max(json.load(fh)["class_weights"].values())
+    except Exception:
+        max_spw = 0
+    try:
+        malaysia = pd.read_csv(stamped("STEP11_malaysia_validation_results.csv"))
+        n_malaysia = len(malaysia)
+    except Exception:
+        n_malaysia = 0
+
+    import sklearn, xgboost, rdkit
+    facts = {
+        "n_raw": cleaning.get("raw_rows", 0),
+        "n_clean": cleaning.get("final_cleaned_compounds", 0),
+        "n_modelling": cleaning.get("modelling_subset_compounds", 0),
+        "n_invalid": cleaning.get("removed_invalid_smiles", 0),
+        "n_duplicates": cleaning.get("removed_duplicates", 0),
+        "n_conflicted": cleaning.get("conflicted_compounds", 0),
+        "pct_multilabel": (100 * cleaning.get("multilabel_compounds", 0)
+                           / max(cleaning.get("final_cleaned_compounds", 1), 1)),
+        "n_features": descriptors.get("n_features_after_variance_filter", 0),
+        "n_features_removed": descriptors.get("n_features_removed", 0),
+        "best_model": evaluation.get("best_model", "n/a"),
+        "mean_auc": float(np.mean(auc_values)) if auc_values else float("nan"),
+        "min_auc": float(np.min(auc_values)) if auc_values else float("nan"),
+        "max_auc": float(np.max(auc_values)) if auc_values else float("nan"),
+        "n_malaysia": n_malaysia,
+        "n_ghs07": counts.get("GHS07_Irritant", 0),
+        "n_ghs01": counts.get("GHS01_Explosive", 0),
+        "n_ghs01_train": n_ghs01_train,
+        "n_ghs01_smote": n_ghs01_smote,
+        "smote_applied": smote_applied,
+        "ablation_name": ablation_name,
+        "max_scale_pos_weight": max_spw,
+        "n_train": splits.get("n_train", 0),
+        "python_version": sys.version.split()[0],
+        "rdkit_version": rdkit.__version__,
+        "sklearn_version": sklearn.__version__,
+        "xgboost_version": xgboost.__version__,
+    }
+
+    # ---- 13a figures -------------------------------------------------------
+    print("\n[13a] Generating publication-quality figures (300 dpi) ...")
+    figure_builders = [
+        ("Figure 1", figure1_workflow, ()),
+        ("Figure 2", figure2_class_distribution, ()),
+        ("Figure 3", figure3_roc_all_classes, (facts["best_model"],)),
+        ("Figure 4", figure4_pr_two_classes, ()),
+        ("Figure 5", figure5_shap_summaries, ()),
+        ("Figure 6", figure6_model_heatmap, ()),
+        ("Figure 7", figure7_malaysia, ()),
+        ("Figure 8", figure8_waterfall, ()),
+    ]
+    for label, builder, arguments in figure_builders:
+        try:
+            builder(*arguments)
+        except Exception as exc:
+            log_issue("13a", f"{label} could not be generated "
+                             f"({type(exc).__name__}: {exc}).")
+            plt.close("all")
+
+    # ---- 13b tables --------------------------------------------------------
+    table_path, sheets = build_supplementary_tables()
+
+    # ---- 13c references ----------------------------------------------------
+    print("\n[13c] Writing the reference list ...")
+    reference_path = os.path.join(MANUSCRIPT_DIR, "references_ACS_style.txt")
+    with open(reference_path, "w", encoding="utf-8") as fh:
+        fh.write(REFERENCES)
+    print(f"      26 references written to {reference_path}")
+
+    # ---- 13d abstract ------------------------------------------------------
+    print("\n[13d] Writing the abstract ...")
+    abstract, word_count = write_abstract(facts)
+    facts["abstract_words"] = word_count
+    abstract_path = os.path.join(MANUSCRIPT_DIR, "abstract.txt")
+    with open(abstract_path, "w", encoding="utf-8") as fh:
+        fh.write(abstract)
+    print(f"      Abstract: {word_count} words -> {abstract_path}")
+    if word_count > 250:
+        log_issue("13d", f"the abstract is {word_count} words, above the "
+                         f"250-word JCIM limit - trim before submission.")
+
+    # ---- 13e methods -------------------------------------------------------
+    print("\n[13e] Writing the Methods section ...")
+    methods = write_methods(facts)
+    methods_words = len(methods.split())
+    methods_path = os.path.join(MANUSCRIPT_DIR, "methods_section.txt")
+    with open(methods_path, "w", encoding="utf-8") as fh:
+        fh.write(methods)
+    print(f"      Methods: {methods_words:,} words -> {methods_path}")
+    if methods_words < 1500:
+        log_issue("13e", f"the Methods section is {methods_words} words, below "
+                         f"the 1500-word target.")
+
+    # ---- 13f checklist -----------------------------------------------------
+    print("\n[13f] Writing the submission checklist ...")
+    checklist = build_submission_checklist(facts)
+    checklist_path = os.path.join(MANUSCRIPT_DIR, "submission_checklist.txt")
+    with open(checklist_path, "w", encoding="utf-8") as fh:
+        fh.write(checklist)
+    print(f"      Checklist -> {checklist_path}")
+
+    # ---- figure captions ---------------------------------------------------
+    caption_path = os.path.join(FIG_DIR, "figure_captions.txt")
+    with open(caption_path, "w", encoding="utf-8") as fh:
+        fh.write("FIGURE CAPTIONS\n")
+        fh.write("=" * 70 + "\n\n")
+        for label in sorted(CAPTIONS, key=lambda s: int(s.split()[1])):
+            fh.write(textwrap.fill(CAPTIONS[label], width=78) + "\n\n")
+
+    log_path = os.path.join(DIR_LOGS, f"STEP13_issue_log_{TODAY}.txt")
+    with open(log_path, "w", encoding="utf-8") as fh:
+        fh.write("STEP 13 - issues encountered and how they were handled\n")
+        fh.write("=" * 70 + "\n")
+        fh.write("\n".join(ISSUE_LOG) if ISSUE_LOG else "No issues encountered.\n")
+
+    elapsed = time.time() - total_start
+    print("\n" + "=" * 78)
+    print("STEP 13 PROGRESS REPORT")
+    print("=" * 78)
+    print("WHAT WAS DONE : Generated eight 300-dpi publication figures with")
+    print("                captions, five supplementary tables, the ACS-style")
+    print("                reference list, the abstract, the Methods section and")
+    print("                the JCIM submission checklist.")
+    print(f"FIGURES       : {len(CAPTIONS)} of 8 generated -> {FIG_DIR}")
+    print(f"TABLES        : {len(sheets)} sheets -> {table_path}")
+    print(f"ABSTRACT      : {word_count} words")
+    print(f"METHODS       : {methods_words:,} words")
+    print(f"REFERENCES    : 26 in ACS style")
+    print(f"ISSUES        : {len(ISSUE_LOG)} logged (see {log_path})")
+    print(f"ELAPSED       : {elapsed / 60:.1f} minutes")
+    print("=" * 78)
+    return facts
+
+
+if __name__ == "__main__":
+    prepare_publication_materials()

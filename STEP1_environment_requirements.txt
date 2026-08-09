@@ -1,0 +1,63 @@
+# ==========================================================================
+# STEP1_environment_requirements.txt
+# GHS Chemical Hazard Classification project - Sareer Ahmad
+# Generated: 2026-08-06T06:22:08
+# Python   : 3.11.15 (D:\GHS_Project\.venv\Scripts\python.exe)
+# Platform : Windows-10-10.0.19045-SP0
+# Random seed used project-wide: 42
+#
+# INSTALLATION NOTE (documented deviation, see Rule 2):
+#   The official python.org Windows installer (python-3.11.9-amd64.exe)
+#   failed twice with WiX bootstrapper exit code 0x3 on this machine
+#   (no administrator elevation available for the chained MSI packages).
+#   FALLBACK APPLIED: the 'uv' package manager (Astral) was used to
+#   install a standalone CPython 3.11.15 build, which requires no
+#   Windows installer at all. All packages were then installed with
+#   'uv pip install', which is a drop-in replacement for pip.
+#   conda was not available on this machine, so the conda fallback
+#   named in the proposal could not be used.
+# ==========================================================================
+
+# ==========================================================================
+# PINNED DEPENDENCIES - DO NOT UPGRADE WITHOUT READING THIS
+# ==========================================================================
+#
+# starlette==0.52.1
+#   WHY: Streamlit 1.61.0 declares 'starlette<2,>=0.46.0', but that range is
+#        too permissive. Starlette 1.4.0 added a required keyword-only
+#        argument 'thread_minimum_size' to GZipResponder.__init__, which
+#        Streamlit's own gzip middleware subclasses without passing. With
+#        Starlette >= 1.0 installed, every HTTP response from the web
+#        application fails with HTTP 500 and the page never loads. Installing
+#        with an unconstrained resolver picks the newest Starlette and
+#        reproduces the fault, so the pin is required.
+#   SYMPTOM IF UNPINNED: TypeError: GZipResponder.__init__() missing 1 required keyword-only argument: 'thread_minimum_size'
+#   VERIFIED WORKING: streamlit 1.61.0 + starlette 0.52.1
+#
+starlette<1.0
+# ==========================================================================
+
+# --- Directly required by the research proposal ---
+requests==2.34.2
+pandas==3.0.5
+numpy==2.4.6
+rdkit==2026.03.5
+scikit-learn==1.9.0
+xgboost==3.2.0
+imbalanced-learn==0.14.2
+shap==0.51.0
+matplotlib==3.11.1
+seaborn==0.13.2
+scipy==1.17.1
+joblib==1.5.3
+streamlit==1.61.0
+reportlab==5.0.0
+tqdm==4.70.0
+pubchempy==1.0.5
+lightgbm==4.7.0
+iterative-stratification==0.1.9
+openpyxl==3.1.5
+starlette==0.52.1
+
+
+# --- Complete frozen environment (pip freeze) ---

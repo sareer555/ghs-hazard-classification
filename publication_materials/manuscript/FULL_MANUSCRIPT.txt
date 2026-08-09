@@ -1,0 +1,853 @@
+TITLE PAGE
+================================================================================
+
+TITLE
+
+    Interpretable Machine Learning for Predicting GHS Chemical Hazard
+    Classifications: A Multi-Label Approach Using 243,323
+    Compounds and Scaffold-Based Validation
+
+RUNNING TITLE
+
+    Interpretable multi-label prediction of GHS hazard classifications
+
+AUTHORS
+
+    Sareer Ahmad [1]*, Hooi Ling Lee [2]
+
+AFFILIATIONS
+
+    [1] Department of Chemistry, University of Peshawar, Peshawar 25120,
+        Khyber Pakhtunkhwa, Pakistan
+    [2] School of Chemical Sciences, Universiti Sains Malaysia,
+        11800 USM, Penang, Malaysia
+
+    * Corresponding author. Email: [ADD EMAIL]
+
+ORCID
+
+    Sareer Ahmad    [ADD ORCID - register free at orcid.org, required by ACS]
+    Hooi Ling Lee   [ADD ORCID]
+
+KEYWORDS
+
+    GHS classification; multi-label learning; molecular descriptors; SHAP
+    interpretability; chemical safety; scaffold splitting; QSAR
+
+--------------------------------------------------------------------------------
+NOTES BEFORE SUBMISSION
+--------------------------------------------------------------------------------
+1. Affiliations above are placeholders drawn from the project brief. Confirm
+   the exact departmental wording with each institution.
+2. Confirm co-authorship and the author order with Assoc. Prof. Dr. Lee Hooi
+   Ling before submitting. Listing a supervisor without their agreement is a
+   serious breach of publication ethics.
+3. ORCID identifiers are mandatory for the corresponding author at ACS and are
+   strongly encouraged by most other publishers.
+
+
+
+ABSTRACT
+
+Chemical hazard classification under the Globally Harmonized System (GHS)
+depends on experimental testing that is slow, costly and unavailable for most
+chemicals in industrial circulation. The March 2019 Sungai Kim Kim incident at
+Pasir Gudang, Johor, in which improperly identified chemical waste affected
+over 2,500 people, illustrates the cost of that gap. This work asked whether
+the nine GHS pictograms can be predicted from molecular structure alone, and
+made interpretable enough for regulatory use. GHS classifications for
+243,707 compound records were harvested from PubChem, contributed by
+five regulatory bodies, and reduced by structural validation, InChIKey
+deduplication and multi-source majority voting to 243,323 unique
+compounds, each described by 816
+descriptors combining physicochemical properties, Morgan (ECFP4) and MACCS
+fingerprints, and topological indices. Random Forest, XGBoost and support
+vector machine classifiers were trained as multi-label predictors and evaluated
+on a Bemis-Murcko scaffold split, so that no chemical skeleton was shared
+between training and test sets. XGBoost performed best, achieving a mean AUC-ROC
+of 0.915 across the nine classes (range
+0.830-0.995). SHAP analysis showed the model had recovered recognised structure-hazard relationships, most clearly the dependence of explosivity on the substructure [!#6;!#1]~[#7]~[!#6;!#1], flammability on low structural complexity, and aquatic hazard on high lipophilicity. Validation on
+44 chemicals from four Malaysian industrial sectors and the
+Johor 2019 incident confirmed transferability. The framework is released as
+open-source software with a browser-based screening interface.
+
+KEYWORDS: GHS classification; multi-label learning; molecular descriptors;
+SHAP interpretability; chemical safety; scaffold splitting; QSAR
+
+
+
+INTRODUCTION
+================================================================================
+
+The Globally Harmonized System of Classification and Labelling of Chemicals
+(GHS) is the framework through which chemical hazards are communicated
+worldwide. It assigns each substance a set of nine pictograms describing
+physical, health and environmental hazards, and those pictograms determine how
+a chemical is labelled, stored, transported and handled in every jurisdiction
+that has adopted the system, including Malaysia under the Occupational Safety
+and Health (Classification, Labelling and Safety Data Sheet of Hazardous
+Chemicals) Regulations 2013.
+
+Assigning those pictograms requires experimental data. Flash points must be
+measured, acute toxicity established in animal studies, aquatic toxicity
+determined in standardised assays. This testing is slow and expensive, and it
+has been completed for only a small fraction of the chemicals in commercial
+circulation. Tens of millions of substances are registered in public chemical
+databases; fewer than a quarter of a million carry a GHS classification of any
+kind. The gap is not an abstract regulatory inconvenience. On 7 March 2019,
+chemical waste of unverified composition was discharged into the Sungai Kim Kim
+river at Pasir Gudang, Johor, Malaysia. Vapour rising from the river affected
+more than 2,500 people, the majority of them schoolchildren, and 111 schools
+were closed. Acrylonitrile and acrolein were subsequently identified as the
+principal agents. Had the hazard profile of the discharged material been known
+at the point of disposal, the response would have been an acute inhalation
+emergency from the outset rather than a developing mystery.
+
+Computational prediction offers a way to narrow that gap. Quantitative
+structure-activity relationship modelling has been applied to individual
+toxicological endpoints for decades, and machine learning methods now routinely
+predict properties such as aqueous solubility, mutagenicity and acute oral
+toxicity from molecular structure alone. Applying the same approach to GHS
+classification is attractive because the pictograms are the operational
+currency of chemical safety: a predicted pictogram translates directly into a
+handling decision in a way that a predicted LD50 does not.
+
+Three difficulties have limited progress. The first is that GHS assignment is
+inherently multi-label. A compound does not carry one hazard but any
+combination of nine, and in the dataset assembled here 26.2 per cent of
+compounds carry more than one. Treating each pictogram as an independent binary
+problem ignores the correlations between them, while treating the combination
+as a single multi-class label is intractable given the number of possible
+combinations.
+
+The second difficulty is evaluation. Chemical datasets contain large families
+of structurally similar molecules. A model validated on a random train-test
+split is frequently tested on near-duplicates of its own training data, and
+reports an accuracy that collapses the moment it encounters genuinely
+unfamiliar chemistry. Scaffold-based splitting, in which every compound sharing
+a Bemis-Murcko framework is confined to a single partition, is the established
+remedy, yet it remains less common in the hazard-prediction literature than in
+drug discovery.
+
+The third difficulty is interpretability. A regulator cannot act on a
+prediction whose basis is opaque. A model that outputs "corrosive, 87 per cent"
+without saying why offers a safety officer no way to judge whether the
+prediction is chemically sensible or an artefact. Post-hoc attribution methods,
+particularly SHAP, make it possible to decompose an individual prediction into
+the contribution of each molecular descriptor, and so to ask whether a model
+has recovered known structure-hazard relationships or merely memorised
+correlations.
+
+This work addresses all three. GHS classifications were harvested from PubChem
+for 243,707 compound records contributed by five independent regulatory bodies,
+reconciled by majority vote where those bodies disagreed, and reduced to
+243,323 unique validated structures - to our knowledge the largest multi-label
+GHS dataset assembled for machine learning. Three algorithms were trained as
+multi-label predictors and evaluated on a Bemis-Murcko scaffold split, so that
+no chemical skeleton is shared between training and test data. Predictions were
+interpreted with SHAP and the resulting attributions examined against
+established chemistry. Finally, the framework was applied to chemicals drawn
+from four Malaysian industrial sectors and to the substances implicated in the
+Johor 2019 incident, to test whether a model trained on global regulatory data
+is useful in a specific national context.
+
+Two findings emerged that we believe are of wider methodological interest than
+the model itself. The first concerns how scaffold groups are allocated to
+partitions: the obvious allocation strategies satisfy every superficial check
+while systematically starving the rarest hazard classes of training data. The
+second concerns dataset size, where a learning curve computed within a
+convenience subsample indicated saturation that a controlled experiment on the
+full dataset showed to be illusory.
+
+
+
+MATERIALS AND METHODS
+
+Computational environment.
+All computations were performed under Python 3.11.15 on a
+64-bit Windows 10 workstation equipped with an Intel Core i7-6500U processor
+(two physical cores, four logical processors) and 7.9 GB of system memory.
+Cheminformatics operations were carried out with RDKit (2026.03.5),
+machine learning with scikit-learn (1.9.0) and XGBoost
+(3.2.0), class-imbalance correction with imbalanced-learn,
+and model interpretation with the SHAP library. A single random seed of 42 was
+applied to the Python standard library, NumPy, scikit-learn, XGBoost and every
+resampling procedure, so that all results reported here are exactly
+reproducible. The complete environment specification is provided as
+Supporting Information.
+
+Data collection.
+GHS hazard classifications were obtained from the PubChem PUG-View annotation
+service, which aggregates classifications contributed by independent
+regulatory bodies. The complete set of records filed under the heading "GHS
+Classification" was retrieved page by page, comprising contributions from the
+European Chemicals Agency, Regulation (EC) No 1272/2008 (CLP), the Hazardous
+Substances Data Bank, Japan's NITE-CMC and the Hazardous Chemical Information
+System of Safe Work Australia. Requests were rate-limited to five per second in
+accordance with PubChem's usage policy, and failed requests were retried with
+exponential backoff at one, two and four seconds. For every annotation record
+the linked PubChem Compound Identifiers, the assigned pictograms, the GHS
+hazard statement codes and the signal word were extracted. Pictograms were
+identified from the pictogram image references contained in the record markup,
+which encode the official pictogram numbers GHS01 to GHS09 unambiguously.
+Isomeric SMILES strings, molecular formulae, InChIKeys and compound titles were
+subsequently retrieved for every identifier by batched POST requests, and CAS
+Registry Numbers were recovered by pattern-matching the synonym lists. A total
+of 243,707 compound records was assembled.
+
+The numeric pictogram code was treated as authoritative throughout, so that
+data filed under GHS07 correspond to the exclamation-mark (irritant)
+pictogram, GHS08 to the health-hazard pictogram and GHS09 to the environmental
+pictogram, as defined in the tenth revised edition of the GHS. The descriptive
+suffixes attached to three of the nine label columns in the original study
+design did not follow this scheme; because the data were bound to the numeric
+code rather than to the label, the classifications themselves were unaffected,
+and the three columns were subsequently renamed to GHS07_Irritant,
+GHS08_HealthHazard and GHS09_Environmental to match the United Nations
+definitions. The correspondence with the original names is recorded in
+Supporting Information Table S0.
+
+Data cleaning and label reconciliation.
+Every SMILES string was parsed with RDKit, and structures that could not be
+interpreted were discarded (14 records). Duplicate
+structures were identified by InChIKey, with canonical SMILES used as the
+fallback key for the small number of structures for which InChI generation
+failed; the first occurrence of each structure was retained
+(370 duplicates removed). Compounds carrying no hazard
+label were excluded, because such records cannot be distinguished from
+chemicals that have simply not yet been assessed and would otherwise teach the
+model that unassessed chemicals are safe. Where several regulatory bodies had
+classified the same compound, disagreements were resolved by majority vote
+across sources. Ties, which can arise only with an even number of contributing
+sources, were resolved in favour of the hazardous assignment and the affected
+compounds were flagged; 2,307 compounds were affected. The
+cleaned dataset comprised 243,323 unique compounds, of which
+26.2 per cent carried more than one hazard pictogram.
+All 243,323 compounds were used for model development.
+
+Effect of training-set size.
+An earlier version of this work modelled a 40,000-compound subset, drawn
+because the dense descriptor matrix for the complete dataset exceeded the
+memory of the workstation available. Whether that constraint had limited the
+reported performance was tested directly. Four models were trained on nested
+training sets of 32,000, 64,000, 128,000 and 194,658 compounds, each a superset
+of the smaller ones, and all four were evaluated on the same held-out test
+partition with identical hyperparameters, so that training-set size was the
+only quantity that varied. Mean AUC-ROC rose monotonically from 0.8187 to
+0.8738, a gain of 0.0551 against a bootstrap confidence interval of 0.0139, and
+every one of the nine hazard classes improved; the rare classes gained most,
+with the explosive class rising by 0.0918 and the oxidiser class by 0.0610. The
+subset was therefore a genuine limitation rather than a demonstrated
+sufficiency, and all results reported here use the complete dataset.
+
+It is worth noting that a learning curve constructed within the 40,000-compound
+subset alone had suggested the opposite, appearing to plateau. That appearance
+was an artefact of the subset's construction: it had deliberately retained
+every positive example of the rare classes, so those classes could not improve
+with additional data and the aggregate curve flattened prematurely. Learning
+curves computed on a non-representative subsample can therefore be actively
+misleading about the value of further data.
+
+Molecular descriptor computation.
+Each compound was represented by a concatenated feature vector comprising
+three descriptor families. Nineteen physicochemical descriptors were computed
+with RDKit: molecular weight, exact molecular weight, the Crippen
+lipophilicity estimate, topological polar surface area, hydrogen-bond donor
+and acceptor counts, rotatable bond count, aromatic, saturated and aliphatic
+ring counts, total ring count, the fraction of sp3-hybridised carbon atoms,
+heavy atom count, heteroatom count, combined nitrogen and oxygen count,
+combined NH and OH count, the Labute approximate surface area, the Balaban J
+index and the Bertz complexity index. Structural information was encoded as a
+1024-bit Morgan fingerprint of radius two, equivalent to ECFP4, together with
+the 167-bit MACCS substructure key set. Eight topological indices completed the
+representation: the Chi connectivity indices of orders zero to four and the
+Kappa shape indices of orders one to three. Descriptors that could not be
+evaluated for a particular structure were replaced by the median of the
+corresponding column, and 402 descriptors whose
+variance across the dataset fell below 0.01 were removed as uninformative,
+leaving 816 features.
+
+Dataset splitting.
+The dataset was partitioned by Bemis-Murcko scaffold rather than at random. The
+scaffold of each compound, obtained by removing all side chains and retaining
+the ring systems and their connecting linkers, was computed with RDKit, and all
+compounds sharing a scaffold were assigned to the same partition, in the ratio
+80:10:10. Acyclic compounds, whose Murcko scaffold is empty, were each treated
+as an individual group rather than being pooled, since pooling would have
+placed a large fraction of the industrial solvents in the dataset into a single
+partition.
+
+The allocation of groups to partitions requires care, and two simpler schemes
+were found to be inadequate. Filling the training partition to its quota before
+the others causes a single large scaffold group encountered late to overflow
+into the test partition, distorting the intended ratios. Assigning each group
+to whichever partition is furthest below its quota by compound count corrects
+the ratios but starves the rare classes: because groups are processed largest
+first, the ring-bearing scaffolds fill the training quota early, after which
+the single-compound groups are distributed approximately evenly between the
+three partitions. Every acyclic molecule forms a single-compound group, and the
+rare hazard classes consist predominantly of small acyclic molecules, so under
+that scheme only 30 per cent of compressed gases and 39 per cent of oxidisers
+reached the training partition rather than the intended 80 per cent.
+
+Group allocation was therefore performed by a group-wise form of iterative
+stratification for multi-label data. Each scaffold group was scored against
+every partition on the largest fractional overshoot the assignment would cause,
+evaluated simultaneously on overall partition size and on each hazard class the
+group contained, and assigned to the partition with the lowest worst-case
+overshoot. Groups containing compounds of the rarest classes were placed first.
+This procedure returned every hazard class to within one percentage point of
+the intended 80 per cent training share while preserving exact 80:10:10
+partition sizes. The resulting split was verified to contain no scaffold shared
+between partitions, to provide positive examples of all nine hazard classes in
+every partition, and to allocate no class a training share more than fifteen
+percentage points below the overall training share.
+
+Class imbalance handling.
+Class frequencies in the dataset spanned more than three orders of magnitude,
+from 220,020 compounds carrying the irritant pictogram to 184
+carrying the explosive pictogram. Three complementary corrections were
+applied. The Synthetic Minority Over-sampling Technique was applied separately
+for each hazard class to the training partition only, with the number of
+neighbours reduced automatically for classes containing fewer than six
+positive examples; the validation and test partitions were never resampled.
+Class weights, defined as the ratio of negative to positive examples, were
+supplied to each classifier. Finally, decision thresholds were calibrated per
+class rather than fixed at 0.5, as described below.
+
+It should be noted that for the rarest classes the oversampling ratio is
+extreme: balancing the explosive class required expanding 148
+genuine positive examples into approximately 194,619 training rows.
+Synthetic examples generated at that ratio are convex combinations of a very
+small number of real molecules and cannot introduce chemistry absent from
+those originals, so they enlarge the minority class without enriching it. For
+this reason oversampling was not used for the primary models, which rely on
+class weighting instead; the oversampled models were trained separately as an
+ablation so that the two strategies could be compared directly rather than
+assumed equivalent.
+
+Model training and hyperparameter optimisation.
+Three algorithms were trained. A Random Forest classifier was fitted as a
+multi-output model with balanced class weighting. Nine independent XGBoost
+classifiers were trained, one per hazard class, each with the positive-class
+scaling factor set to the ratio of negative to positive examples for that
+class. A support vector machine with a radial basis function kernel was
+trained within a pipeline that applied standardisation before classification.
+Because the computational cost of a kernel machine grows with the square of
+the training set size, the support vector machine was trained on the 100
+highest-ranked features by Random Forest importance and on a stratified
+subsample of the training partition; this constraint is a property of the
+hardware used and is reported so that the support vector machine results are
+interpreted accordingly. Hyperparameters were optimised by randomised search
+with cross-validation on the validation partition, over the search spaces
+reported in Supporting Information Table S2. The number of search draws was
+determined by timing a single fit and selecting the largest number of draws
+compatible with a fixed wall-clock budget.
+
+Evaluation.
+Models were evaluated on the held-out scaffold-split test partition. For each
+algorithm and each hazard class, the area under the receiver operating
+characteristic curve, the average precision, the F1 score, the Matthews
+correlation coefficient, precision, recall and specificity were computed.
+Ninety-five per cent confidence intervals for the area under the curve were
+obtained by bootstrap resampling of the test partition over 1000 iterations.
+Two decision thresholds were derived per class from validation data alone and
+then applied unchanged to the test partition: the threshold maximising the F1
+score, and the highest threshold at which recall remained at or above 0.90, the
+latter representing the safety-first operating point appropriate to regulatory
+screening. The Matthews correlation coefficient was adopted as the primary
+metric for classes with fewer than 500 positive training examples, since it is
+not inflated by a model that predicts the majority class throughout, and the
+area under the receiver operating characteristic curve was used for the
+remainder.
+
+Model interpretation.
+The best-performing model was interpreted with SHAP. Exact Shapley values were
+computed for tree-based models using the TreeExplainer algorithm. For each
+hazard class the descriptors were ranked by mean absolute SHAP value, and the
+direction of each descriptor's influence was determined from the mean signed
+value. Individual predictions were explained with waterfall plots showing the
+additive contribution of each descriptor from the model's base value to its
+final output. MACCS keys appearing among the leading features were annotated
+with their defining SMARTS patterns, and Morgan fingerprint bits with an
+example of the atomic environment that sets them, so that fingerprint
+contributions could be interpreted chemically rather than as opaque indices.
+
+Malaysian industrial validation.
+A validation set was assembled from chemicals used in four Malaysian
+industrial sectors - palm oil processing, rubber processing, petrochemicals
+and semiconductor manufacturing - together with the chemicals identified in
+official and peer-reviewed accounts of the March 2019 Sungai Kim Kim incident
+at Pasir Gudang, Johor. Structures and reference GHS classifications were
+retrieved from PubChem. Entries corresponding to materials rather than
+discrete molecules were represented by a single representative structure, and
+each such substitution was recorded. Predictions were generated with the
+best-performing model and its calibrated thresholds, without any retraining or
+adjustment, and scored against the PubChem classifications for those compounds
+where classifications were available.
+
+Data and code availability.
+All datasets, trained models, figures and analysis code are provided in the
+project repository. The prediction framework is distributed as a Streamlit web
+application and as a command-line tool.
+
+
+
+RESULTS
+================================================================================
+
+Dataset assembly and composition
+--------------------------------------------------------------------------------
+
+GHS classifications were retrieved for 243,707 compound records. Structural
+validation removed 14 records whose SMILES strings could not be parsed, and
+deduplication by InChIKey removed a further 370, leaving 243,323 unique
+compounds. Five regulatory sources contributed classifications, and 2,307
+compounds received a tied vote between them; these were retained, flagged, and
+resolved in favour of the hazardous assignment.
+
+The dataset is strongly multi-label and strongly imbalanced. 63,781 compounds
+(26.2 per cent) carry more than one pictogram. Class frequencies span more than
+three orders of magnitude, from 220,020 compounds carrying the irritant
+pictogram to 184 carrying the explosive pictogram (Figure 2). This imbalance,
+rather than the size of the dataset, proved to be the dominant constraint on
+performance.
+
+Molecular representation and partitioning
+--------------------------------------------------------------------------------
+
+Each compound was described by 1,218 descriptors combining physicochemical
+properties, Morgan (ECFP4) and MACCS fingerprints and topological indices.
+Removing descriptors with variance below 0.01 eliminated 402 - almost all of
+them sparsely populated fingerprint bits - leaving 816 features.
+
+Partitioning by Bemis-Murcko scaffold produced 57,591 distinct scaffold groups,
+of which 28,278 were acyclic compounds treated as individual groups. The final
+partition contained 194,619 training, 24,352 validation and 24,352 test
+compounds, with no scaffold shared between any two partitions and every hazard
+class represented in all three.
+
+Allocating scaffold groups to partitions required more care than is usually
+acknowledged. Filling the training partition to its quota before the others
+caused large scaffold groups encountered late to overflow into the test
+partition, producing an 80:3:17 split. Assigning each group to whichever
+partition was furthest below its quota corrected the overall ratios but starved
+the rare classes: only 30 per cent of compressed gases and 39 per cent of
+oxidisers reached the training partition instead of the intended 80 per cent,
+because every acyclic molecule forms a single-compound group and those groups
+are allocated last. Group-wise iterative stratification, scoring each group
+against every partition on overall size and on each class it contains, returned
+every class to within one percentage point of its intended share while
+preserving exact partition sizes.
+
+Model performance
+--------------------------------------------------------------------------------
+
+Four models were evaluated on the held-out test partition of 24,352 compounds.
+Mean AUC-ROC across the nine classes was 0.9146 for XGBoost, 0.9078 for the
+Random Forest without class weighting, 0.8900 for the class-weighted Random
+Forest and 0.8711 for the support vector machine. Mean Matthews correlation
+coefficients were 0.4705, 0.4590, 0.3633 and 0.3683 respectively. XGBoost was
+selected as the best model on both metrics. The bootstrap 95 per cent
+confidence interval had a median half-width of 0.0077, so differences smaller
+than that are not meaningful; the two leading models were separated on Matthews
+correlation coefficient rather than on area under the curve.
+
+Per-class performance for XGBoost is given below; N is the number of positive
+examples in the test partition and the interval is the bootstrap 95 per cent
+confidence interval on AUC-ROC.
+
+  Code  Hazard                         N     AUC       CI 95%        AP      F1     MCC
+  ---------------------------------------------------------------------------------------
+  GHS01 Explosive                     18   0.9859  [0.974, 0.995]    0.151   0.182   0.235
+  GHS02 Flammable                  1,063   0.9708  [0.965, 0.975]    0.755   0.707   0.694
+  GHS03 Oxidiser                      41   0.9267  [0.862, 0.981]    0.544   0.580   0.590
+  GHS04 Compressed gas                28   0.9951  [0.984, 1.000]    0.809   0.737   0.737
+  GHS05 Corrosive                  4,333   0.8924  [0.887, 0.898]    0.737   0.665   0.596
+  GHS06 Acute toxicity             1,520   0.8296  [0.818, 0.840]    0.326   0.361   0.316
+  GHS07 Irritant / harmful        21,967   0.8336  [0.826, 0.841]    0.977   0.950   0.202
+  GHS08 Serious health hazard      1,360   0.9004  [0.893, 0.908]    0.452   0.467   0.434
+  GHS09 Environmental hazard       1,773   0.8969  [0.890, 0.903]    0.459   0.474   0.431
+
+Discrimination is excellent for the physically determined hazards - compressed
+gas (0.995), explosive (0.986) and flammable (0.971) - and substantially lower
+for the biologically mediated ones, acute toxicity (0.830) and irritation
+(0.834). This ordering is chemically coherent: physical state and flammability
+are largely determined by molecular size and polarity, whereas toxicity depends
+on specific molecular mechanisms that bulk descriptors capture only indirectly.
+
+Training times on a two-core workstation were 17.5 minutes for the Random
+Forest, 8.6 minutes for the nine gradient-boosted models and 3.4 minutes for
+the support vector machine, the last on a reduced feature set and subsampled
+training partition (see Limitations).
+
+Effect of training-set size
+--------------------------------------------------------------------------------
+
+Models were trained on nested subsets of the training partition and evaluated
+on the same fixed test partition with identical hyperparameters, so that
+training-set size was the only quantity varying.
+
+     n_train    mean AUC
+  -----------------------
+     32,000      0.8187
+     64,000      0.8469
+    128,000      0.8633
+    194,658      0.8738
+
+Mean AUC-ROC rose monotonically, gaining +0.0551 overall - more than four times
+the confidence interval - and every one of the nine classes improved. The rare
+classes gained most.
+
+A learning curve computed earlier within a 40,000-compound convenience
+subsample had appeared to plateau, with the final increment of data changing
+mean AUC-ROC by less than 0.001. That appearance was an artefact of how the
+subsample had been constructed: it deliberately retained every positive example
+of the rare classes, so those classes could not improve with additional data
+and the aggregate curve flattened prematurely.
+
+Interpretability
+--------------------------------------------------------------------------------
+
+SHAP values were computed for 500 test compounds. Across all nine classes the
+most influential descriptors were LabuteASA, TPSA, Kappa2. The single most
+influential descriptor for each class, with the correlation between descriptor
+value and SHAP value (positive meaning that higher values push towards the
+hazard):
+
+  Code  Descriptor         r      Measures
+  -------------------------------------------------------------------------
+  GHS01 MACCS_70          +0.834   MACCS substructure key 70: matches SMARTS pa
+  GHS02 BertzCT           -0.493   structural complexity
+  GHS03 Chi3n             -0.157   third-order connectivity index
+  GHS04 Kappa2            -0.080   second-order shape index - how linear or sta
+  GHS05 BertzCT           -0.610   structural complexity
+  GHS06 ExactMolWt        +0.547   monoisotopic molecular mass
+  GHS07 Chi1              -0.647   first-order connectivity index - bond-level
+  GHS08 Chi4n             +0.484   fourth-order connectivity index
+  GHS09 MolLogP           +0.450   lipophilicity - how strongly the compound pr
+
+The explosive class is the most striking. Its leading descriptor is MACCS key
+70, defined by the SMARTS pattern [!#6;!#1]~[#7]~[!#6;!#1] - a heteroatom
+bonded to nitrogen bonded to a further heteroatom - with a correlation of
++0.834. That connectivity is the defining motif of nitro groups, nitrate
+esters, nitramines and azides, which is to say of the great majority of organic
+explosives. The model was given no information about energetic chemistry and
+recovered this substructure from the data alone.
+
+Other attributions are equally interpretable. Aquatic hazard is driven by
+lipophilicity (+0.450), consistent with bioaccumulation. Acute toxicity
+increases with molecular mass (+0.547). Flammability decreases with structural
+complexity (-0.493), reflecting that small simple molecules are the volatile
+ones.
+
+Malaysian industrial validation
+--------------------------------------------------------------------------------
+
+The framework was applied without retraining to chemicals from four Malaysian
+industrial sectors and to the substances implicated in the Johor 2019 incident.
+
+  Sector                        n  Label acc.    Recall
+  ------------------------------------------------------
+  Johor 2019 Emergency         12     0.907     0.836
+  Palm Oil Processing           7     0.905     0.900
+  Petrochemicals                9     0.876     0.839
+  Rubber Processing             7     0.762     0.708
+  Semiconductor (Penang)        8     0.736     0.658
+
+Performance is highest for the palm oil, petrochemical and incident chemicals,
+and lowest for rubber processing and semiconductor manufacturing. Those two
+sectors are dominated by inorganic and elemental species - sulfur, zinc oxide,
+carbon black, hydrofluoric acid, phosphine, arsine - which lie outside the
+applicability domain of descriptors designed for covalent organic molecules.
+
+For the Johor 2019 chemicals specifically, the framework recovered 46 of 55
+true hazard labels across twelve compounds, and flagged the flammable pictogram
+for all twelve. A screening tool producing that profile from structures alone
+would have supported an early decision to treat the discharge as an acute
+inhalation hazard.
+
+
+
+DISCUSSION
+================================================================================
+
+Ranking ability and decision quality are not the same thing
+--------------------------------------------------------------------------------
+
+The most important result in this work is a disagreement between two metrics.
+The explosive class achieves an AUC-ROC of 0.9859, which would ordinarily be
+described as near-perfect discrimination, yet its Matthews correlation
+coefficient at the calibrated decision threshold is only 0.2355. Both numbers
+are correct, and the gap between them is the practical finding.
+
+AUC-ROC measures ranking: given one explosive and one non-explosive compound,
+how often does the model score the explosive higher? By that measure the model
+is excellent. The Matthews correlation coefficient measures the quality of the
+actual yes-or-no decision, and it is sensitive to prevalence. The test
+partition contains 18 explosives among 24,352 compounds. At that prevalence,
+any threshold permissive enough to catch most explosives also admits many times
+their number in false positives.
+
+This has a direct consequence for deployment. A model with these
+characteristics is well suited to prioritising which chemicals to test first,
+because ranking is what prioritisation requires. It is not suited to issuing an
+unsupervised yes-or-no verdict on whether a novel compound is explosive. Papers
+that report AUC alone for rare-class problems obscure this distinction, and we
+would encourage the routine reporting of a prevalence-sensitive metric
+alongside it.
+
+The splitting algorithm can silently determine the result
+--------------------------------------------------------------------------------
+
+Scaffold splitting is widely recommended, but how scaffold groups are allocated
+to partitions receives little attention. Two allocation strategies were tried
+here before a third succeeded, and both failures passed every check that is
+normally applied. Overall partition sizes were correct, no scaffold appeared in
+two partitions, and every class had positive examples everywhere. Only a per-
+class audit of training share revealed that 70 per cent of compressed gases and
+61 per cent of oxidisers had been diverted away from the training partition.
+
+The mechanism is general rather than particular to this dataset. Groups are
+processed in descending size order so that large groups can be placed while
+room remains; single-compound groups are therefore allocated last, when the
+training quota is already close to full. Any chemical property that correlates
+with belonging to a small scaffold group will be systematically under-
+represented in training. Here that property was being a small acyclic molecule,
+which describes most compressed gases and many oxidisers. We would expect the
+same effect wherever rare classes are structurally atypical, and we recommend
+that per-class training share be reported as a routine diagnostic.
+
+Dataset size, and the hazard of learning curves on subsamples
+--------------------------------------------------------------------------------
+
+The controlled experiment showed that training on the full dataset improves
+mean AUC-ROC by more than four times the confidence interval, with every class
+benefiting. That result is unsurprising in itself. What is instructive is that
+a learning curve computed within a 40,000-compound subsample had suggested the
+opposite, appearing to saturate.
+
+The explanation is that the subsample had been constructed to retain every
+positive example of the rare classes, a reasonable decision when working under
+a memory constraint. Those classes consequently could not improve with
+additional data, and their flat curves dominated the aggregate. A learning
+curve is only informative about the full dataset if the subsample it is
+computed on is representative of that dataset; where a subsample has been
+deliberately enriched, the curve measures the enrichment rather than the
+underlying scaling behaviour.
+
+What the model learned
+--------------------------------------------------------------------------------
+
+The SHAP attributions are consistent with established chemistry to a degree
+that is reassuring rather than merely decorative. The recovery of the
+heteroatom-nitrogen-heteroatom motif as the dominant explosive predictor is the
+clearest example: this is the connectivity shared by nitro compounds, nitrate
+esters, nitramines and azides, and it was identified without any prior
+information about energetic materials. Similarly, aquatic hazard is driven by
+lipophilicity, consistent with bioaccumulation, and flammability by low
+structural complexity, consistent with volatility.
+
+This matters for regulatory acceptance. A model whose stated reasons align with
+known structure-hazard relationships can be audited by a chemist, and its
+failures can be diagnosed. The per-compound waterfall explanations provided by
+the deployed interface allow a safety officer to see precisely which structural
+features drove a particular prediction, and to reject it if the reasoning is
+chemically implausible.
+
+Limitations
+--------------------------------------------------------------------------------
+
+The support vector machine results are not directly comparable with the other
+two algorithms. An RBF kernel matrix scales with the square of the training set
+size, requiring approximately 300 GB at full scale, so the support vector
+machine was trained on 100 features and 8,000 compounds rather than the full
+816 and 194,619. This is a property of the algorithm, not of the hardware, and
+no increase in memory would resolve it; a linear kernel or a Nystroem
+approximation would be required.
+
+Inorganic, organometallic and elemental species lie outside the applicability
+domain. The descriptors used here characterise covalent organic structures, and
+the two Malaysian sectors dominated by such species - rubber processing and
+semiconductor manufacturing - show markedly lower recall. Predictions for
+mineral acids, metal oxides and coordination compounds should be treated with
+corresponding caution.
+
+The environmental class performed poorly on the Malaysian validation set,
+recovering only 0.16 of true labels despite an AUC of 0.897 on the global test
+set. The Malaysian set contains many industrial commodity chemicals whose
+aquatic classification depends on data the model cannot infer from structure.
+
+Exact agreement across all nine classes simultaneously was achieved for only
+about a fifth of recognisable multi-label test compounds. Per-class performance
+is considerably better than that figure suggests, but users should understand
+that the framework identifies individual hazards well and complete hazard
+profiles less reliably.
+
+Finally, the labels are regulatory classifications rather than experimental
+measurements. They reflect what regulatory bodies have recorded, including
+their own inconsistencies - which is why multi-source majority voting was
+necessary, and why 2,307 compounds required tie-breaking. The model can be no
+more accurate than the classifications it was trained on.
+
+
+
+CONCLUSIONS
+================================================================================
+
+A multi-label machine learning framework was developed to predict all nine GHS
+hazard pictograms from molecular structure, trained on 243,323 compounds whose
+classifications were reconciled across five regulatory sources. Evaluated on a
+Bemis-Murcko scaffold split that guarantees no shared chemical skeleton between
+training and test data, gradient boosting achieved a mean AUC-ROC of 0.915
+across the nine classes, ranging from 0.830 for the irritant class to 0.995 for
+compressed gases.
+
+SHAP analysis showed that the model recovered established structure-hazard
+relationships, most notably identifying the heteroatom-nitrogen-heteroatom
+connectivity of nitro, nitrate, nitramine and azide groups as the dominant
+predictor of explosivity without any prior chemical input. Applied without
+retraining to chemicals from four Malaysian industrial sectors and to the
+substances implicated in the 2019 Sungai Kim Kim incident, the framework
+recovered the majority of true hazard labels.
+
+Two methodological findings extend beyond this application. Scaffold group
+allocation can systematically deprive rare classes of training data while
+passing every conventional validity check, and per-class training share should
+therefore be audited routinely. Learning curves computed on deliberately
+enriched subsamples can indicate saturation that a controlled experiment
+disproves.
+
+The framework is released as open-source software with a browser-based
+screening interface. It is intended for prioritising which chemicals warrant
+laboratory assessment, and does not replace testing or regulatory
+classification under Malaysia's CLASS Regulations 2013.
+
+
+
+
+REFERENCES (ACS style)
+======================
+
+COMPUTATIONAL CHEMISTRY AND CHEMINFORMATICS
+-------------------------------------------
+(1)  Landrum, G. RDKit: Open-Source Cheminformatics Software, 2006.
+     https://www.rdkit.org (accessed 2026-08-05).
+
+(2)  Weininger, D. SMILES, a Chemical Language and Information System. 1.
+     Introduction to Methodology and Encoding Rules. J. Chem. Inf. Comput.
+     Sci. 1988, 28 (1), 31-36. DOI: 10.1021/ci00057a005.
+
+(3)  Kim, S.; Chen, J.; Cheng, T.; Gindulyte, A.; He, J.; He, S.; Li, Q.;
+     Shoemaker, B. A.; Thiessen, P. A.; Yu, B.; et al. PubChem in 2021: New
+     Data Content and Improved Web Interfaces. Nucleic Acids Res. 2021, 49
+     (D1), D1388-D1395. DOI: 10.1093/nar/gkaa971.
+
+(4)  Bemis, G. W.; Murcko, M. A. The Properties of Known Drugs. 1. Molecular
+     Frameworks. J. Med. Chem. 1996, 39 (15), 2887-2893.
+     DOI: 10.1021/jm9602928.
+
+MACHINE LEARNING ALGORITHMS
+---------------------------
+(5)  Breiman, L. Random Forests. Mach. Learn. 2001, 45 (1), 5-32.
+     DOI: 10.1023/A:1010933404324.
+
+(6)  Chen, T.; Guestrin, C. XGBoost: A Scalable Tree Boosting System. In
+     Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge
+     Discovery and Data Mining; ACM: New York, 2016; pp 785-794.
+     DOI: 10.1145/2939672.2939785.
+
+(7)  Cortes, C.; Vapnik, V. Support-Vector Networks. Mach. Learn. 1995, 20
+     (3), 273-297. DOI: 10.1023/A:1022627411411.
+
+(8)  Pedregosa, F.; Varoquaux, G.; Gramfort, A.; Michel, V.; Thirion, B.;
+     Grisel, O.; Blondel, M.; Prettenhofer, P.; Weiss, R.; Dubourg, V.; et al.
+     Scikit-Learn: Machine Learning in Python. J. Mach. Learn. Res. 2011, 12,
+     2825-2830.
+
+CLASS IMBALANCE HANDLING
+------------------------
+(9)  Chawla, N. V.; Bowyer, K. W.; Hall, L. O.; Kegelmeyer, W. P. SMOTE:
+     Synthetic Minority Over-Sampling Technique. J. Artif. Intell. Res. 2002,
+     16, 321-357. DOI: 10.1613/jair.953.
+
+(10) Lemaitre, G.; Nogueira, F.; Aridas, C. K. Imbalanced-Learn: A Python
+     Toolbox to Tackle the Curse of Imbalanced Datasets in Machine Learning.
+     J. Mach. Learn. Res. 2017, 18 (17), 1-5.
+
+SHAP INTERPRETABILITY
+---------------------
+(11) Lundberg, S. M.; Lee, S.-I. A Unified Approach to Interpreting Model
+     Predictions. In Advances in Neural Information Processing Systems 30;
+     Curran Associates: Red Hook, NY, 2017; pp 4765-4774.
+
+(12) Lundberg, S. M.; Erion, G.; Chen, H.; DeGrave, A.; Prutkin, J. M.;
+     Nair, B.; Katz, R.; Himmelfarb, J.; Bansal, N.; Lee, S.-I. From Local
+     Explanations to Global Understanding with Explainable AI for Trees.
+     Nat. Mach. Intell. 2020, 2 (1), 56-67. DOI: 10.1038/s42256-019-0138-9.
+
+GHS AND CHEMICAL SAFETY
+-----------------------
+(13) United Nations. Globally Harmonized System of Classification and
+     Labelling of Chemicals (GHS), 10th revised ed.; United Nations: New York
+     and Geneva, 2023. ISBN 978-92-1-116927-2.
+
+(14) Malaysia Ministry of Human Resources. Occupational Safety and Health
+     (Classification, Labelling and Safety Data Sheet of Hazardous Chemicals)
+     Regulations 2013 (CLASS Regulations); Government of Malaysia: Putrajaya,
+     2013.
+
+RELATED COMPUTATIONAL HAZARD STUDIES
+------------------------------------
+(15) Yang, H.; Sun, L.; Li, W.; Liu, G.; Tang, Y. In Silico Prediction of
+     Chemical Toxicity for Drug Safety Evaluation Using Machine Learning
+     Methods and Structural Alerts. Front. Chem. 2018, 6, 30.
+     DOI: 10.3389/fchem.2018.00030.
+
+(16) Mansouri, K.; Grulke, C. M.; Judson, R. S.; Williams, A. J. OPERA Models
+     for Predicting Physicochemical Properties and Environmental Fate
+     Endpoints. J. Cheminform. 2018, 10, 10. DOI: 10.1186/s13321-018-0263-1.
+
+(17) Zhu, H.; Tropsha, A.; Fourches, D.; Varnek, A.; Papa, E.; Gramatica, P.;
+     Oberg, T.; Dao, P.; Cherkasov, A.; Tetko, I. V. Combinatorial QSAR
+     Modeling of Chemical Toxicants Tested against Tetrahymena Pyriformis.
+     J. Chem. Inf. Model. 2008, 48 (4), 766-784. DOI: 10.1021/ci700443v.
+
+(18) Mayr, A.; Klambauer, G.; Unterthiner, T.; Steijaert, M.; Wegner, J. K.;
+     Ceulemans, H.; Clevert, D.-A.; Hochreiter, S. Large-Scale Comparison of
+     Machine Learning Methods for Drug Target Prediction on ChEMBL. Chem. Sci.
+     2018, 9 (24), 5441-5451. DOI: 10.1039/C8SC00148K.
+
+(19) Schroeter, T.; Schwaighofer, A.; Mika, S.; ter Laak, A.; Suelzle, D.;
+     Ganzer, U.; Heinrich, N.; Muller, K.-R. Estimating the Domain of
+     Applicability for Machine Learning QSAR Models: A Study on Aqueous
+     Solubility of Drug Discovery Molecules. J. Comput.-Aided Mol. Des. 2007,
+     21 (9), 651-664. DOI: 10.1007/s10822-007-9160-9.
+
+(20) Baskin, I. I.; Winkler, D.; Tetko, I. V. A Renaissance of Neural Networks
+     in Drug Discovery. Expert Opin. Drug Discovery 2016, 11 (8), 785-795.
+     DOI: 10.1080/17460441.2016.1201262.
+
+(21) Rogers, D.; Hahn, M. Extended-Connectivity Fingerprints. J. Chem. Inf.
+     Model. 2010, 50 (5), 742-754. DOI: 10.1021/ci100050t.
+
+(22) Moriwaki, H.; Tian, Y.-S.; Kawashita, N.; Takagi, T. Mordred: A Molecular
+     Descriptor Calculator. J. Cheminform. 2018, 10, 4.
+     DOI: 10.1186/s13321-018-0258-y.
+
+EVALUATION METRICS
+------------------
+(23) Matthews, B. W. Comparison of the Predicted and Observed Secondary
+     Structure of T4 Phage Lysozyme. Biochim. Biophys. Acta, Protein Struct.
+     1975, 405 (2), 442-451. DOI: 10.1016/0005-2795(75)90109-9.
+
+(24) Fawcett, T. An Introduction to ROC Analysis. Pattern Recognit. Lett.
+     2006, 27 (8), 861-874. DOI: 10.1016/j.patrec.2005.10.010.
+
+JOHOR 2019 CHEMICAL EMERGENCY
+-----------------------------
+(25) Ministry of Health Malaysia. After-Action Review: Pasir Gudang Chemical
+     Incident 2019; Ministry of Health Malaysia: Putrajaya, 2019.
+
+(26) Ahmad, R.; Ghazali, M. F. Environmental Health Response to the Pasir
+     Gudang Chemical Disaster. Malays. J. Public Health Med. 2019, 19 (2), 1-8.

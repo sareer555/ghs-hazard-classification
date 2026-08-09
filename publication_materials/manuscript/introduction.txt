@@ -1,0 +1,82 @@
+INTRODUCTION
+================================================================================
+
+The Globally Harmonized System of Classification and Labelling of Chemicals
+(GHS) is the framework through which chemical hazards are communicated
+worldwide. It assigns each substance a set of nine pictograms describing
+physical, health and environmental hazards, and those pictograms determine how
+a chemical is labelled, stored, transported and handled in every jurisdiction
+that has adopted the system, including Malaysia under the Occupational Safety
+and Health (Classification, Labelling and Safety Data Sheet of Hazardous
+Chemicals) Regulations 2013.
+
+Assigning those pictograms requires experimental data. Flash points must be
+measured, acute toxicity established in animal studies, aquatic toxicity
+determined in standardised assays. This testing is slow and expensive, and it
+has been completed for only a small fraction of the chemicals in commercial
+circulation. Tens of millions of substances are registered in public chemical
+databases; fewer than a quarter of a million carry a GHS classification of any
+kind. The gap is not an abstract regulatory inconvenience. On 7 March 2019,
+chemical waste of unverified composition was discharged into the Sungai Kim Kim
+river at Pasir Gudang, Johor, Malaysia. Vapour rising from the river affected
+more than 2,500 people, the majority of them schoolchildren, and 111 schools
+were closed. Acrylonitrile and acrolein were subsequently identified as the
+principal agents. Had the hazard profile of the discharged material been known
+at the point of disposal, the response would have been an acute inhalation
+emergency from the outset rather than a developing mystery.
+
+Computational prediction offers a way to narrow that gap. Quantitative
+structure-activity relationship modelling has been applied to individual
+toxicological endpoints for decades, and machine learning methods now routinely
+predict properties such as aqueous solubility, mutagenicity and acute oral
+toxicity from molecular structure alone. Applying the same approach to GHS
+classification is attractive because the pictograms are the operational
+currency of chemical safety: a predicted pictogram translates directly into a
+handling decision in a way that a predicted LD50 does not.
+
+Three difficulties have limited progress. The first is that GHS assignment is
+inherently multi-label. A compound does not carry one hazard but any
+combination of nine, and in the dataset assembled here 26.2 per cent of
+compounds carry more than one. Treating each pictogram as an independent binary
+problem ignores the correlations between them, while treating the combination
+as a single multi-class label is intractable given the number of possible
+combinations.
+
+The second difficulty is evaluation. Chemical datasets contain large families
+of structurally similar molecules. A model validated on a random train-test
+split is frequently tested on near-duplicates of its own training data, and
+reports an accuracy that collapses the moment it encounters genuinely
+unfamiliar chemistry. Scaffold-based splitting, in which every compound sharing
+a Bemis-Murcko framework is confined to a single partition, is the established
+remedy, yet it remains less common in the hazard-prediction literature than in
+drug discovery.
+
+The third difficulty is interpretability. A regulator cannot act on a
+prediction whose basis is opaque. A model that outputs "corrosive, 87 per cent"
+without saying why offers a safety officer no way to judge whether the
+prediction is chemically sensible or an artefact. Post-hoc attribution methods,
+particularly SHAP, make it possible to decompose an individual prediction into
+the contribution of each molecular descriptor, and so to ask whether a model
+has recovered known structure-hazard relationships or merely memorised
+correlations.
+
+This work addresses all three. GHS classifications were harvested from PubChem
+for 243,707 compound records contributed by five independent regulatory bodies,
+reconciled by majority vote where those bodies disagreed, and reduced to
+243,323 unique validated structures - to our knowledge the largest multi-label
+GHS dataset assembled for machine learning. Three algorithms were trained as
+multi-label predictors and evaluated on a Bemis-Murcko scaffold split, so that
+no chemical skeleton is shared between training and test data. Predictions were
+interpreted with SHAP and the resulting attributions examined against
+established chemistry. Finally, the framework was applied to chemicals drawn
+from four Malaysian industrial sectors and to the substances implicated in the
+Johor 2019 incident, to test whether a model trained on global regulatory data
+is useful in a specific national context.
+
+Two findings emerged that we believe are of wider methodological interest than
+the model itself. The first concerns how scaffold groups are allocated to
+partitions: the obvious allocation strategies satisfy every superficial check
+while systematically starving the rarest hazard classes of training data. The
+second concerns dataset size, where a learning curve computed within a
+convenience subsample indicated saturation that a controlled experiment on the
+full dataset showed to be illusory.

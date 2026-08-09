@@ -1,0 +1,11 @@
+{
+  "n_compounds": 243323,
+  "n_features_computed": 1218,
+  "n_features_after_variance_filter": 816,
+  "n_features_removed": 402,
+  "n_missing_values_imputed": 0,
+  "variance_threshold": 0.01,
+  "descriptor_source": "reused from the Google Colab run (colab_X_full.npy); identical code and settings to src/step4_descriptors.py",
+  "random_seed": 42,
+  "elapsed_seconds": 576.9
+}
