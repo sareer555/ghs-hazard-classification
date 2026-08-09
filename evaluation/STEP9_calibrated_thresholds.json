@@ -194,7 +194,7 @@
       "precision_at_recall90": 0.156
     }
   },
-  "RandomForest_SMOTE": {
+  "RandomForest_NoClassWeight": {
     "GHS01_Explosive": {
       "threshold_f1": 0.089656,
       "f1_at_threshold": 0.3448,

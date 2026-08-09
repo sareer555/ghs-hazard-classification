@@ -28,7 +28,8 @@ from ghs_predictor import GHSPredictor, build_pdf_report, DISCLAIMER
 
 # Plain-text bars used instead of colour, so the output is readable when
 # redirected to a file or viewed in a terminal without colour support.
-LEVEL_MARK = {"HIGH": "[!!]", "MODERATE": "[! ]", "LOW": "[  ]"}
+LEVEL_MARK = {"HIGH": "[!!]", "MODERATE": "[! ]", "BORDERLINE": "[! ]",
+              "LOW": "[  ]"}
 
 
 def print_report(resolved, prediction, predictor):
@@ -48,15 +49,21 @@ def print_report(resolved, prediction, predictor):
 
     print("\nPREDICTED GHS HAZARD PROFILE")
     print("-" * 78)
-    print(f"{'':<5}{'Code':<8}{'Hazard':<40}{'Confidence':>12}{'Flagged':>10}")
+    print(f"{'':<5}{'Code':<6}{'Hazard':<34}{'Conf.':>8}{'raw':>8}"
+          f"{'thresh':>8}{'Flagged':>8}")
     print("-" * 78)
     for hazard in prediction["hazards"]:
         mark = LEVEL_MARK[hazard["level"]]
         flagged = "YES" if hazard["predicted"] else "no"
-        print(f"{mark:<5}{hazard['code']:<8}{hazard['meaning']:<40}"
-              f"{hazard['percent']:>11.1f}%{flagged:>10}")
+        print(f"{mark:<5}{hazard['code']:<6}{hazard['meaning']:<34}"
+              f"{hazard['calibrated_percent']:>7.0f}%{hazard['percent']:>7.1f}%"
+              f"{hazard['threshold_percent']:>7.1f}%{flagged:>8}")
     print("-" * 78)
-    print("  [!!] above 70% confidence   [! ] 50-70%   [  ] below 50%")
+    print("  [!!] above 70%   [! ] 30-70%   [  ] below 30%")
+    print("  'Conf.' is calibrated so that 50% is this class's own decision")
+    print("  threshold; 'raw' is the unscaled model probability. Each class has")
+    print("  a different threshold, so raw values are not comparable across")
+    print("  classes.")
 
     flagged = [h["code"] for h in prediction["hazards"] if h["predicted"]]
     print(f"\nSUMMARY: {len(flagged)} of 9 hazard classes flagged"

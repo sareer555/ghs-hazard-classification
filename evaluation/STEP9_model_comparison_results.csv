@@ -80,30 +80,30 @@ SVM,GHS08_HealthHazard,GHS08,Serious health hazard (health hazard),safety_recall
 SVM,GHS09_Environmental,GHS09,Environmental hazard (environment),default_0.5,0.5,24352,1773,0.8319,0.3068,0.1831,0.1994,0.4484,0.1151,0.9889,22328,251,1569,204,0.832,0.8224,0.8414
 SVM,GHS09_Environmental,GHS09,Environmental hazard (environment),calibrated_F1,0.292824,24352,1773,0.8319,0.3068,0.3688,0.3173,0.3533,0.3858,0.9446,21327,1252,1089,684,0.832,0.8224,0.8414
 SVM,GHS09_Environmental,GHS09,Environmental hazard (environment),safety_recall90,0.035971,24352,1773,0.8319,0.3068,0.2834,0.2755,0.1717,0.8111,0.6927,15641,6938,335,1438,0.832,0.8224,0.8414
-RandomForest_SMOTE,GHS01_Explosive,GHS01,Explosive (exploding bomb),default_0.5,0.5,24352,18,0.9891,0.3194,0.0,0.0,0.0,0.0,1.0,24334,0,18,0,0.9891,0.9815,0.9956
-RandomForest_SMOTE,GHS01_Explosive,GHS01,Explosive (exploding bomb),calibrated_F1,0.089656,24352,18,0.9891,0.3194,0.4167,0.4809,0.8333,0.2778,1.0,24333,1,13,5,0.9891,0.9815,0.9956
-RandomForest_SMOTE,GHS01_Explosive,GHS01,Explosive (exploding bomb),safety_recall90,0.000488,24352,18,0.9891,0.3194,0.0068,0.0519,0.0034,1.0,0.7851,19104,5230,0,18,0.9891,0.9815,0.9956
-RandomForest_SMOTE,GHS02_Flammable,GHS02,Flammable (flame),default_0.5,0.5,24352,1063,0.9638,0.7094,0.5356,0.5664,0.8571,0.3895,0.997,23220,69,649,414,0.9638,0.9585,0.9686
-RandomForest_SMOTE,GHS02_Flammable,GHS02,Flammable (flame),calibrated_F1,0.280639,24352,1063,0.9638,0.7094,0.6591,0.6433,0.6393,0.6802,0.9825,22881,408,340,723,0.9638,0.9585,0.9686
-RandomForest_SMOTE,GHS02_Flammable,GHS02,Flammable (flame),safety_recall90,0.08159,24352,1063,0.9638,0.7094,0.46,0.4953,0.3092,0.8984,0.9084,21155,2134,108,955,0.9638,0.9585,0.9686
-RandomForest_SMOTE,GHS03_Oxidising,GHS03,Oxidiser (flame over circle),default_0.5,0.5,24352,41,0.9282,0.443,0.3265,0.4414,1.0,0.1951,1.0,24311,0,33,8,0.9298,0.8657,0.9834
-RandomForest_SMOTE,GHS03_Oxidising,GHS03,Oxidiser (flame over circle),calibrated_F1,0.223356,24352,41,0.9282,0.443,0.4262,0.4534,0.65,0.3171,0.9997,24304,7,28,13,0.9298,0.8657,0.9834
-RandomForest_SMOTE,GHS03_Oxidising,GHS03,Oxidiser (flame over circle),safety_recall90,0.007893,24352,41,0.9282,0.443,0.0943,0.1939,0.0502,0.7805,0.9751,23705,606,9,32,0.9298,0.8657,0.9834
-RandomForest_SMOTE,GHS04_CompressedGas,GHS04,Compressed gas (gas cylinder),default_0.5,0.5,24352,28,0.9782,0.6607,0.0,0.0,0.0,0.0,1.0,24324,0,28,0,0.9786,0.9284,0.9996
-RandomForest_SMOTE,GHS04_CompressedGas,GHS04,Compressed gas (gas cylinder),calibrated_F1,0.124921,24352,28,0.9782,0.6607,0.5783,0.611,0.4364,0.8571,0.9987,24293,31,4,24,0.9786,0.9284,0.9996
-RandomForest_SMOTE,GHS04_CompressedGas,GHS04,Compressed gas (gas cylinder),safety_recall90,0.100491,24352,28,0.9782,0.6607,0.5275,0.5708,0.381,0.8571,0.9984,24285,39,4,24,0.9786,0.9284,0.9996
-RandomForest_SMOTE,GHS05_Corrosive,GHS05,Corrosive (corrosion),default_0.5,0.5,24352,4333,0.8823,0.7264,0.5372,0.5389,0.895,0.3838,0.9903,19824,195,2670,1663,0.8823,0.8767,0.888
-RandomForest_SMOTE,GHS05_Corrosive,GHS05,Corrosive (corrosion),calibrated_F1,0.284526,24352,4333,0.8823,0.7264,0.6504,0.5766,0.6633,0.6379,0.9299,18616,1403,1569,2764,0.8823,0.8767,0.888
-RandomForest_SMOTE,GHS05_Corrosive,GHS05,Corrosive (corrosion),safety_recall90,0.108706,24352,4333,0.8823,0.7264,0.4733,0.3763,0.3194,0.9128,0.5791,11593,8426,378,3955,0.8823,0.8767,0.888
-RandomForest_SMOTE,GHS06_AcuteToxicity,GHS06,Acute toxicity (skull and crossbones),default_0.5,0.5,24352,1520,0.8293,0.3164,0.0208,0.0994,1.0,0.0105,1.0,22832,0,1504,16,0.8293,0.8181,0.8396
-RandomForest_SMOTE,GHS06_AcuteToxicity,GHS06,Acute toxicity (skull and crossbones),calibrated_F1,0.166874,24352,1520,0.8293,0.3164,0.337,0.2966,0.3603,0.3164,0.9626,21978,854,1039,481,0.8293,0.8181,0.8396
-RandomForest_SMOTE,GHS06_AcuteToxicity,GHS06,Acute toxicity (skull and crossbones),safety_recall90,0.038515,24352,1520,0.8293,0.3164,0.1999,0.2043,0.1126,0.8882,0.5341,12194,10638,170,1350,0.8293,0.8181,0.8396
-RandomForest_SMOTE,GHS07_Irritant,GHS07,Irritant / harmful (exclamation mark),default_0.5,0.5,24352,21967,0.8284,0.9753,0.95,0.1645,0.9051,0.9995,0.0352,84,2301,12,21955,0.8283,0.8204,0.8366
-RandomForest_SMOTE,GHS07_Irritant,GHS07,Irritant / harmful (exclamation mark),calibrated_F1,0.645515,24352,21967,0.8284,0.9753,0.9504,0.24,0.9117,0.9927,0.114,272,2113,161,21806,0.8283,0.8204,0.8366
-RandomForest_SMOTE,GHS07_Irritant,GHS07,Irritant / harmful (exclamation mark),safety_recall90,0.79188,24352,21967,0.8284,0.9753,0.9283,0.3402,0.9391,0.9178,0.452,1078,1307,1806,20161,0.8283,0.8204,0.8366
-RandomForest_SMOTE,GHS08_HealthHazard,GHS08,Serious health hazard (health hazard),default_0.5,0.5,24352,1360,0.8917,0.4464,0.165,0.2715,0.8671,0.0912,0.9992,22973,19,1236,124,0.892,0.8832,0.9006
-RandomForest_SMOTE,GHS08_HealthHazard,GHS08,Serious health hazard (health hazard),calibrated_F1,0.258257,24352,1360,0.8917,0.4464,0.4314,0.4099,0.5175,0.3699,0.9796,22523,469,857,503,0.892,0.8832,0.9006
-RandomForest_SMOTE,GHS08_HealthHazard,GHS08,Serious health hazard (health hazard),safety_recall90,0.035427,24352,1360,0.8917,0.4464,0.2401,0.2721,0.1385,0.9022,0.668,15358,7634,133,1227,0.892,0.8832,0.9006
-RandomForest_SMOTE,GHS09_Environmental,GHS09,Environmental hazard (environment),default_0.5,0.5,24352,1773,0.8794,0.4496,0.1399,0.2249,0.7405,0.0773,0.9979,22531,48,1636,137,0.8795,0.8718,0.8873
-RandomForest_SMOTE,GHS09_Environmental,GHS09,Environmental hazard (environment),calibrated_F1,0.231742,24352,1773,0.8794,0.4496,0.4638,0.4196,0.4273,0.5071,0.9466,21374,1205,874,899,0.8795,0.8718,0.8873
-RandomForest_SMOTE,GHS09_Environmental,GHS09,Environmental hazard (environment),safety_recall90,0.081373,24352,1773,0.8794,0.4496,0.3642,0.364,0.2338,0.824,0.7879,17790,4789,312,1461,0.8795,0.8718,0.8873
+RandomForest_NoClassWeight,GHS01_Explosive,GHS01,Explosive (exploding bomb),default_0.5,0.5,24352,18,0.9891,0.3194,0.0,0.0,0.0,0.0,1.0,24334,0,18,0,0.9891,0.9815,0.9956
+RandomForest_NoClassWeight,GHS01_Explosive,GHS01,Explosive (exploding bomb),calibrated_F1,0.089656,24352,18,0.9891,0.3194,0.4167,0.4809,0.8333,0.2778,1.0,24333,1,13,5,0.9891,0.9815,0.9956
+RandomForest_NoClassWeight,GHS01_Explosive,GHS01,Explosive (exploding bomb),safety_recall90,0.000488,24352,18,0.9891,0.3194,0.0068,0.0519,0.0034,1.0,0.7851,19104,5230,0,18,0.9891,0.9815,0.9956
+RandomForest_NoClassWeight,GHS02_Flammable,GHS02,Flammable (flame),default_0.5,0.5,24352,1063,0.9638,0.7094,0.5356,0.5664,0.8571,0.3895,0.997,23220,69,649,414,0.9638,0.9585,0.9686
+RandomForest_NoClassWeight,GHS02_Flammable,GHS02,Flammable (flame),calibrated_F1,0.280639,24352,1063,0.9638,0.7094,0.6591,0.6433,0.6393,0.6802,0.9825,22881,408,340,723,0.9638,0.9585,0.9686
+RandomForest_NoClassWeight,GHS02_Flammable,GHS02,Flammable (flame),safety_recall90,0.08159,24352,1063,0.9638,0.7094,0.46,0.4953,0.3092,0.8984,0.9084,21155,2134,108,955,0.9638,0.9585,0.9686
+RandomForest_NoClassWeight,GHS03_Oxidising,GHS03,Oxidiser (flame over circle),default_0.5,0.5,24352,41,0.9282,0.443,0.3265,0.4414,1.0,0.1951,1.0,24311,0,33,8,0.9298,0.8657,0.9834
+RandomForest_NoClassWeight,GHS03_Oxidising,GHS03,Oxidiser (flame over circle),calibrated_F1,0.223356,24352,41,0.9282,0.443,0.4262,0.4534,0.65,0.3171,0.9997,24304,7,28,13,0.9298,0.8657,0.9834
+RandomForest_NoClassWeight,GHS03_Oxidising,GHS03,Oxidiser (flame over circle),safety_recall90,0.007893,24352,41,0.9282,0.443,0.0943,0.1939,0.0502,0.7805,0.9751,23705,606,9,32,0.9298,0.8657,0.9834
+RandomForest_NoClassWeight,GHS04_CompressedGas,GHS04,Compressed gas (gas cylinder),default_0.5,0.5,24352,28,0.9782,0.6607,0.0,0.0,0.0,0.0,1.0,24324,0,28,0,0.9786,0.9284,0.9996
+RandomForest_NoClassWeight,GHS04_CompressedGas,GHS04,Compressed gas (gas cylinder),calibrated_F1,0.124921,24352,28,0.9782,0.6607,0.5783,0.611,0.4364,0.8571,0.9987,24293,31,4,24,0.9786,0.9284,0.9996
+RandomForest_NoClassWeight,GHS04_CompressedGas,GHS04,Compressed gas (gas cylinder),safety_recall90,0.100491,24352,28,0.9782,0.6607,0.5275,0.5708,0.381,0.8571,0.9984,24285,39,4,24,0.9786,0.9284,0.9996
+RandomForest_NoClassWeight,GHS05_Corrosive,GHS05,Corrosive (corrosion),default_0.5,0.5,24352,4333,0.8823,0.7264,0.5372,0.5389,0.895,0.3838,0.9903,19824,195,2670,1663,0.8823,0.8767,0.888
+RandomForest_NoClassWeight,GHS05_Corrosive,GHS05,Corrosive (corrosion),calibrated_F1,0.284526,24352,4333,0.8823,0.7264,0.6504,0.5766,0.6633,0.6379,0.9299,18616,1403,1569,2764,0.8823,0.8767,0.888
+RandomForest_NoClassWeight,GHS05_Corrosive,GHS05,Corrosive (corrosion),safety_recall90,0.108706,24352,4333,0.8823,0.7264,0.4733,0.3763,0.3194,0.9128,0.5791,11593,8426,378,3955,0.8823,0.8767,0.888
+RandomForest_NoClassWeight,GHS06_AcuteToxicity,GHS06,Acute toxicity (skull and crossbones),default_0.5,0.5,24352,1520,0.8293,0.3164,0.0208,0.0994,1.0,0.0105,1.0,22832,0,1504,16,0.8293,0.8181,0.8396
+RandomForest_NoClassWeight,GHS06_AcuteToxicity,GHS06,Acute toxicity (skull and crossbones),calibrated_F1,0.166874,24352,1520,0.8293,0.3164,0.337,0.2966,0.3603,0.3164,0.9626,21978,854,1039,481,0.8293,0.8181,0.8396
+RandomForest_NoClassWeight,GHS06_AcuteToxicity,GHS06,Acute toxicity (skull and crossbones),safety_recall90,0.038515,24352,1520,0.8293,0.3164,0.1999,0.2043,0.1126,0.8882,0.5341,12194,10638,170,1350,0.8293,0.8181,0.8396
+RandomForest_NoClassWeight,GHS07_Irritant,GHS07,Irritant / harmful (exclamation mark),default_0.5,0.5,24352,21967,0.8284,0.9753,0.95,0.1645,0.9051,0.9995,0.0352,84,2301,12,21955,0.8283,0.8204,0.8366
+RandomForest_NoClassWeight,GHS07_Irritant,GHS07,Irritant / harmful (exclamation mark),calibrated_F1,0.645515,24352,21967,0.8284,0.9753,0.9504,0.24,0.9117,0.9927,0.114,272,2113,161,21806,0.8283,0.8204,0.8366
+RandomForest_NoClassWeight,GHS07_Irritant,GHS07,Irritant / harmful (exclamation mark),safety_recall90,0.79188,24352,21967,0.8284,0.9753,0.9283,0.3402,0.9391,0.9178,0.452,1078,1307,1806,20161,0.8283,0.8204,0.8366
+RandomForest_NoClassWeight,GHS08_HealthHazard,GHS08,Serious health hazard (health hazard),default_0.5,0.5,24352,1360,0.8917,0.4464,0.165,0.2715,0.8671,0.0912,0.9992,22973,19,1236,124,0.892,0.8832,0.9006
+RandomForest_NoClassWeight,GHS08_HealthHazard,GHS08,Serious health hazard (health hazard),calibrated_F1,0.258257,24352,1360,0.8917,0.4464,0.4314,0.4099,0.5175,0.3699,0.9796,22523,469,857,503,0.892,0.8832,0.9006
+RandomForest_NoClassWeight,GHS08_HealthHazard,GHS08,Serious health hazard (health hazard),safety_recall90,0.035427,24352,1360,0.8917,0.4464,0.2401,0.2721,0.1385,0.9022,0.668,15358,7634,133,1227,0.892,0.8832,0.9006
+RandomForest_NoClassWeight,GHS09_Environmental,GHS09,Environmental hazard (environment),default_0.5,0.5,24352,1773,0.8794,0.4496,0.1399,0.2249,0.7405,0.0773,0.9979,22531,48,1636,137,0.8795,0.8718,0.8873
+RandomForest_NoClassWeight,GHS09_Environmental,GHS09,Environmental hazard (environment),calibrated_F1,0.231742,24352,1773,0.8794,0.4496,0.4638,0.4196,0.4273,0.5071,0.9466,21374,1205,874,899,0.8795,0.8718,0.8873
+RandomForest_NoClassWeight,GHS09_Environmental,GHS09,Environmental hazard (environment),safety_recall90,0.081373,24352,1773,0.8794,0.4496,0.3642,0.364,0.2338,0.824,0.7879,17790,4789,312,1461,0.8795,0.8718,0.8873

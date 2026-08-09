@@ -1,4 +1,4 @@
-GHS_Column,RandomForest,RandomForest_SMOTE,SVM,XGBoost
+GHS_Column,RandomForest,RandomForest_NoClassWeight,SVM,XGBoost
 GHS01_Explosive,0.1416,0.4809,0.4713,0.2355
 GHS02_Flammable,0.5702,0.6433,0.5398,0.694
 GHS03_Oxidising,0.4258,0.4534,0.3773,0.5897

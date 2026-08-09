@@ -7,8 +7,16 @@ chemical terms.
 **Researcher:** Sareer Ahmad, MSc Physical Chemistry, University of Peshawar
 **Target institution:** Universiti Sains Malaysia (USM)
 **Proposed supervisor:** Assoc. Prof. Dr. Lee Hooi Ling
-**Target journals:** *Journal of Chemical Information and Modeling* (primary),
-*Journal of Hazardous Materials* (secondary)
+**Target journals:** *Journal of Cheminformatics* (recommended),
+*Journal of Chemical Information and Modeling*, *Journal of Hazardous Materials*
+**Repository:** <https://github.com/sareer555/ghs-hazard-classification>
+
+> **Note on what is and is not in this repository.** The code, models needed to
+> run the application, figures, tables and manuscript are all here (~27 MB).
+> The large intermediate arrays and datasets — about 8 GB — are excluded by
+> `.gitignore` and are archived separately on Zenodo. Re-running the pipeline
+> regenerates every one of them from PubChem. See *Reproducing from scratch*
+> below.
 
 ---
 

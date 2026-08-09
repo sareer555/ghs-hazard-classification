@@ -1235,10 +1235,16 @@ tool. Both run locally after installing the pinned environment; no hosted
 service is required, and no data leaves the user's machine. The trained
 gradient-boosting models are included in the repository.
 
-[BEFORE SUBMISSION: deposit the repository with Zenodo or a comparable archive
-to obtain a permanent DOI, and cite that DOI here. ACS journals accept a
-repository citation; a live deployment is not required. If the application is
-later hosted publicly, add the URL to this statement.]
+The repository is available at
+https://github.com/sareer555/ghs-hazard-classification and is released under
+the MIT licence.
+
+[BEFORE SUBMISSION: archive the repository with Zenodo to obtain a permanent
+DOI, and add that DOI to this statement. Zenodo mints one automatically from a
+GitHub release once the repository is enabled at zenodo.org/account/settings/
+github. A DOI is what journals require, because a repository URL can move or
+be deleted; a DOI cannot. If the application is later hosted publicly, add the
+URL here as well - a live deployment is not required for submission.]
 
 --------------------------------------------------------------------------
 5. COMPETING INTERESTS DECLARATION

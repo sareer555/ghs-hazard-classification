@@ -5,20 +5,20 @@
     "highest_mean_auc": 0.9146,
     "tie_tolerance_from_bootstrap": 0.0077,
     "statistically_indistinguishable": [
-      "RandomForest_SMOTE",
+      "RandomForest_NoClassWeight",
       "XGBoost"
     ],
     "tie_broken_on": "mean MCC"
   },
   "mean_auc_per_model": {
     "RandomForest": 0.89,
-    "RandomForest_SMOTE": 0.9078,
+    "RandomForest_NoClassWeight": 0.9078,
     "SVM": 0.8711,
     "XGBoost": 0.9146
   },
   "mean_mcc_per_model": {
     "RandomForest": 0.3633,
-    "RandomForest_SMOTE": 0.459,
+    "RandomForest_NoClassWeight": 0.459,
     "SVM": 0.3683,
     "XGBoost": 0.4705
   },
@@ -36,5 +36,5 @@
   "n_test_compounds": 24352,
   "n_bootstrap_iterations": 1000,
   "random_seed": 42,
-  "elapsed_seconds": 1000.3
+  "elapsed_seconds": 1355.0
 }

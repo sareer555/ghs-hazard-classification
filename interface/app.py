@@ -79,10 +79,17 @@ chemical skeleton with the training set.
     st.divider()
     st.subheader("Confidence colours")
     st.markdown("""
-- 🔴 **red** - above 70% confidence the hazard applies
-- 🟠 **orange** - 50-70%, treat as uncertain
-- 🟢 **green** - below 50%, no hazard predicted
+- 🔴 **red** - above 70%, hazard predicted with confidence
+- 🟠 **orange** - 30-70%, close to the decision boundary
+- 🟢 **green** - below 30%, no hazard predicted
 """)
+    st.caption(
+        "The percentage shown is **calibrated confidence**, where 50% is that "
+        "class's own decision threshold. Each of the nine classes has a "
+        "different threshold, fitted on validation data — the irritant class "
+        "sits near 5%, because most training compounds carry it. Raw model "
+        "probabilities cannot be compared across classes, so they are shown "
+        "underneath each badge rather than as the headline number.")
     st.divider()
     st.caption(f"⚠️ {DISCLAIMER}")
 
@@ -188,7 +195,11 @@ if submitted and user_input.strip():
             st.info("No hazard class exceeded its decision threshold. This is "
                     "not a guarantee of safety - see the disclaimer.")
 
-        # Nine badges in a 3x3 grid.
+        # Nine badges in a 3x3 grid. The headline number is the calibrated
+        # confidence, not the raw probability, so that the colour, the number
+        # and the FLAGGED label always tell the same story. Each class has its
+        # own decision threshold - the irritant class sits near 0.05 - so a raw
+        # probability cannot be compared across classes or against a fixed 50%.
         for row_start in range(0, 9, 3):
             columns = st.columns(3)
             for offset, hazard in enumerate(
@@ -196,18 +207,24 @@ if submitted and user_input.strip():
                 with columns[offset]:
                     icon = {"red": "🔴", "orange": "🟠", "green": "🟢"}[
                         hazard["colour"]]
+                    auc_text = (f"\nTest-set AUC: {hazard['test_set_auc']:.3f}"
+                                if hazard["test_set_auc"] else "")
                     st.metric(
                         label=f"{icon} {hazard['code']}",
-                        value=f"{hazard['percent']:.1f}%",
+                        value=f"{hazard['calibrated_percent']:.0f}%",
                         delta=("FLAGGED" if hazard["predicted"] else "not flagged"),
-                        delta_color=("inverse" if hazard["predicted"]
-                                     else "off"),
+                        delta_color=("inverse" if hazard["predicted"] else "off"),
                         help=(f"{hazard['meaning']}\n\n"
-                              f"Decision threshold: {hazard['threshold']:.3f}\n"
-                              f"Test-set AUC: "
-                              f"{hazard['test_set_auc']:.3f}"
-                              if hazard["test_set_auc"] else hazard["meaning"]))
-                    st.caption(hazard["meaning"])
+                              f"Calibrated confidence: "
+                              f"{hazard['calibrated_percent']:.0f}% "
+                              f"(50% = this class's decision threshold)\n"
+                              f"Raw model probability: {hazard['percent']:.1f}%\n"
+                              f"Decision threshold: "
+                              f"{hazard['threshold_percent']:.1f}%"
+                              f"{auc_text}"))
+                    st.caption(f"{hazard['meaning']}  \n"
+                               f"raw {hazard['percent']:.1f}% · "
+                               f"threshold {hazard['threshold_percent']:.1f}%")
 
     # ---- full confidence table --------------------------------------------
     st.subheader("Confidence per hazard class")

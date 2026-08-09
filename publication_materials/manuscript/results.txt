@@ -49,14 +49,14 @@ Model performance
 --------------------------------------------------------------------------------
 
 Four models were evaluated on the held-out test partition of 24,352 compounds.
-Mean AUC-ROC across the nine classes was 0.9146 for XGBoost, 0.9078 for the
-Random Forest without class weighting, 0.8900 for the class-weighted Random
-Forest and 0.8711 for the support vector machine. Mean Matthews correlation
-coefficients were 0.4705, 0.4590, 0.3633 and 0.3683 respectively. XGBoost was
-selected as the best model on both metrics. The bootstrap 95 per cent
-confidence interval had a median half-width of 0.0077, so differences smaller
-than that are not meaningful; the two leading models were separated on Matthews
-correlation coefficient rather than on area under the curve.
+Mean AUC-ROC across the nine classes was 0.9146 for XGBoost, nan for the Random
+Forest without class weighting, 0.8900 for the class-weighted Random Forest and
+0.8711 for the support vector machine. Mean Matthews correlation coefficients
+were 0.4705, nan, 0.3633 and 0.3683 respectively. XGBoost was selected as the
+best model on both metrics. The bootstrap 95 per cent confidence interval had a
+median half-width of 0.0077, so differences smaller than that are not
+meaningful; the two leading models were separated on Matthews correlation
+coefficient rather than on area under the curve.
 
 Per-class performance for XGBoost is given below; N is the number of positive
 examples in the test partition and the interval is the bootstrap 95 per cent

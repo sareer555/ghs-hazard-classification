@@ -306,25 +306,34 @@ percentage points below the overall training share.
 Class imbalance handling.
 Class frequencies in the dataset spanned more than three orders of magnitude,
 from 220,020 compounds carrying the irritant pictogram to 184
-carrying the explosive pictogram. Three complementary corrections were
-applied. The Synthetic Minority Over-sampling Technique was applied separately
-for each hazard class to the training partition only, with the number of
-neighbours reduced automatically for classes containing fewer than six
-positive examples; the validation and test partitions were never resampled.
-Class weights, defined as the ratio of negative to positive examples, were
-supplied to each classifier. Finally, decision thresholds were calibrated per
-class rather than fixed at 0.5, as described below.
+carrying the explosive pictogram. Two corrections were applied, and a third was
+evaluated but proved infeasible.
 
-It should be noted that for the rarest classes the oversampling ratio is
-extreme: balancing the explosive class required expanding 148
-genuine positive examples into approximately 194,619 training rows.
-Synthetic examples generated at that ratio are convex combinations of a very
-small number of real molecules and cannot introduce chemistry absent from
-those originals, so they enlarge the minority class without enriching it. For
-this reason oversampling was not used for the primary models, which rely on
-class weighting instead; the oversampled models were trained separately as an
-ablation so that the two strategies could be compared directly rather than
-assumed equivalent.
+Synthetic oversampling was assessed first. The Synthetic Minority
+Over-sampling Technique was implemented and applied successfully at reduced
+dataset scale, but at full scale it could not be used: generating a balanced
+training matrix for a class as rare as the explosive pictogram
+(148 positive examples against 194,619
+training compounds, each described by 816 descriptors)
+requires a dense array far exceeding the memory available. Oversampling was
+therefore skipped for all nine classes, and no synthetic example was generated
+in the results reported here.
+
+Cost-sensitive learning was used in its place. Class weights, defined as the
+ratio of negative to positive examples, were supplied to every classifier;
+these reached 1,314 for the explosive
+class. Decision thresholds were then calibrated per class on validation data
+rather than fixed at 0.5, as described below.
+
+This substitution is not merely a computational convenience. At the ratios
+required here, synthetic minority examples would be convex combinations of a
+very small number of real molecules and could not introduce chemistry absent
+from those originals; they would enlarge the minority class without enriching
+it. An ablation trained without class weighting, reported as
+RandomForest_NoClassWeight, isolates the contribution of cost-sensitive learning. A
+direct comparison of oversampling against class weighting was obtained at the
+reduced scale where both were feasible and is reported in the Supporting
+Information.
 
 Model training and hyperparameter optimisation.
 Three algorithms were trained. A Random Forest classifier was fitted as a
@@ -444,14 +453,14 @@ Model performance
 --------------------------------------------------------------------------------
 
 Four models were evaluated on the held-out test partition of 24,352 compounds.
-Mean AUC-ROC across the nine classes was 0.9146 for XGBoost, 0.9078 for the
-Random Forest without class weighting, 0.8900 for the class-weighted Random
-Forest and 0.8711 for the support vector machine. Mean Matthews correlation
-coefficients were 0.4705, 0.4590, 0.3633 and 0.3683 respectively. XGBoost was
-selected as the best model on both metrics. The bootstrap 95 per cent
-confidence interval had a median half-width of 0.0077, so differences smaller
-than that are not meaningful; the two leading models were separated on Matthews
-correlation coefficient rather than on area under the curve.
+Mean AUC-ROC across the nine classes was 0.9146 for XGBoost, nan for the Random
+Forest without class weighting, 0.8900 for the class-weighted Random Forest and
+0.8711 for the support vector machine. Mean Matthews correlation coefficients
+were 0.4705, nan, 0.3633 and 0.3683 respectively. XGBoost was selected as the
+best model on both metrics. The bootstrap 95 per cent confidence interval had a
+median half-width of 0.0077, so differences smaller than that are not
+meaningful; the two leading models were separated on Matthews correlation
+coefficient rather than on area under the curve.
 
 Per-class performance for XGBoost is given below; N is the number of positive
 examples in the test partition and the interval is the bootstrap 95 per cent
