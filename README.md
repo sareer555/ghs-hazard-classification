@@ -10,6 +10,13 @@ chemical terms.
 **Target journals:** *Journal of Cheminformatics* (recommended),
 *Journal of Chemical Information and Modeling*, *Journal of Hazardous Materials*
 **Repository:** <https://github.com/sareer555/ghs-hazard-classification>
+**Archived code:** [10.5281/zenodo.21876531](https://doi.org/10.5281/zenodo.21876531)
+**Archived data:** [10.5281/zenodo.21876611](https://doi.org/10.5281/zenodo.21876611)
+
+> **Citing this work.** Cite the DOIs above rather than the GitHub URL. The
+> archives are permanent and version-locked; a repository URL can move or be
+> deleted. The data archive (366 MB) holds the curated dataset, descriptor
+> matrix and trained models that are too large for GitHub.
 
 > **Note on what is and is not in this repository.** The code, models needed to
 > run the application, figures, tables and manuscript are all here (~27 MB).

@@ -73,3 +73,10 @@ desktop.ini
 
 # ---- Streamlit local state --------------------------------------------------
 .streamlit/secrets.toml
+
+# ---- Zenodo upload archive --------------------------------------------------
+# The data archive built by src/build_zenodo_archive.py is ~366 MB, far over
+# GitHub's 100 MB file limit, and is published at its own DOI
+# (10.5281/zenodo.21876611). The README and the form guide beside it are small
+# and stay tracked, because they document what the archive contains.
+zenodo_data_archive/*.zip

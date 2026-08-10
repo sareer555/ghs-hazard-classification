@@ -65,14 +65,20 @@ listed above.
 --------------------------------------------------------------------------
 3. DATA AVAILABILITY STATEMENT
 --------------------------------------------------------------------------
-All data supporting the findings of this study are derived from the PubChem
-database (https://pubchem.ncbi.nlm.nih.gov), which is in the public domain.
 The curated multi-label GHS dataset, the computed descriptor matrix, the
-scaffold split indices and all trained model files are provided in the project
-repository. GHS classifications originate with the European Chemicals Agency,
-Regulation (EC) No 1272/2008, the Hazardous Substances Data Bank, NITE-CMC and
-the Hazardous Chemical Information System of Safe Work Australia, and remain
-subject to those bodies' terms of use.
+scaffold split indices and all trained model files are openly available from
+Zenodo at https://doi.org/10.5281/zenodo.21876611, released under a Creative
+Commons Attribution 4.0 International licence.
+
+The underlying classifications are derived from the PubChem database
+(https://pubchem.ncbi.nlm.nih.gov), which is in the public domain. They
+originate with the European Chemicals Agency, Regulation (EC) No 1272/2008,
+the Hazardous Substances Data Bank, NITE-CMC and the Hazardous Chemical
+Information System of Safe Work Australia, and remain subject to those bodies'
+terms of use.
+
+Approximately 8 GB of intermediate descriptor arrays are not deposited, as
+they are reproduced exactly by re-running the analysis pipeline.
 
 --------------------------------------------------------------------------
 4. CODE AVAILABILITY STATEMENT
@@ -88,16 +94,14 @@ tool. Both run locally after installing the pinned environment; no hosted
 service is required, and no data leaves the user's machine. The trained
 gradient-boosting models are included in the repository.
 
-The repository is available at
-https://github.com/sareer555/ghs-hazard-classification and is released under
-the MIT licence.
+The analysis code is archived at Zenodo,
+https://doi.org/10.5281/zenodo.21876531, and is developed at
+https://github.com/sareer555/ghs-hazard-classification under the MIT licence.
+The archived version 1.0.0 is the one that produced every result reported
+here.
 
-[BEFORE SUBMISSION: archive the repository with Zenodo to obtain a permanent
-DOI, and add that DOI to this statement. Zenodo mints one automatically from a
-GitHub release once the repository is enabled at zenodo.org/account/settings/
-github. A DOI is what journals require, because a repository URL can move or
-be deleted; a DOI cannot. If the application is later hosted publicly, add the
-URL here as well - a live deployment is not required for submission.]
+[OPTIONAL: if the application is later hosted publicly, add the URL to this
+statement. A live deployment is not required for submission.]
 
 --------------------------------------------------------------------------
 5. DECLARATION OF GENERATIVE AI IN THE WRITING PROCESS
@@ -157,6 +161,10 @@ Table S5.  Malaysian industrial validation results by sector, including the
 File S1.   STEP1_environment_requirements.txt - the complete software
            environment.
 
+PERMANENT ARCHIVES
+   Code: https://doi.org/10.5281/zenodo.21876531
+   Data: https://doi.org/10.5281/zenodo.21876611
+
 --------------------------------------------------------------------------
 10. PRE-SUBMISSION CHECKLIST
 --------------------------------------------------------------------------
@@ -184,12 +192,9 @@ File S1.   STEP1_environment_requirements.txt - the complete software
     GHS08_HealthHazard and GHS09_Environmental. The data were bound to the
     numeric codes and were unaffected; the mapping to the original names is in
     Table S0.
-[ ] ACTION REQUIRED: deposit the repository with Zenodo (or figshare) to get a
-    permanent DOI, and cite it in the Data and Code Availability statements.
-    This is what ACS journals actually require - a live web deployment is NOT
-    required and its absence is not a barrier to publication. Keep the wording
-    "released as open-source software with a browser-based interface"; do not
-    claim a hosted service unless one exists and its URL is given.
+[x] DONE: repository and dataset archived on Zenodo with permanent DOIs -
+    code 10.5281/zenodo.21876531, data 10.5281/zenodo.21876611 - and both are
+    cited in the availability statements above.
 [ ] ACTION REQUIRED: state explicitly in the Limitations section that the
     support vector machine was trained on a reduced feature set and a
     subsampled training partition owing to hardware constraints, and is

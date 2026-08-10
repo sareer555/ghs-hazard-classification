@@ -17,6 +17,16 @@ authors:
     affiliation: Department of Chemistry, University of Peshawar
 repository-code: 'https://github.com/sareer555/ghs-hazard-classification'
 url: 'https://github.com/sareer555/ghs-hazard-classification'
+doi: '10.5281/zenodo.21876531'
+identifiers:
+  - type: doi
+    value: '10.5281/zenodo.21876531'
+    description: Archived analysis code and application (this repository)
+  - type: doi
+    value: '10.5281/zenodo.21876611'
+    description: >-
+      Archived dataset, molecular descriptors and trained models. Held
+      separately because the files exceed GitHub's size limits.
 abstract: >-
   A multi-label machine learning framework that predicts all nine Globally
   Harmonized System hazard pictograms from molecular structure. Trained on
