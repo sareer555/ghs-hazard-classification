@@ -1323,22 +1323,25 @@ PERMANENT ARCHIVES
 10. PRE-SUBMISSION CHECKLIST
 --------------------------------------------------------------------------
 [ ] Manuscript formatted to the JCIM template, double-spaced, line-numbered
-[ ] Abstract within the 250-word limit (current draft: {facts['abstract_words']} words)
-[ ] All figures at 300 dpi minimum, 12 pt minimum type
-[ ] Figure captions below each figure, complete and self-contained
-[ ] All references formatted in ACS style with DOIs
+[x] Abstract within the 250-word limit ({facts['abstract_words']} words)
+[x] All figures at 300 dpi with 12 pt minimum type (verified)
+[x] Figure captions written - publication_materials/figures/figure_captions.txt
+[x] 26 references in ACS style, DOIs included where they exist
 [ ] Supporting Information compiled as a single PDF plus the Excel workbook
-[ ] TOC graphic prepared (JCIM requires one)
+[x] TOC graphic prepared - publication_materials/figures/TOC_graphic.png
 [x] ORCID registered: 0009-0003-2580-091X (sole author)
-[ ] Generative-AI declaration included and positioned per the target
-    journal's guidelines (section 5 above). Required by ACS, Springer
-    Nature and Elsevier - none of them prohibit AI use, but all require
-    it to be declared.
+[x] Generative-AI declaration written (section 5 above)
+[ ] Position that declaration where the target journal's guidelines require
 [ ] Check whether the Federal Directorate of Education requires clearance or
     notification before staff publish research naming the department. Many
     public-sector employers do. The personal-capacity disclaimer on the title
     page is the standard wording and usually satisfies such policies.
-[ ] Funding statement completed
+[ ] Funding statement completed (if none, state: "This research received
+    no specific grant from any funding agency in the public, commercial
+    or not-for-profit sectors.")
+[ ] Update the affiliation on the Zenodo data record - the Creators field
+    still reads University of Peshawar. Metadata is editable; files are
+    not. Edit -> Creators -> Publish.
 [x] RESOLVED: the three label columns whose descriptive suffixes did not match
     the official UN pictogram meanings have been renamed to GHS07_Irritant,
     GHS08_HealthHazard and GHS09_Environmental. The data were bound to the
@@ -1347,10 +1350,9 @@ PERMANENT ARCHIVES
 [x] DONE: repository and dataset archived on Zenodo with permanent DOIs -
     code 10.5281/zenodo.21876531, data 10.5281/zenodo.21876611 - and both are
     cited in the availability statements above.
-[ ] ACTION REQUIRED: state explicitly in the Limitations section that the
-    support vector machine was trained on a reduced feature set and a
-    subsampled training partition owing to hardware constraints, and is
-    therefore not strictly comparable with the other two algorithms.
+[x] Limitations states that the support vector machine used a reduced
+    feature set and a subsampled training partition, and is therefore not
+    strictly comparable with the other two algorithms.
 """
 
 
