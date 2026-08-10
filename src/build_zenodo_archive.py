@@ -101,7 +101,7 @@ def build_readme(included, skipped):
     lines.append("=" * 78)
     lines.append("")
     lines.append("Sareer Ahmad")
-    lines.append("Department of Chemistry, University of Peshawar")
+    lines.append("Federal Directorate of Education, Islamabad, Pakistan")
     lines.append("ORCID: https://orcid.org/0009-0003-2580-091X")
     lines.append(f"Archive created: {datetime.now():%d %B %Y}")
     lines.append("")

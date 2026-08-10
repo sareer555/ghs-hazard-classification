@@ -4,7 +4,7 @@ STEP 1 - ENVIRONMENT SETUP AND VERIFICATION
 Project : Interpretable Machine Learning for Predicting GHS Chemical Hazard
           Classifications: A Multi-Label Classification Approach Using
           PubChem Molecular Descriptors
-Author  : Sareer Ahmad (MSc Physical Chemistry, University of Peshawar)
+Author  : Sareer Ahmad (Federal Directorate of Education, Islamabad)
 
 Purpose of this script
 ----------------------

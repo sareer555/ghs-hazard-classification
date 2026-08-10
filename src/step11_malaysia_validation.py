@@ -546,7 +546,7 @@ def generate_pdf_report(results, class_table, sector_table, johor,
         "Interpretable Machine Learning for Predicting GHS Chemical Hazard "
         "Classifications", styles["Heading3"]))
     story.append(Paragraph(
-        f"Sareer Ahmad, MSc Physical Chemistry, University of Peshawar<br/>"
+        f"Sareer Ahmad, Federal Directorate of Education, Islamabad<br/>"
         f"Prepared for consideration by the Department of Occupational Safety "
         f"and Health (DOSH), Malaysia<br/>"
         f"Generated {datetime.now().strftime('%d %B %Y')}", body_style))

@@ -38,7 +38,7 @@ Click "Add creator" and fill in:
     Family name:   Ahmad
     Given names:   Sareer
     ORCID:         0009-0003-2580-091X
-    Affiliation:   Department of Chemistry, University of Peshawar
+    Affiliation:   Federal Directorate of Education, Islamabad, Pakistan
 
 (Typing the ORCID may auto-fill the name - check it reads "Sareer Ahmad".)
 
@@ -170,4 +170,4 @@ COMMON CONFUSIONS
     different audiences. Linking them with "Is supplement to" is the standard
     arrangement.
 
-Generated 10 August 2026, 09:54
+Generated 10 August 2026, 11:18

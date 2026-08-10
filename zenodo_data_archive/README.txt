@@ -5,7 +5,7 @@ Hazard Classifications
 ==============================================================================
 
 Sareer Ahmad
-Department of Chemistry, University of Peshawar
+Federal Directorate of Education, Islamabad, Pakistan
 ORCID: https://orcid.org/0009-0003-2580-091X
 Archive created: 10 August 2026
 

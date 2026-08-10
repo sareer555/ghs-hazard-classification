@@ -72,7 +72,7 @@ Click "Add creator" and fill in:
     Family name:   Ahmad
     Given names:   Sareer
     ORCID:         0009-0003-2580-091X
-    Affiliation:   Department of Chemistry, University of Peshawar
+    Affiliation:   Federal Directorate of Education, Islamabad, Pakistan
 
 (Typing the ORCID may auto-fill the name - check it reads "Sareer Ahmad".)
 
