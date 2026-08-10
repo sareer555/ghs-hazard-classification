@@ -47,7 +47,7 @@ manuscript and agree to its submission.
 
 Yours sincerely,
 Sareer Ahmad
-Department of Chemistry, University of Peshawar
+Federal Directorate of Education, Islamabad
 ORCID: https://orcid.org/0009-0003-2580-091X
 sareerkh9194@gmail.com
 
@@ -124,9 +124,14 @@ author guidelines specify - check the current guidelines, as the required
 position and wording are revised periodically.]
 
 --------------------------------------------------------------------------
-6. COMPETING INTERESTS DECLARATION
+6. COMPETING INTERESTS AND EMPLOYER DISCLAIMER
 --------------------------------------------------------------------------
 The author declares no competing financial or non-financial interests.
+
+The views expressed in this article are those of the author and do not
+necessarily reflect the official position of the Federal Directorate of
+Education or the Government of Pakistan. This research was conducted in the
+author's personal capacity, without departmental funding or resources.
 
 --------------------------------------------------------------------------
 7. ETHICAL STATEMENT
@@ -180,12 +185,10 @@ PERMANENT ARCHIVES
     journal's guidelines (section 5 above). Required by ACS, Springer
     Nature and Elsevier - none of them prohibit AI use, but all require
     it to be declared.
-[ ] Confirm the affiliation line: currently "Department of Chemistry,
-    University of Peshawar". This is correct if the work grew out of your
-    studies there or you retain status with the department; if it was done
-    entirely independently after leaving, switch to "Independent Researcher"
-    (see src/manuscript_sections.py). Consider notifying the department that
-    their name will appear on the submission.
+[ ] Check whether the Federal Directorate of Education requires clearance or
+    notification before staff publish research naming the department. Many
+    public-sector employers do. The personal-capacity disclaimer on the title
+    page is the standard wording and usually satisfies such policies.
 [ ] Funding statement completed
 [x] RESOLVED: the three label columns whose descriptive suffixes did not match
     the official UN pictogram meanings have been renamed to GHS07_Irritant,

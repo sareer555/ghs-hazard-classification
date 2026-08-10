@@ -55,12 +55,31 @@ AUTHOR_NAME = "Sareer Ahmad"
 AUTHOR_EMAIL = "sareerkh9194@gmail.com"
 AUTHOR_ORCID = "https://orcid.org/0009-0003-2580-091X"
 
-UNIVERSITY_AFFILIATION = ("Department of Chemistry, University of Peshawar,\n"
-                          "    Peshawar 25120, Khyber Pakhtunkhwa, Pakistan")
-INDEPENDENT_AFFILIATION = "Independent Researcher, Peshawar, Pakistan"
+# The author has held a permanent teaching post at the Federal Directorate of
+# Education since 2022, which is a current institutional position and therefore
+# the correct affiliation. The MSc awarded by the University of Peshawar in
+# 2021 is a qualification, not an affiliation, and appears in the biographical
+# note instead.
+CURRENT_AFFILIATION = ("Federal Directorate of Education,\n"
+                       "    Islamabad 44000, Pakistan")
+INDEPENDENT_AFFILIATION = "Independent Researcher, Islamabad, Pakistan"
 
-# Currently in use:
-AFFILIATION = UNIVERSITY_AFFILIATION
+AFFILIATION = CURRENT_AFFILIATION
+
+# Government and public-sector employees conventionally add this when
+# publishing work carried out in a personal capacity. It protects both the
+# author and the employer: it makes clear that the research is the author's
+# own and is not an official position of the Directorate.
+EMPLOYER_DISCLAIMER = (
+    "The views expressed in this article are those of the author and do not "
+    "necessarily reflect the official position of the Federal Directorate of "
+    "Education or the Government of Pakistan. This research was conducted in "
+    "the author's personal capacity.")
+
+BIOGRAPHICAL_NOTE = (
+    "Sareer Ahmad received his MSc in Physical Chemistry from the University "
+    "of Peshawar in 2021 and has taught chemistry at the Federal Directorate "
+    "of Education, Islamabad, since 2022.")
 
 
 def load(path, default=None):
@@ -187,29 +206,38 @@ KEYWORDS
     GHS classification; multi-label learning; molecular descriptors; SHAP
     interpretability; chemical safety; scaffold splitting; QSAR
 
+DISCLAIMER
+
+    {EMPLOYER_DISCLAIMER}
+
+BIOGRAPHICAL NOTE
+
+    {BIOGRAPHICAL_NOTE}
+
 --------------------------------------------------------------------------------
 NOTES BEFORE SUBMISSION
 --------------------------------------------------------------------------------
 1. This is a single-author submission.
 
-2. CONFIRM THE AFFILIATION. It currently reads:
+2. The affiliation is the author's current employer, the Federal Directorate
+   of Education, where a permanent teaching post has been held since 2022.
+   This is correct: an affiliation names where the author currently holds a
+   position. The MSc from the University of Peshawar (2021) is a
+   qualification rather than an affiliation and appears in the biographical
+   note instead.
 
-       {AFFILIATION}
+3. CHECK WHETHER YOUR EMPLOYER REQUIRES PUBLICATION CLEARANCE. Government
+   departments in many countries ask staff to obtain approval, or at least to
+   notify a supervisor, before publishing research that names the department.
+   A short email now is far easier than a query after acceptance. The
+   disclaimer above is the standard wording for public-sector employees
+   publishing in a personal capacity, and usually satisfies such policies.
 
-   An affiliation names where the work was carried out or where the author
-   currently holds a position. A degree completed in the past is not by itself
-   an affiliation. Listing the University of Peshawar is correct if this
-   research grew out of your studies there, was begun while you were enrolled,
-   or you retain some status with the department. If none of those apply, set
-   AFFILIATION = INDEPENDENT_AFFILIATION at the top of
-   src/manuscript_sections.py and regenerate.
+4. Place the disclaimer where the target journal specifies - typically in the
+   Acknowledgements or as a footnote on the title page. The biographical note
+   is only needed if the journal runs author biographies; omit it otherwise.
 
-   Two practical points. Journals ask authors to confirm affiliations are
-   accurate at submission. Some institutions also ask to be notified before
-   their name appears on a publication - a short email to the department is
-   worth sending, and costs nothing.
-
-3. Confirm the email above is the address you want printed in the published
+5. Confirm the email above is the address you want printed in the published
    article; it becomes permanently public as the corresponding author contact.
 """
 
