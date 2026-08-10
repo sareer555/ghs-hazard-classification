@@ -1196,7 +1196,7 @@ manuscript and agree to its submission.
 
 Yours sincerely,
 Sareer Ahmad
-Independent Researcher
+Department of Chemistry, University of Peshawar
 ORCID: https://orcid.org/0009-0003-2580-091X
 sareerkh9194@gmail.com
 
@@ -1297,9 +1297,12 @@ File S1.   STEP1_environment_requirements.txt - the complete software
 [ ] Supporting Information compiled as a single PDF plus the Excel workbook
 [ ] TOC graphic prepared (JCIM requires one)
 [x] ORCID registered: 0009-0003-2580-091X (sole author)
-[ ] Confirm the affiliation line: currently "Independent Researcher,
-    Peshawar, Pakistan". Replace only if you hold a current institutional
-    position - a past degree is not an affiliation.
+[ ] Confirm the affiliation line: currently "Department of Chemistry,
+    University of Peshawar". This is correct if the work grew out of your
+    studies there or you retain status with the department; if it was done
+    entirely independently after leaving, switch to "Independent Researcher"
+    (see src/manuscript_sections.py). Consider notifying the department that
+    their name will appear on the submission.
 [ ] Funding statement completed
 [x] RESOLVED: the three label columns whose descriptive suffixes did not match
     the official UN pictogram meanings have been renamed to GHS07_Irritant,

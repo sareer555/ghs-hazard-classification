@@ -17,7 +17,8 @@ AUTHOR
 
 AFFILIATION
 
-    Independent Researcher, Peshawar, Pakistan
+    Department of Chemistry, University of Peshawar,
+    Peshawar 25120, Khyber Pakhtunkhwa, Pakistan
 
     * Corresponding author. Email: sareerkh9194@gmail.com
       ORCID: https://orcid.org/0009-0003-2580-091X
@@ -30,10 +31,25 @@ KEYWORDS
 --------------------------------------------------------------------------------
 NOTES BEFORE SUBMISSION
 --------------------------------------------------------------------------------
-1. This is a single-author submission. If you hold a current position at an
-   institution, replace "Independent Researcher" with that affiliation; a
-   degree awarded in the past is not itself an affiliation, so listing a
-   university you have left would be incorrect.
-2. Confirm the email above is the address you want printed in the published
-   article - it becomes permanently public as the corresponding author
-   contact.
+1. This is a single-author submission.
+
+2. CONFIRM THE AFFILIATION. It currently reads:
+
+       Department of Chemistry, University of Peshawar,
+    Peshawar 25120, Khyber Pakhtunkhwa, Pakistan
+
+   An affiliation names where the work was carried out or where the author
+   currently holds a position. A degree completed in the past is not by itself
+   an affiliation. Listing the University of Peshawar is correct if this
+   research grew out of your studies there, was begun while you were enrolled,
+   or you retain some status with the department. If none of those apply, set
+   AFFILIATION = INDEPENDENT_AFFILIATION at the top of
+   src/manuscript_sections.py and regenerate.
+
+   Two practical points. Journals ask authors to confirm affiliations are
+   accurate at submission. Some institutions also ask to be notified before
+   their name appears on a publication - a short email to the department is
+   worth sending, and costs nothing.
+
+3. Confirm the email above is the address you want printed in the published
+   article; it becomes permanently public as the corresponding author contact.

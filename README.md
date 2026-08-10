@@ -4,7 +4,7 @@ A multi-label classification framework that predicts all nine GHS hazard
 pictograms from molecular structure alone, and explains every prediction in
 chemical terms.
 
-**Author:** Sareer Ahmad — Independent Researcher, Peshawar, Pakistan
+**Author:** Sareer Ahmad — Department of Chemistry, University of Peshawar
 **ORCID:** [0009-0003-2580-091X](https://orcid.org/0009-0003-2580-091X)
 **Contact:** sareerkh9194@gmail.com
 **Target journals:** *Journal of Cheminformatics* (recommended),

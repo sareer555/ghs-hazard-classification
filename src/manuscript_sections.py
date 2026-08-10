@@ -33,6 +33,35 @@ from ghs_config import (PROJECT_ROOT, DIR_MALAYSIA, DIR_PUB, GHS_LABEL_COLUMNS,
 MANUSCRIPT = os.path.join(DIR_PUB, "manuscript")
 os.makedirs(MANUSCRIPT, exist_ok=True)
 
+# ---------------------------------------------------------------------------
+# AUTHOR DETAILS
+# ---------------------------------------------------------------------------
+# Kept in one place so the title page, the cover letter and the final report
+# cannot disagree with one another.
+#
+# A NOTE ON THE AFFILIATION, because this one is easy to get wrong.
+# An affiliation names the institution where the work was carried out, or where
+# the author currently holds a position. A degree completed in the past is not
+# by itself an affiliation. Listing a university implies that the work has some
+# connection to it, so it is correct here only if the research grew out of the
+# author's studies there, was begun while enrolled, or the author retains some
+# status with the department.
+#
+# If none of those hold, set AFFILIATION to INDEPENDENT_AFFILIATION below.
+# Journals ask authors to confirm that affiliations are accurate, and
+# institutions can object to their name appearing on work they had no part in.
+# ---------------------------------------------------------------------------
+AUTHOR_NAME = "Sareer Ahmad"
+AUTHOR_EMAIL = "sareerkh9194@gmail.com"
+AUTHOR_ORCID = "https://orcid.org/0009-0003-2580-091X"
+
+UNIVERSITY_AFFILIATION = ("Department of Chemistry, University of Peshawar,\n"
+                          "    Peshawar 25120, Khyber Pakhtunkhwa, Pakistan")
+INDEPENDENT_AFFILIATION = "Independent Researcher, Peshawar, Pakistan"
+
+# Currently in use:
+AFFILIATION = UNIVERSITY_AFFILIATION
+
 
 def load(path, default=None):
     """Read a JSON file, returning a default when it is absent."""
@@ -144,14 +173,14 @@ RUNNING TITLE
 
 AUTHOR
 
-    Sareer Ahmad*
+    {AUTHOR_NAME}*
 
 AFFILIATION
 
-    Independent Researcher, Peshawar, Pakistan
+    {AFFILIATION}
 
-    * Corresponding author. Email: sareerkh9194@gmail.com
-      ORCID: https://orcid.org/0009-0003-2580-091X
+    * Corresponding author. Email: {AUTHOR_EMAIL}
+      ORCID: {AUTHOR_ORCID}
 
 KEYWORDS
 
@@ -161,13 +190,27 @@ KEYWORDS
 --------------------------------------------------------------------------------
 NOTES BEFORE SUBMISSION
 --------------------------------------------------------------------------------
-1. This is a single-author submission. If you hold a current position at an
-   institution, replace "Independent Researcher" with that affiliation; a
-   degree awarded in the past is not itself an affiliation, so listing a
-   university you have left would be incorrect.
-2. Confirm the email above is the address you want printed in the published
-   article - it becomes permanently public as the corresponding author
-   contact.
+1. This is a single-author submission.
+
+2. CONFIRM THE AFFILIATION. It currently reads:
+
+       {AFFILIATION}
+
+   An affiliation names where the work was carried out or where the author
+   currently holds a position. A degree completed in the past is not by itself
+   an affiliation. Listing the University of Peshawar is correct if this
+   research grew out of your studies there, was begun while you were enrolled,
+   or you retain some status with the department. If none of those apply, set
+   AFFILIATION = INDEPENDENT_AFFILIATION at the top of
+   src/manuscript_sections.py and regenerate.
+
+   Two practical points. Journals ask authors to confirm affiliations are
+   accurate at submission. Some institutions also ask to be notified before
+   their name appears on a publication - a short email to the department is
+   worth sending, and costs nothing.
+
+3. Confirm the email above is the address you want printed in the published
+   article; it becomes permanently public as the corresponding author contact.
 """
 
 
