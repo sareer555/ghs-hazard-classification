@@ -100,12 +100,32 @@ be deleted; a DOI cannot. If the application is later hosted publicly, add the
 URL here as well - a live deployment is not required for submission.]
 
 --------------------------------------------------------------------------
-5. COMPETING INTERESTS DECLARATION
+5. DECLARATION OF GENERATIVE AI IN THE WRITING PROCESS
 --------------------------------------------------------------------------
-The authors declare no competing financial or non-financial interests.
+During the preparation of this work the author used Claude (Anthropic) to
+assist with software implementation, code review, data analysis and the
+drafting of the manuscript. The author reviewed, verified and edited all
+content, and takes full responsibility for the content of the publication.
+
+No artificial intelligence tool is listed as an author. Authorship requires
+accountability for the work, including the ability to approve the final
+version and to respond to questions about its accuracy and integrity, and an
+AI system cannot hold that accountability.
+
+[This declaration is REQUIRED. ACS, Springer Nature and Elsevier all mandate
+disclosure of generative AI use; none of them prohibit it. Failing to declare
+it is a research-integrity issue, whereas declaring it is routine. Place this
+statement immediately before the References, or wherever the target journal's
+author guidelines specify - check the current guidelines, as the required
+position and wording are revised periodically.]
 
 --------------------------------------------------------------------------
-6. ETHICAL STATEMENT
+6. COMPETING INTERESTS DECLARATION
+--------------------------------------------------------------------------
+The author declares no competing financial or non-financial interests.
+
+--------------------------------------------------------------------------
+7. ETHICAL STATEMENT
 --------------------------------------------------------------------------
 This research involved no human participants, no animal subjects and no
 personally identifiable data. It is a computational study based entirely on
@@ -113,14 +133,14 @@ publicly available chemical classification records. No ethical approval was
 required.
 
 --------------------------------------------------------------------------
-7. FUNDING
+8. FUNDING
 --------------------------------------------------------------------------
 [To be completed. State any funding received, or "This research received no
 specific grant from any funding agency in the public, commercial or
 not-for-profit sectors."]
 
 --------------------------------------------------------------------------
-8. SUPPORTING INFORMATION LIST
+9. SUPPORTING INFORMATION LIST
 --------------------------------------------------------------------------
 Table S0.  GHS label schema: column names, pictogram codes, their
            authoritative United Nations meanings, and the correspondence with
@@ -138,7 +158,7 @@ File S1.   STEP1_environment_requirements.txt - the complete software
            environment.
 
 --------------------------------------------------------------------------
-9. PRE-SUBMISSION CHECKLIST
+10. PRE-SUBMISSION CHECKLIST
 --------------------------------------------------------------------------
 [ ] Manuscript formatted to the JCIM template, double-spaced, line-numbered
 [ ] Abstract within the 250-word limit (current draft: 226 words)
@@ -148,6 +168,10 @@ File S1.   STEP1_environment_requirements.txt - the complete software
 [ ] Supporting Information compiled as a single PDF plus the Excel workbook
 [ ] TOC graphic prepared (JCIM requires one)
 [x] ORCID registered: 0009-0003-2580-091X (sole author)
+[ ] Generative-AI declaration included and positioned per the target
+    journal's guidelines (section 5 above). Required by ACS, Springer
+    Nature and Elsevier - none of them prohibit AI use, but all require
+    it to be declared.
 [ ] Confirm the affiliation line: currently "Department of Chemistry,
     University of Peshawar". This is correct if the work grew out of your
     studies there or you retain status with the department; if it was done
