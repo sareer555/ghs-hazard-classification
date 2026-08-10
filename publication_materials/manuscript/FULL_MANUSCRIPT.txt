@@ -11,23 +11,16 @@ RUNNING TITLE
 
     Interpretable multi-label prediction of GHS hazard classifications
 
-AUTHORS
+AUTHOR
 
-    Sareer Ahmad [1]*, Hooi Ling Lee [2]
+    Sareer Ahmad*
 
-AFFILIATIONS
+AFFILIATION
 
-    [1] Department of Chemistry, University of Peshawar, Peshawar 25120,
-        Khyber Pakhtunkhwa, Pakistan
-    [2] School of Chemical Sciences, Universiti Sains Malaysia,
-        11800 USM, Penang, Malaysia
+    Independent Researcher, Peshawar, Pakistan
 
-    * Corresponding author. Email: [ADD EMAIL]
-
-ORCID
-
-    Sareer Ahmad    [ADD ORCID - register free at orcid.org, required by ACS]
-    Hooi Ling Lee   [ADD ORCID]
+    * Corresponding author. Email: sareerkh9194@gmail.com
+      ORCID: https://orcid.org/0009-0003-2580-091X
 
 KEYWORDS
 
@@ -37,13 +30,13 @@ KEYWORDS
 --------------------------------------------------------------------------------
 NOTES BEFORE SUBMISSION
 --------------------------------------------------------------------------------
-1. Affiliations above are placeholders drawn from the project brief. Confirm
-   the exact departmental wording with each institution.
-2. Confirm co-authorship and the author order with Assoc. Prof. Dr. Lee Hooi
-   Ling before submitting. Listing a supervisor without their agreement is a
-   serious breach of publication ethics.
-3. ORCID identifiers are mandatory for the corresponding author at ACS and are
-   strongly encouraged by most other publishers.
+1. This is a single-author submission. If you hold a current position at an
+   institution, replace "Independent Researcher" with that affiliation; a
+   degree awarded in the past is not itself an affiliation, so listing a
+   university you have left would be incorrect.
+2. Confirm the email above is the address you want printed in the published
+   article - it becomes permanently public as the corresponding author
+   contact.
 
 
 

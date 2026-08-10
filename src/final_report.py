@@ -195,9 +195,9 @@ def build_final_pdf(output_path):
         "Classifications:<br/>A Multi-Label Classification Approach Using "
         "PubChem Molecular Descriptors", styles["Heading3"]))
     story.append(Paragraph(
-        f"Sareer Ahmad &nbsp;|&nbsp; MSc Physical Chemistry, University of "
-        f"Peshawar<br/>Target institution: Universiti Sains Malaysia &nbsp;|"
-        f"&nbsp; Proposed supervisor: Assoc. Prof. Dr. Lee Hooi Ling<br/>"
+        f"Sareer Ahmad &nbsp;|&nbsp; Independent Researcher, Peshawar, "
+        f"Pakistan<br/>ORCID: 0009-0003-2580-091X &nbsp;|&nbsp; "
+        f"sareerkh9194@gmail.com<br/>"
         f"Generated {datetime.now().strftime('%d %B %Y, %H:%M')}", body))
     story.append(Spacer(1, 0.3 * cm))
 

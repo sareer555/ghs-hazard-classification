@@ -77,7 +77,7 @@ SESSION = requests.Session()
 SESSION.headers.update({
     # Identifying the client is a PubChem usage-policy requirement.
     "User-Agent": ("GHS-Hazard-ML-Research/1.0 "
-                   "(academic research; Sareer Ahmad; USM proposal)")
+                   "(academic research; Sareer Ahmad; sareerkh9194@gmail.com)")
 })
 
 # Where partially downloaded pages are cached so a crash does not lose work

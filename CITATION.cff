@@ -13,12 +13,8 @@ authors:
     family-names: Ahmad
     alias: sareer555            # GitHub username
     email: sareerkh9194@gmail.com
-    affiliation: Department of Chemistry, University of Peshawar
-    # orcid: 'https://orcid.org/XXXX-XXXX-XXXX-XXXX'   # add before archiving
-  - given-names: Hooi Ling
-    family-names: Lee
-    affiliation: School of Chemical Sciences, Universiti Sains Malaysia
-    # orcid: 'https://orcid.org/XXXX-XXXX-XXXX-XXXX'
+    orcid: 'https://orcid.org/0009-0003-2580-091X'
+    affiliation: Independent Researcher, Peshawar, Pakistan
 repository-code: 'https://github.com/sareer555/ghs-hazard-classification'
 url: 'https://github.com/sareer555/ghs-hazard-classification'
 abstract: >-
