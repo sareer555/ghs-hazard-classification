@@ -1427,9 +1427,13 @@ PERMANENT ARCHIVES
 [x] Employer clearance confirmed not required by the Federal Directorate of
     Education. The personal-capacity disclaimer remains on the title page.
 [x] Funding statement completed - see section 8.
-[ ] Update the affiliation on the Zenodo data record - the Creators field
-    still reads University of Peshawar. Metadata is editable; files are
-    not. Edit -> Creators -> Publish.
+[ ] Optional, cosmetic: add the affiliation to the Zenodo DATA record
+    (10.5281/zenodo.21876611). Name and ORCID are correct there; the
+    affiliation field is simply empty. The CODE record already carries it,
+    having read it from CITATION.cff. To set it: open the record, click Edit,
+    hover the "Ahmad, Sareer" row under Creators until the pencil icon
+    appears, click it, fill in Affiliations, then Publish. Editing metadata
+    does not mint a new DOI or create a new version; only file changes do.
 [x] RESOLVED: the three label columns whose descriptive suffixes did not match
     the official UN pictogram meanings have been renamed to GHS07_Irritant,
     GHS08_HealthHazard and GHS09_Environmental. The data were bound to the
