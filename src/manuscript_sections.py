@@ -813,10 +813,14 @@ def main():
     toc = toc_graphic(f)
     print(f"   TOC_graphic.png          -> {toc}")
 
-    # Assemble a single full manuscript in journal section order.
+    # Assemble a single full manuscript in journal section order. back_matter
+    # holds the availability, funding, competing-interest and AI-declaration
+    # statements; it is written by step13_publication.py, so if that has not
+    # been run yet the manuscript is simply assembled without it.
     order = ["title_page.txt", "abstract.txt", "introduction.txt",
              "methods_section.txt", "results.txt", "discussion.txt",
-             "conclusions.txt", "references_ACS_style.txt"]
+             "conclusions.txt", "back_matter.txt",
+             "references_ACS_style.txt"]
     full = []
     for name in order:
         p = os.path.join(MANUSCRIPT, name)

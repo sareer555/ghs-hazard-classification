@@ -1,0 +1,120 @@
+MANUSCRIPT BACK MATTER
+
+Place these sections after the Conclusions and before the
+References. Check the target journal's guidelines for the order it
+expects, and for where it wants the generative AI declaration in
+particular - journals differ on that one.
+
+--------------------------------------------------------------------------
+AUTHOR CONTRIBUTIONS (CRediT taxonomy)
+--------------------------------------------------------------------------
+Sareer Ahmad: Conceptualization; Data curation; Formal analysis;
+  Funding acquisition; Investigation; Methodology; Project administration;
+  Resources; Software; Supervision; Validation; Visualization;
+  Writing - original draft; Writing - review and editing.
+
+This is a single-author submission; the sole author carried out every role
+listed above.
+
+--------------------------------------------------------------------------
+DATA AVAILABILITY STATEMENT
+--------------------------------------------------------------------------
+The curated multi-label GHS dataset, the computed descriptor matrix, the
+scaffold split indices and all trained model files are openly available from
+Zenodo at https://doi.org/10.5281/zenodo.21876611, released under a Creative
+Commons Attribution 4.0 International licence.
+
+The underlying classifications are derived from the PubChem database
+(https://pubchem.ncbi.nlm.nih.gov), which is in the public domain. They
+originate with the European Chemicals Agency, Regulation (EC) No 1272/2008,
+the Hazardous Substances Data Bank, NITE-CMC and the Hazardous Chemical
+Information System of Safe Work Australia, and remain subject to those bodies'
+terms of use.
+
+Approximately 8 GB of intermediate descriptor arrays are not deposited, as
+they are reproduced exactly by re-running the analysis pipeline.
+
+--------------------------------------------------------------------------
+CODE AVAILABILITY STATEMENT
+--------------------------------------------------------------------------
+All analysis code is provided in the project repository as documented Python
+scripts, one per methodological step, together with the exact environment
+specification required to reproduce the results. A single random seed of 42 is
+applied throughout.
+
+The prediction framework is distributed as source code in two forms: a
+Streamlit application providing a browser-based interface, and a command-line
+tool. The trained gradient-boosting models are included in the repository, so
+both run locally after installing the pinned environment.
+
+A hosted instance of the application is additionally available, without
+registration, at
+
+    https://ghs-hazard-classification.streamlit.app
+
+It accepts a chemical name, CAS number, PubChem CID or SMILES string, returns
+the predicted profile across all nine hazard classes with calibrated
+confidences, shows the SHAP attribution behind each prediction, and exports a
+PDF report. The hosted instance runs the same model file that produced the
+results reported here. Note that structures submitted to it are transmitted to
+the hosting provider; users evaluating proprietary or unpublished structures
+should run the application locally, in which case no data leaves their
+machine.
+
+The analysis code is archived at Zenodo,
+https://doi.org/10.5281/zenodo.21876531, and is developed at
+https://github.com/sareer555/ghs-hazard-classification under the MIT licence.
+The archived version 1.0.0 is the one that produced every result reported
+here.
+
+--------------------------------------------------------------------------
+DECLARATION OF GENERATIVE AI IN THE WRITING PROCESS
+--------------------------------------------------------------------------
+During the preparation of this work the author used Claude (Anthropic) to
+assist with software implementation, code review, data analysis and the
+drafting of the manuscript. The author reviewed, verified and edited all
+content, and takes full responsibility for the content of the publication.
+
+No artificial intelligence tool is listed as an author. Authorship requires
+accountability for the work, including the ability to approve the final
+version and to respond to questions about its accuracy and integrity, and an
+AI system cannot hold that accountability.
+
+[This declaration is REQUIRED. ACS, Springer Nature and Elsevier all mandate
+disclosure of generative AI use; none of them prohibit it. Failing to declare
+it is a research-integrity issue, whereas declaring it is routine. Place this
+statement immediately before the References, or wherever the target journal's
+author guidelines specify - check the current guidelines, as the required
+position and wording are revised periodically.]
+
+--------------------------------------------------------------------------
+COMPETING INTERESTS AND EMPLOYER DISCLAIMER
+--------------------------------------------------------------------------
+The author declares no competing financial or non-financial interests.
+
+The views expressed in this article are those of the author and do not
+necessarily reflect the official position of the Federal Directorate of
+Education or the Government of Pakistan. This research was conducted in the
+author's personal capacity, without departmental funding or resources.
+
+--------------------------------------------------------------------------
+ETHICAL STATEMENT
+--------------------------------------------------------------------------
+This research involved no human participants, no animal subjects and no
+personally identifiable data. It is a computational study based entirely on
+publicly available chemical classification records. No ethical approval was
+required.
+
+--------------------------------------------------------------------------
+FUNDING
+--------------------------------------------------------------------------
+This research received no specific grant from any funding agency in the
+public, commercial or not-for-profit sectors. The work was carried out by the
+author independently, using personal computing resources.
+
+[NOTE ON PUBLICATION CHARGES: with no funding available, prefer a subscription
+journal, where publishing is free to the author, over a fully open-access
+journal charging an article processing charge of USD 2,000-3,000. Where an
+open-access journal is preferred on scientific grounds, apply for the
+publisher's low- and middle-income country waiver BEFORE submitting - most
+have one, and applying afterwards is harder.]

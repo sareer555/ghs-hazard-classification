@@ -122,6 +122,9 @@ they are reproducible exactly by re-running the analysis pipeline.
 ANALYSIS CODE
 https://github.com/sareer555/ghs-hazard-classification
 
+LIVE APPLICATION
+https://ghs-hazard-classification.streamlit.app
+
 DISCLAIMER
 These models are computational screening tools. They do not replace laboratory
 testing or regulatory assessment under Malaysia's Occupational Safety and

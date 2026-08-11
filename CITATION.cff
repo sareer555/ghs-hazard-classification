@@ -16,7 +16,8 @@ authors:
     orcid: 'https://orcid.org/0009-0003-2580-091X'
     affiliation: Federal Directorate of Education, Islamabad, Pakistan
 repository-code: 'https://github.com/sareer555/ghs-hazard-classification'
-url: 'https://github.com/sareer555/ghs-hazard-classification'
+# Landing page for users rather than developers: the hosted application.
+url: 'https://ghs-hazard-classification.streamlit.app'
 doi: '10.5281/zenodo.21876531'
 identifiers:
   - type: doi

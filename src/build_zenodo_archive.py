@@ -106,6 +106,7 @@ def build_readme(included, skipped):
     lines.append(f"Archive created: {datetime.now():%d %B %Y}")
     lines.append("")
     lines.append("Analysis code: https://github.com/sareer555/ghs-hazard-classification")
+    lines.append("Live application: https://ghs-hazard-classification.streamlit.app")
     lines.append("")
     lines.append("-" * 78)
     lines.append("WHAT THIS IS")

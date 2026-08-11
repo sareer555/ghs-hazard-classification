@@ -1145,6 +1145,67 @@ application and as a command-line tool.
 """
 
 
+def build_back_matter(checklist_text):
+    """
+    Pull the sections that belong inside the manuscript out of the submission
+    document, so that the two can never drift apart.
+
+    The submission document is written as numbered sections. Sections 2 to 8 -
+    author contributions, data availability, code availability, the generative
+    AI declaration, competing interests, the ethical statement and funding -
+    are what a journal expects to find in the manuscript itself, placed after
+    the conclusions and before the references. Sections 1, 9 and 10 (the cover
+    letter, the supporting information list and the checklist) are submission
+    paperwork and are deliberately left out.
+
+    Taking the text from the already-composed checklist rather than writing it
+    a second time means a change to a statement shows up in both places, which
+    is the whole point.
+
+    Returns the extracted text with the section numbers stripped from the
+    headings, since the numbering only makes sense in the submission document.
+    """
+    lines = checklist_text.splitlines()
+
+    # Locate the heading line for each numbered section. Headings sit between
+    # two rules of dashes, so the rule one line above is where a section
+    # really begins.
+    heading_line = {}
+    for index, line in enumerate(lines):
+        stripped = line.strip()
+        number, sep, rest = stripped.partition(". ")
+        if sep and number.isdigit() and rest[:1].isupper():
+            heading_line[int(number)] = index
+
+    if 2 not in heading_line or 9 not in heading_line:
+        # The document has been reorganised; say so rather than emitting a
+        # silently truncated manuscript.
+        raise RuntimeError(
+            "Cannot find sections 2 and 9 in the submission document, so the "
+            "manuscript back matter cannot be extracted. Check that "
+            "build_submission_checklist() still uses numbered section "
+            "headings.")
+
+    start = max(heading_line[2] - 1, 0)
+    end = max(heading_line[9] - 1, start)
+
+    out = ["MANUSCRIPT BACK MATTER",
+           "",
+           "Place these sections after the Conclusions and before the",
+           "References. Check the target journal's guidelines for the order it",
+           "expects, and for where it wants the generative AI declaration in",
+           "particular - journals differ on that one.",
+           ""]
+    for line in lines[start:end]:
+        stripped = line.strip()
+        number, sep, rest = stripped.partition(". ")
+        if sep and number.isdigit() and rest[:1].isupper():
+            out.append(rest)          # drop the section number
+        else:
+            out.append(line)
+    return "\n".join(out).rstrip() + "\n"
+
+
 def build_submission_checklist(facts):
     """Compose the JCIM submission checklist, cover letter and statements."""
     return f"""SUBMISSION CHECKLIST
@@ -1239,18 +1300,28 @@ applied throughout.
 
 The prediction framework is distributed as source code in two forms: a
 Streamlit application providing a browser-based interface, and a command-line
-tool. Both run locally after installing the pinned environment; no hosted
-service is required, and no data leaves the user's machine. The trained
-gradient-boosting models are included in the repository.
+tool. The trained gradient-boosting models are included in the repository, so
+both run locally after installing the pinned environment.
+
+A hosted instance of the application is additionally available, without
+registration, at
+
+    https://ghs-hazard-classification.streamlit.app
+
+It accepts a chemical name, CAS number, PubChem CID or SMILES string, returns
+the predicted profile across all nine hazard classes with calibrated
+confidences, shows the SHAP attribution behind each prediction, and exports a
+PDF report. The hosted instance runs the same model file that produced the
+results reported here. Note that structures submitted to it are transmitted to
+the hosting provider; users evaluating proprietary or unpublished structures
+should run the application locally, in which case no data leaves their
+machine.
 
 The analysis code is archived at Zenodo,
 https://doi.org/10.5281/zenodo.21876531, and is developed at
 https://github.com/sareer555/ghs-hazard-classification under the MIT licence.
 The archived version 1.0.0 is the one that produced every result reported
 here.
-
-[OPTIONAL: if the application is later hosted publicly, add the URL to this
-statement. A live deployment is not required for submission.]
 
 --------------------------------------------------------------------------
 5. DECLARATION OF GENERATIVE AI IN THE WRITING PROCESS
@@ -1506,6 +1577,12 @@ def prepare_publication_materials():
     with open(checklist_path, "w", encoding="utf-8") as fh:
         fh.write(checklist)
     print(f"      Checklist -> {checklist_path}")
+
+    back_matter = build_back_matter(checklist)
+    back_matter_path = os.path.join(MANUSCRIPT_DIR, "back_matter.txt")
+    with open(back_matter_path, "w", encoding="utf-8") as fh:
+        fh.write(back_matter)
+    print(f"      Back matter -> {back_matter_path}")
 
     # ---- figure captions ---------------------------------------------------
     caption_path = os.path.join(FIG_DIR, "figure_captions.txt")

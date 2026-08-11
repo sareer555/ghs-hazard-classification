@@ -90,18 +90,28 @@ applied throughout.
 
 The prediction framework is distributed as source code in two forms: a
 Streamlit application providing a browser-based interface, and a command-line
-tool. Both run locally after installing the pinned environment; no hosted
-service is required, and no data leaves the user's machine. The trained
-gradient-boosting models are included in the repository.
+tool. The trained gradient-boosting models are included in the repository, so
+both run locally after installing the pinned environment.
+
+A hosted instance of the application is additionally available, without
+registration, at
+
+    https://ghs-hazard-classification.streamlit.app
+
+It accepts a chemical name, CAS number, PubChem CID or SMILES string, returns
+the predicted profile across all nine hazard classes with calibrated
+confidences, shows the SHAP attribution behind each prediction, and exports a
+PDF report. The hosted instance runs the same model file that produced the
+results reported here. Note that structures submitted to it are transmitted to
+the hosting provider; users evaluating proprietary or unpublished structures
+should run the application locally, in which case no data leaves their
+machine.
 
 The analysis code is archived at Zenodo,
 https://doi.org/10.5281/zenodo.21876531, and is developed at
 https://github.com/sareer555/ghs-hazard-classification under the MIT licence.
 The archived version 1.0.0 is the one that produced every result reported
 here.
-
-[OPTIONAL: if the application is later hosted publicly, add the URL to this
-statement. A live deployment is not required for submission.]
 
 --------------------------------------------------------------------------
 5. DECLARATION OF GENERATIVE AI IN THE WRITING PROCESS

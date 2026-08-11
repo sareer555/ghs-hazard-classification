@@ -13,6 +13,19 @@ chemical terms.
 **Archived code:** [10.5281/zenodo.21876531](https://doi.org/10.5281/zenodo.21876531)
 **Archived data:** [10.5281/zenodo.21876611](https://doi.org/10.5281/zenodo.21876611)
 
+### ▶ Try it live
+
+**<https://ghs-hazard-classification.streamlit.app>** — no installation, no
+registration. Enter a chemical name, CAS number, PubChem CID or SMILES string.
+
+The hosted instance runs the same XGBoost model file that produced every result
+below. It sleeps after a period of inactivity, so the first load can take
+around 30 seconds to wake; subsequent pages are immediate.
+
+> Structures you enter there are sent to the hosting provider. If you are
+> screening proprietary or unpublished structures, run the application locally
+> instead (see *Quick start*) — nothing then leaves your machine.
+
 > **Citing this work.** Cite the DOIs above rather than the GitHub URL. The
 > archives are permanent and version-locked; a repository URL can move or be
 > deleted. The data archive (366 MB) holds the curated dataset, descriptor
