@@ -61,11 +61,19 @@ the hosting provider; users evaluating proprietary or unpublished structures
 should run the application locally, in which case no data leaves their
 machine.
 
-The analysis code is archived at Zenodo,
-https://doi.org/10.5281/zenodo.21876531, and is developed at
+The analysis code is archived at Zenodo and developed at
 https://github.com/sareer555/ghs-hazard-classification under the MIT licence.
-The archived version 1.0.0 is the one that produced every result reported
-here.
+Release v1.0.1, https://doi.org/10.5281/zenodo.21891029, is the version to
+cite; https://doi.org/10.5281/zenodo.21876531 resolves to the most recent
+version whichever that is.
+
+Every result reported here was produced by release v1.0.0. Release v1.0.1
+differs from it only in the prediction application: it corrects the way that
+application locates its own files, which prevented it from starting on any
+machine other than the one the analysis was run on. No numbered step of the
+analysis pipeline is touched, and both releases reproduce the reported results
+identically. v1.0.1 is cited in preference because it is the release in which
+the accompanying application runs.
 
 --------------------------------------------------------------------------
 DECLARATION OF GENERATIVE AI IN THE WRITING PROCESS

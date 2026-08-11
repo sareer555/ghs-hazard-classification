@@ -1317,11 +1317,19 @@ the hosting provider; users evaluating proprietary or unpublished structures
 should run the application locally, in which case no data leaves their
 machine.
 
-The analysis code is archived at Zenodo,
-https://doi.org/10.5281/zenodo.21876531, and is developed at
+The analysis code is archived at Zenodo and developed at
 https://github.com/sareer555/ghs-hazard-classification under the MIT licence.
-The archived version 1.0.0 is the one that produced every result reported
-here.
+Release v1.0.1, https://doi.org/10.5281/zenodo.21891029, is the version to
+cite; https://doi.org/10.5281/zenodo.21876531 resolves to the most recent
+version whichever that is.
+
+Every result reported here was produced by release v1.0.0. Release v1.0.1
+differs from it only in the prediction application: it corrects the way that
+application locates its own files, which prevented it from starting on any
+machine other than the one the analysis was run on. No numbered step of the
+analysis pipeline is touched, and both releases reproduce the reported results
+identically. v1.0.1 is cited in preference because it is the release in which
+the accompanying application runs.
 
 --------------------------------------------------------------------------
 5. DECLARATION OF GENERATIVE AI IN THE WRITING PROCESS
@@ -1394,8 +1402,14 @@ File S1.   STEP1_environment_requirements.txt - the complete software
            environment.
 
 PERMANENT ARCHIVES
-   Code: https://doi.org/10.5281/zenodo.21876531
-   Data: https://doi.org/10.5281/zenodo.21876611
+   Code, v1.0.1  : https://doi.org/10.5281/zenodo.21891029
+   Code, latest  : https://doi.org/10.5281/zenodo.21876531
+   Data, v1.0.0  : https://doi.org/10.5281/zenodo.21876611
+   Data, latest  : https://doi.org/10.5281/zenodo.21876610
+
+   Cite the version DOIs. The "latest" entries are concept DOIs, which follow
+   whichever version is newest and therefore do not identify what produced a
+   given set of results.
 
 --------------------------------------------------------------------------
 10. PRE-SUBMISSION CHECKLIST
@@ -1422,8 +1436,8 @@ PERMANENT ARCHIVES
     numeric codes and were unaffected; the mapping to the original names is in
     Table S0.
 [x] DONE: repository and dataset archived on Zenodo with permanent DOIs -
-    code 10.5281/zenodo.21876531, data 10.5281/zenodo.21876611 - and both are
-    cited in the availability statements above.
+    code v1.0.1 10.5281/zenodo.21891029, data v1.0.0 10.5281/zenodo.21876611 -
+    and both are cited in the availability statements above.
 [x] Limitations states that the support vector machine used a reduced
     feature set and a subsampled training partition, and is therefore not
     strictly comparable with the other two algorithms.

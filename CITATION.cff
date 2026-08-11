@@ -18,11 +18,16 @@ authors:
 repository-code: 'https://github.com/sareer555/ghs-hazard-classification'
 # Landing page for users rather than developers: the hosted application.
 url: 'https://ghs-hazard-classification.streamlit.app'
-doi: '10.5281/zenodo.21876531'
+doi: '10.5281/zenodo.21891029'          # version DOI for v1.0.1
 identifiers:
   - type: doi
+    value: '10.5281/zenodo.21891029'
+    description: Archived analysis code and application, release v1.0.1
+  - type: doi
     value: '10.5281/zenodo.21876531'
-    description: Archived analysis code and application (this repository)
+    description: >-
+      Concept DOI for the archived code. Always resolves to the most recent
+      release, so cite the version DOI above when reporting results.
   - type: doi
     value: '10.5281/zenodo.21876611'
     description: >-
@@ -44,5 +49,5 @@ keywords:
   - scaffold splitting
   - QSAR
 license: MIT
-version: 1.0.0
+version: 1.0.1
 date-released: '2026-08-09'

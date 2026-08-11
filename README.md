@@ -10,8 +10,8 @@ chemical terms.
 **Target journals:** *Journal of Cheminformatics* (recommended),
 *Journal of Chemical Information and Modeling*, *Journal of Hazardous Materials*
 **Repository:** <https://github.com/sareer555/ghs-hazard-classification>
-**Archived code:** [10.5281/zenodo.21876531](https://doi.org/10.5281/zenodo.21876531)
-**Archived data:** [10.5281/zenodo.21876611](https://doi.org/10.5281/zenodo.21876611)
+**Archived code (v1.0.1):** [10.5281/zenodo.21891029](https://doi.org/10.5281/zenodo.21891029) · [all versions](https://doi.org/10.5281/zenodo.21876531)
+**Archived data (v1.0.0):** [10.5281/zenodo.21876611](https://doi.org/10.5281/zenodo.21876611) · [all versions](https://doi.org/10.5281/zenodo.21876610)
 
 ### ▶ Try it live
 
@@ -28,8 +28,15 @@ around 30 seconds to wake; subsequent pages are immediate.
 
 > **Citing this work.** Cite the DOIs above rather than the GitHub URL. The
 > archives are permanent and version-locked; a repository URL can move or be
-> deleted. The data archive (366 MB) holds the curated dataset, descriptor
-> matrix and trained models that are too large for GitHub.
+> deleted. Cite the **version** DOI, not the "all versions" one — the latter
+> follows whichever release is newest, so it cannot identify what produced a
+> particular result. The data archive (366 MB) holds the curated dataset,
+> descriptor matrix and trained models that are too large for GitHub.
+>
+> Every published result was produced by code release **v1.0.0**. **v1.0.1**
+> is the release to cite: it is identical apart from fixes that let the
+> prediction application find its own files on machines other than the one the
+> analysis ran on. No pipeline step changed, and both reproduce the results.
 
 > **Note on what is and is not in this repository.** The code, models needed to
 > run the application, figures, tables and manuscript are all here (~27 MB).
