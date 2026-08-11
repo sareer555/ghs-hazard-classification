@@ -25,7 +25,21 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "src"))
+# Make the project's own modules importable. The location of src/ is worked out
+# by looking beside this file first and then one directory up, so the app starts
+# correctly whether it is launched from the repository root or from the copy in
+# interface/ - a hosted deployment may be pointed at either one.
+_APP_DIR = os.path.dirname(os.path.abspath(__file__))
+for _candidate in (_APP_DIR, os.path.dirname(_APP_DIR)):
+    _SRC_DIR = os.path.join(_candidate, "src")
+    if os.path.isfile(os.path.join(_SRC_DIR, "ghs_config.py")):
+        sys.path.insert(0, _SRC_DIR)
+        break
+else:
+    raise RuntimeError(
+        "Could not find the project's src/ directory beside app.py or one "
+        "level above it. Start the app from the repository root with: "
+        "streamlit run app.py")
 
 from ghs_config import GHS_LABEL_COLUMNS, GHS_TRUE_MEANING
 from ghs_predictor import GHSPredictor, draw_molecule, build_pdf_report, DISCLAIMER

@@ -45,6 +45,12 @@ from step4_descriptors import descriptors_for_one_molecule, build_feature_names
 PUBCHEM_BASE = "https://pubchem.ncbi.nlm.nih.gov/rest/pug"
 CAS_PATTERN = re.compile(r"^\d{2,7}-\d{2}-\d$")
 
+# The name and file of the Step 7 ablation model, read from the metadata Step 7
+# wrote rather than assumed, so that the name always matches the resampling that
+# actually ran. Looked up once here, at import time, because it only reads a
+# small JSON file and every GHSPredictor needs the same answer.
+_ABL_NAME, _ABL_FILE, _ = get_ablation_identity()
+
 DISCLAIMER = (
     "This prediction is a computational screening tool and does not replace "
     "laboratory testing or regulatory assessment under Malaysia's CLASS "

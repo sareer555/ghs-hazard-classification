@@ -27,7 +27,16 @@ TODAY = datetime.now().strftime("%Y%m%d")
 # ---------------------------------------------------------------------------
 # FOLDER LAYOUT
 # ---------------------------------------------------------------------------
-PROJECT_ROOT = r"D:\GHS_Project"
+# The project root is worked out from where this file sits, rather than being
+# typed in as a fixed path. This file lives in src/, one level below the root,
+# so going up one directory from src/ gives the root wherever the project has
+# been copied to - the original Windows machine, a Linux server, or a hosted
+# deployment such as Streamlit Community Cloud. On the machine the analysis was
+# run on this still evaluates to D:\GHS_Project exactly as before.
+# Set the GHS_PROJECT_ROOT environment variable to override it.
+PROJECT_ROOT = os.environ.get(
+    "GHS_PROJECT_ROOT",
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 DIR_RAW = os.path.join(PROJECT_ROOT, "data", "raw")
 DIR_CLEAN = os.path.join(PROJECT_ROOT, "data", "cleaned")
 DIR_SPLITS = os.path.join(PROJECT_ROOT, "data", "splits")
