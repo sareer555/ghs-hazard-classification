@@ -1,7 +1,7 @@
 SUBMISSION CHECKLIST
 Journal of Chemical Information and Modeling (ACS Publications)
 ================================================================
-Prepared 10 August 2026
+Prepared 11 August 2026
 
 --------------------------------------------------------------------------
 1. COVER LETTER (draft)
@@ -144,9 +144,16 @@ required.
 --------------------------------------------------------------------------
 8. FUNDING
 --------------------------------------------------------------------------
-[To be completed. State any funding received, or "This research received no
-specific grant from any funding agency in the public, commercial or
-not-for-profit sectors."]
+This research received no specific grant from any funding agency in the
+public, commercial or not-for-profit sectors. The work was carried out by the
+author independently, using personal computing resources.
+
+[NOTE ON PUBLICATION CHARGES: with no funding available, prefer a subscription
+journal, where publishing is free to the author, over a fully open-access
+journal charging an article processing charge of USD 2,000-3,000. Where an
+open-access journal is preferred on scientific grounds, apply for the
+publisher's low- and middle-income country waiver BEFORE submitting - most
+have one, and applying afterwards is harder.]
 
 --------------------------------------------------------------------------
 9. SUPPORTING INFORMATION LIST
@@ -183,13 +190,9 @@ PERMANENT ARCHIVES
 [x] ORCID registered: 0009-0003-2580-091X (sole author)
 [x] Generative-AI declaration written (section 5 above)
 [ ] Position that declaration where the target journal's guidelines require
-[ ] Check whether the Federal Directorate of Education requires clearance or
-    notification before staff publish research naming the department. Many
-    public-sector employers do. The personal-capacity disclaimer on the title
-    page is the standard wording and usually satisfies such policies.
-[ ] Funding statement completed (if none, state: "This research received
-    no specific grant from any funding agency in the public, commercial
-    or not-for-profit sectors.")
+[x] Employer clearance confirmed not required by the Federal Directorate of
+    Education. The personal-capacity disclaimer remains on the title page.
+[x] Funding statement completed - see section 8.
 [ ] Update the affiliation on the Zenodo data record - the Creators field
     still reads University of Peshawar. Metadata is editable; files are
     not. Edit -> Creators -> Publish.
