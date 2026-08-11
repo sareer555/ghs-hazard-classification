@@ -4,8 +4,8 @@ TITLE PAGE
 TITLE
 
     Interpretable Machine Learning for Predicting GHS Chemical Hazard
-    Classifications: A Multi-Label Approach Using 243,323
-    Compounds and Scaffold-Based Validation
+    Classifications: A Multi-Label Approach Using 243,323 Compounds and
+    Scaffold-Based Validation
 
 RUNNING TITLE
 
@@ -35,32 +35,6 @@ DISCLAIMER
 BIOGRAPHICAL NOTE
 
     Sareer Ahmad received his MSc in Physical Chemistry from the University of Peshawar in 2021 and has taught chemistry at the Federal Directorate of Education, Islamabad, since 2022.
-
---------------------------------------------------------------------------------
-NOTES BEFORE SUBMISSION
---------------------------------------------------------------------------------
-1. This is a single-author submission.
-
-2. The affiliation is the author's current employer, the Federal Directorate
-   of Education, where a permanent teaching post has been held since 2022.
-   This is correct: an affiliation names where the author currently holds a
-   position. The MSc from the University of Peshawar (2021) is a
-   qualification rather than an affiliation and appears in the biographical
-   note instead.
-
-3. CHECK WHETHER YOUR EMPLOYER REQUIRES PUBLICATION CLEARANCE. Government
-   departments in many countries ask staff to obtain approval, or at least to
-   notify a supervisor, before publishing research that names the department.
-   A short email now is far easier than a query after acceptance. The
-   disclaimer above is the standard wording for public-sector employees
-   publishing in a personal capacity, and usually satisfies such policies.
-
-4. Place the disclaimer where the target journal specifies - typically in the
-   Acknowledgements or as a footnote on the title page. The biographical note
-   is only needed if the journal runs author biographies; omit it otherwise.
-
-5. Confirm the email above is the address you want printed in the published
-   article; it becomes permanently public as the corresponding author contact.
 
 
 
@@ -751,20 +725,16 @@ classification under Malaysia's CLASS Regulations 2013.
 
 
 
-MANUSCRIPT BACK MATTER
-
-Place these sections after the Conclusions and before the
-References. Check the target journal's guidelines for the order it
-expects, and for where it wants the generative AI declaration in
-particular - journals differ on that one.
-
 --------------------------------------------------------------------------
 AUTHOR CONTRIBUTIONS (CRediT taxonomy)
 --------------------------------------------------------------------------
 Sareer Ahmad: Conceptualization; Data curation; Formal analysis;
-  Funding acquisition; Investigation; Methodology; Project administration;
-  Resources; Software; Supervision; Validation; Visualization;
-  Writing - original draft; Writing - review and editing.
+  Investigation; Methodology; Project administration; Resources; Software;
+  Validation; Visualization; Writing - original draft; Writing - review and
+  editing.
+
+Funding acquisition is not listed, as the work was unfunded; nor is
+Supervision, which has no meaning in a single-author submission.
 
 This is a single-author submission; the sole author carried out every role
 listed above.
@@ -841,12 +811,6 @@ accountability for the work, including the ability to approve the final
 version and to respond to questions about its accuracy and integrity, and an
 AI system cannot hold that accountability.
 
-[This declaration is REQUIRED. ACS, Springer Nature and Elsevier all mandate
-disclosure of generative AI use; none of them prohibit it. Failing to declare
-it is a research-integrity issue, whereas declaring it is routine. Place this
-statement immediately before the References, or wherever the target journal's
-author guidelines specify - check the current guidelines, as the required
-position and wording are revised periodically.]
 
 --------------------------------------------------------------------------
 COMPETING INTERESTS AND EMPLOYER DISCLAIMER
@@ -872,13 +836,6 @@ FUNDING
 This research received no specific grant from any funding agency in the
 public, commercial or not-for-profit sectors. The work was carried out by the
 author independently, using personal computing resources.
-
-[NOTE ON PUBLICATION CHARGES: with no funding available, prefer a subscription
-journal, where publishing is free to the author, over a fully open-access
-journal charging an article processing charge of USD 2,000-3,000. Where an
-open-access journal is preferred on scientific grounds, apply for the
-publisher's low- and middle-income country waiver BEFORE submitting - most
-have one, and applying afterwards is harder.]
 
 
 

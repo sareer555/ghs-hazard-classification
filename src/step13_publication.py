@@ -35,7 +35,8 @@ from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
 import seaborn as sns
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from ghs_config import (get_ablation_identity, RANDOM_SEED, TODAY, PROJECT_ROOT, DIR_FEATURES,
+from ghs_config import (get_ablation_identity, manuscript_title,
+                        RANDOM_SEED, TODAY, PROJECT_ROOT, DIR_FEATURES,
                         DIR_SPLITS, DIR_EVAL, DIR_SHAP, DIR_MALAYSIA, DIR_PUB,
                         DIR_PUB_FIGS, DIR_LOGS, GHS_LABEL_COLUMNS,
                         GHS_TRUE_MEANING, ORIGINAL_PROPOSAL_NAME,
@@ -1189,27 +1190,48 @@ def build_back_matter(checklist_text):
     start = max(heading_line[2] - 1, 0)
     end = max(heading_line[9] - 1, start)
 
-    out = ["MANUSCRIPT BACK MATTER",
-           "",
-           "Place these sections after the Conclusions and before the",
-           "References. Check the target journal's guidelines for the order it",
-           "expects, and for where it wants the generative AI declaration in",
-           "particular - journals differ on that one.",
-           ""]
+    out = []
+    in_author_note = False
     for line in lines[start:end]:
         stripped = line.strip()
+
+        # Guidance addressed to the author is written as a block in square
+        # brackets. It belongs in the submission document, never in the
+        # manuscript: it is second person, it discusses the submission rather
+        # than the science, and an editor who read it would know at once that
+        # it was left in by accident. Drop those blocks here.
+        if not in_author_note and stripped.startswith("["):
+            in_author_note = not stripped.endswith("]")
+            continue
+        if in_author_note:
+            if stripped.endswith("]"):
+                in_author_note = False
+            continue
+
         number, sep, rest = stripped.partition(". ")
         if sep and number.isdigit() and rest[:1].isupper():
             out.append(rest)          # drop the section number
         else:
             out.append(line)
-    return "\n".join(out).rstrip() + "\n"
+
+    if in_author_note:
+        raise RuntimeError(
+            "An author-note block opened with '[' was never closed with ']'. "
+            "The rest of the back matter would have been silently discarded.")
+
+    # Collapse the runs of blank lines left behind by the removals.
+    cleaned, blanks = [], 0
+    for line in out:
+        blanks = blanks + 1 if not line.strip() else 0
+        if blanks < 3:
+            cleaned.append(line)
+    return "\n".join(cleaned).strip() + "\n"
 
 
 def build_submission_checklist(facts):
-    """Compose the JCIM submission checklist, cover letter and statements."""
+    """Compose the submission checklist, cover letter and statements."""
     return f"""SUBMISSION CHECKLIST
-Journal of Chemical Information and Modeling (ACS Publications)
+Computational Toxicology (Elsevier)
 ================================================================
 Prepared {datetime.now().strftime('%d %B %Y')}
 
@@ -1218,11 +1240,10 @@ Prepared {datetime.now().strftime('%d %B %Y')}
 --------------------------------------------------------------------------
 Dear Editor,
 
-We are pleased to submit our manuscript entitled "Interpretable Machine
-Learning for Predicting GHS Chemical Hazard Classifications: A Multi-Label
-Classification Approach Using PubChem Molecular Descriptors" for
-consideration as a research article in the Journal of Chemical Information
-and Modeling.
+{textwrap.fill('I am pleased to submit my manuscript entitled "'
+               + manuscript_title(facts['n_clean'])
+               + '" for consideration as a research article in '
+                 'Computational Toxicology.', width=74)}
 
 Chemical hazard classification under the Globally Harmonized System governs
 how chemicals are labelled, stored, transported and handled worldwide, yet the
@@ -1232,19 +1253,19 @@ hypothetical: in March 2019 improperly identified chemical waste discharged
 into the Sungai Kim Kim river at Pasir Gudang, Johor, Malaysia, affected more
 than 2,500 people, most of them schoolchildren.
 
-Our manuscript makes three contributions that we believe will interest the
-readership of this journal. First, we assemble and release a multi-label GHS
+The manuscript makes three contributions that I believe will interest the
+readership of this journal. First, I assemble and release a multi-label GHS
 dataset of {facts['n_clean']:,} unique compounds reconciled across five
-independent regulatory sources by majority voting. Second, we evaluate under a
+independent regulatory sources by majority voting. Second, I evaluate under a
 Bemis-Murcko scaffold split rather than a random split, so the reported
 performance reflects generalisation to genuinely novel chemotypes rather than
-to near-duplicates of the training data; we regard this as essential for any
-claim that a hazard model is deployable. Third, we use SHAP to show that the
+to near-duplicates of the training data; I regard this as essential for any
+claim that a hazard model is deployable. Third, I use SHAP to show that the
 learned decision rules recover established structure-hazard relationships,
 which is a prerequisite for regulatory acceptance of any computational
 screening tool.
 
-We further validate the framework on chemicals drawn from four Malaysian
+I further validate the framework on chemicals drawn from four Malaysian
 industrial sectors and on the chemicals implicated in the Johor 2019 incident.
 The complete analysis code, the curated dataset, the trained models and a
 browser-based screening interface are released as open-source software, so
@@ -1265,9 +1286,12 @@ sareerkh9194@gmail.com
 2. AUTHOR CONTRIBUTIONS (CRediT taxonomy)
 --------------------------------------------------------------------------
 Sareer Ahmad: Conceptualization; Data curation; Formal analysis;
-  Funding acquisition; Investigation; Methodology; Project administration;
-  Resources; Software; Supervision; Validation; Visualization;
-  Writing - original draft; Writing - review and editing.
+  Investigation; Methodology; Project administration; Resources; Software;
+  Validation; Visualization; Writing - original draft; Writing - review and
+  editing.
+
+Funding acquisition is not listed, as the work was unfunded; nor is
+Supervision, which has no meaning in a single-author submission.
 
 This is a single-author submission; the sole author carried out every role
 listed above.
@@ -1414,11 +1438,16 @@ PERMANENT ARCHIVES
 --------------------------------------------------------------------------
 10. PRE-SUBMISSION CHECKLIST
 --------------------------------------------------------------------------
-[ ] Manuscript formatted to the JCIM template, double-spaced, line-numbered
+[x] Formatting: Computational Toxicology accepts any reasonable manuscript
+    format for initial submission under Elsevier's "Your Paper Your Way", so
+    no template work is needed before submitting. Formatting and reference
+    style are only required if the paper is invited for revision.
 [x] Abstract within the 250-word limit ({facts['abstract_words']} words)
 [x] All figures at 300 dpi with 12 pt minimum type (verified)
 [x] Figure captions written - publication_materials/figures/figure_captions.txt
-[x] 26 references in ACS style, DOIs included where they exist
+[x] 26 references with DOIs where they exist. They are in ACS style;
+    Elsevier does not require a specific style at initial submission, so
+    they can stay as they are until revision.
 [ ] Supporting Information compiled as a single PDF plus the Excel workbook
 [x] TOC graphic prepared - publication_materials/figures/TOC_graphic.png
 [x] ORCID registered: 0009-0003-2580-091X (sole author)

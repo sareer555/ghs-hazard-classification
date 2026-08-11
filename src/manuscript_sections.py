@@ -27,7 +27,8 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from ghs_config import (PROJECT_ROOT, DIR_MALAYSIA, DIR_PUB, GHS_LABEL_COLUMNS,
+from ghs_config import (manuscript_title,
+                        PROJECT_ROOT, DIR_MALAYSIA, DIR_PUB, GHS_LABEL_COLUMNS,
                         GHS_TRUE_MEANING, stamped)
 
 MANUSCRIPT = os.path.join(DIR_PUB, "manuscript")
@@ -176,15 +177,20 @@ def gather():
 # ===========================================================================
 # TITLE PAGE
 # ===========================================================================
+def _wrapped_title(f):
+    """Return the shared manuscript title, wrapped and indented for the page."""
+    title = manuscript_title(f["clean"]["final_cleaned_compounds"])
+    return textwrap.fill(title, width=72,
+                         initial_indent="    ", subsequent_indent="    ")
+
+
 def title_page(f):
     return f"""TITLE PAGE
 ================================================================================
 
 TITLE
 
-    Interpretable Machine Learning for Predicting GHS Chemical Hazard
-    Classifications: A Multi-Label Approach Using {f['clean']['final_cleaned_compounds']:,}
-    Compounds and Scaffold-Based Validation
+{_wrapped_title(f)}
 
 RUNNING TITLE
 
@@ -213,10 +219,25 @@ DISCLAIMER
 BIOGRAPHICAL NOTE
 
     {BIOGRAPHICAL_NOTE}
+"""
 
---------------------------------------------------------------------------------
-NOTES BEFORE SUBMISSION
---------------------------------------------------------------------------------
+
+def author_notes(f):
+    """
+    Notes addressed to the author, NOT part of the manuscript.
+
+    These were previously printed at the foot of the title page, which meant
+    they were assembled into FULL_MANUSCRIPT.txt and would have been submitted
+    to a journal. They are written in the second person and discuss decisions
+    about the submission itself, so an editor reading them would immediately
+    see they were never meant to be there. They live in their own file now,
+    and that file is deliberately left out of the manuscript assembly order.
+    """
+    return """NOTES FOR THE AUTHOR - NOT PART OF THE MANUSCRIPT
+================================================================================
+Do not submit this file. It is working guidance about the title page, kept
+separate so that it cannot end up in the manuscript.
+
 1. This is a single-author submission.
 
 2. The affiliation is the author's current employer, the Federal Directorate
@@ -226,19 +247,19 @@ NOTES BEFORE SUBMISSION
    qualification rather than an affiliation and appears in the biographical
    note instead.
 
-3. CHECK WHETHER YOUR EMPLOYER REQUIRES PUBLICATION CLEARANCE. Government
-   departments in many countries ask staff to obtain approval, or at least to
-   notify a supervisor, before publishing research that names the department.
-   A short email now is far easier than a query after acceptance. The
-   disclaimer above is the standard wording for public-sector employees
-   publishing in a personal capacity, and usually satisfies such policies.
+3. Employer publication clearance: confirmed not required. The disclaimer on
+   the title page is the standard wording for public-sector employees
+   publishing in a personal capacity and remains in place.
 
 4. Place the disclaimer where the target journal specifies - typically in the
    Acknowledgements or as a footnote on the title page. The biographical note
    is only needed if the journal runs author biographies; omit it otherwise.
+   Computational Toxicology does not run author biographies, so the note can
+   be dropped for that submission.
 
-5. Confirm the email above is the address you want printed in the published
-   article; it becomes permanently public as the corresponding author contact.
+5. Confirm the email on the title page is the address to be printed in the
+   published article; it becomes permanently public as the corresponding
+   author contact.
 """
 
 
@@ -799,6 +820,9 @@ def main():
         ("results.txt", results(f)),
         ("discussion.txt", discussion(f)),
         ("conclusions.txt", conclusions(f)),
+        # Written out for the author but kept out of the assembly order below,
+        # so it can never reach a journal.
+        ("AUTHOR_NOTES_do_not_submit.txt", author_notes(f)),
     ]
     total = 0
     for name, text in pieces:

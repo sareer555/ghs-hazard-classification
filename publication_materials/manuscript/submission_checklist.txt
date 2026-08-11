@@ -1,5 +1,5 @@
 SUBMISSION CHECKLIST
-Journal of Chemical Information and Modeling (ACS Publications)
+Computational Toxicology (Elsevier)
 ================================================================
 Prepared 11 August 2026
 
@@ -8,11 +8,10 @@ Prepared 11 August 2026
 --------------------------------------------------------------------------
 Dear Editor,
 
-We are pleased to submit our manuscript entitled "Interpretable Machine
+I am pleased to submit my manuscript entitled "Interpretable Machine
 Learning for Predicting GHS Chemical Hazard Classifications: A Multi-Label
-Classification Approach Using PubChem Molecular Descriptors" for
-consideration as a research article in the Journal of Chemical Information
-and Modeling.
+Approach Using 243,323 Compounds and Scaffold-Based Validation" for
+consideration as a research article in Computational Toxicology.
 
 Chemical hazard classification under the Globally Harmonized System governs
 how chemicals are labelled, stored, transported and handled worldwide, yet the
@@ -22,19 +21,19 @@ hypothetical: in March 2019 improperly identified chemical waste discharged
 into the Sungai Kim Kim river at Pasir Gudang, Johor, Malaysia, affected more
 than 2,500 people, most of them schoolchildren.
 
-Our manuscript makes three contributions that we believe will interest the
-readership of this journal. First, we assemble and release a multi-label GHS
+The manuscript makes three contributions that I believe will interest the
+readership of this journal. First, I assemble and release a multi-label GHS
 dataset of 243,323 unique compounds reconciled across five
-independent regulatory sources by majority voting. Second, we evaluate under a
+independent regulatory sources by majority voting. Second, I evaluate under a
 Bemis-Murcko scaffold split rather than a random split, so the reported
 performance reflects generalisation to genuinely novel chemotypes rather than
-to near-duplicates of the training data; we regard this as essential for any
-claim that a hazard model is deployable. Third, we use SHAP to show that the
+to near-duplicates of the training data; I regard this as essential for any
+claim that a hazard model is deployable. Third, I use SHAP to show that the
 learned decision rules recover established structure-hazard relationships,
 which is a prerequisite for regulatory acceptance of any computational
 screening tool.
 
-We further validate the framework on chemicals drawn from four Malaysian
+I further validate the framework on chemicals drawn from four Malaysian
 industrial sectors and on the chemicals implicated in the Johor 2019 incident.
 The complete analysis code, the curated dataset, the trained models and a
 browser-based screening interface are released as open-source software, so
@@ -55,9 +54,12 @@ sareerkh9194@gmail.com
 2. AUTHOR CONTRIBUTIONS (CRediT taxonomy)
 --------------------------------------------------------------------------
 Sareer Ahmad: Conceptualization; Data curation; Formal analysis;
-  Funding acquisition; Investigation; Methodology; Project administration;
-  Resources; Software; Supervision; Validation; Visualization;
-  Writing - original draft; Writing - review and editing.
+  Investigation; Methodology; Project administration; Resources; Software;
+  Validation; Visualization; Writing - original draft; Writing - review and
+  editing.
+
+Funding acquisition is not listed, as the work was unfunded; nor is
+Supervision, which has no meaning in a single-author submission.
 
 This is a single-author submission; the sole author carried out every role
 listed above.
@@ -204,11 +206,16 @@ PERMANENT ARCHIVES
 --------------------------------------------------------------------------
 10. PRE-SUBMISSION CHECKLIST
 --------------------------------------------------------------------------
-[ ] Manuscript formatted to the JCIM template, double-spaced, line-numbered
+[x] Formatting: Computational Toxicology accepts any reasonable manuscript
+    format for initial submission under Elsevier's "Your Paper Your Way", so
+    no template work is needed before submitting. Formatting and reference
+    style are only required if the paper is invited for revision.
 [x] Abstract within the 250-word limit (226 words)
 [x] All figures at 300 dpi with 12 pt minimum type (verified)
 [x] Figure captions written - publication_materials/figures/figure_captions.txt
-[x] 26 references in ACS style, DOIs included where they exist
+[x] 26 references with DOIs where they exist. They are in ACS style;
+    Elsevier does not require a specific style at initial submission, so
+    they can stay as they are until revision.
 [ ] Supporting Information compiled as a single PDF plus the Excel workbook
 [x] TOC graphic prepared - publication_materials/figures/TOC_graphic.png
 [x] ORCID registered: 0009-0003-2580-091X (sole author)

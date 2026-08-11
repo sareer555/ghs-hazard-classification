@@ -4,8 +4,8 @@ TITLE PAGE
 TITLE
 
     Interpretable Machine Learning for Predicting GHS Chemical Hazard
-    Classifications: A Multi-Label Approach Using 243,323
-    Compounds and Scaffold-Based Validation
+    Classifications: A Multi-Label Approach Using 243,323 Compounds and
+    Scaffold-Based Validation
 
 RUNNING TITLE
 
@@ -35,29 +35,3 @@ DISCLAIMER
 BIOGRAPHICAL NOTE
 
     Sareer Ahmad received his MSc in Physical Chemistry from the University of Peshawar in 2021 and has taught chemistry at the Federal Directorate of Education, Islamabad, since 2022.
-
---------------------------------------------------------------------------------
-NOTES BEFORE SUBMISSION
---------------------------------------------------------------------------------
-1. This is a single-author submission.
-
-2. The affiliation is the author's current employer, the Federal Directorate
-   of Education, where a permanent teaching post has been held since 2022.
-   This is correct: an affiliation names where the author currently holds a
-   position. The MSc from the University of Peshawar (2021) is a
-   qualification rather than an affiliation and appears in the biographical
-   note instead.
-
-3. CHECK WHETHER YOUR EMPLOYER REQUIRES PUBLICATION CLEARANCE. Government
-   departments in many countries ask staff to obtain approval, or at least to
-   notify a supervisor, before publishing research that names the department.
-   A short email now is far easier than a query after acceptance. The
-   disclaimer above is the standard wording for public-sector employees
-   publishing in a personal capacity, and usually satisfies such policies.
-
-4. Place the disclaimer where the target journal specifies - typically in the
-   Acknowledgements or as a footnote on the title page. The biographical note
-   is only needed if the journal runs author biographies; omit it otherwise.
-
-5. Confirm the email above is the address you want printed in the published
-   article; it becomes permanently public as the corresponding author contact.
