@@ -12,7 +12,7 @@ import sys
 import glob
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from ghs_config import PROJECT_ROOT, GHS_LABEL_COLUMNS
+from ghs_config import PROJECT_ROOT, GHS_LABEL_COLUMNS, get_ablation_identity
 
 PRESENT, MISSING = [], []
 
@@ -77,7 +77,12 @@ def main():
     need("Random Forest model", "models/STEP7_rf_model.pkl")
     need("XGBoost models", "models/STEP7_xgb_models.pkl")
     need("SVM model", "models/STEP7_svm_model.pkl")
-    need("SMOTE ablation model", "models/STEP7_rf_smote_ablation.pkl")
+    # The ablation is named after the resampling that actually ran, which
+    # depends on whether SMOTE completed at this dataset size. Ask Step 7 what
+    # it produced rather than assuming a filename - assuming one is what left
+    # this audit reporting a missing SMOTE model that was never meant to exist.
+    ablation_name, ablation_file, _ = get_ablation_identity()
+    need(f"{ablation_name} ablation model", f"models/{ablation_file}")
     need("training times", "STEP7_training_times.json")
 
     print("\nSTEP 8 - Hyperparameter tuning")
