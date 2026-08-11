@@ -168,12 +168,8 @@ This research received no specific grant from any funding agency in the
 public, commercial or not-for-profit sectors. The work was carried out by the
 author independently, using personal computing resources.
 
-[NOTE ON PUBLICATION CHARGES: with no funding available, prefer a subscription
-journal, where publishing is free to the author, over a fully open-access
-journal charging an article processing charge of USD 2,000-3,000. Where an
-open-access journal is preferred on scientific grounds, apply for the
-publisher's low- and middle-income country waiver BEFORE submitting - most
-have one, and applying afterwards is harder.]
+Computational Toxicology publishes on the subscription model, so no article
+processing charge applies to this submission.
 
 --------------------------------------------------------------------------
 9. SUPPORTING INFORMATION LIST
