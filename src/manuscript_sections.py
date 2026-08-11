@@ -147,6 +147,64 @@ def wrap(text, width=79):
     return "\n".join(cleaned)
 
 
+# Top-level sections, in the order Elsevier numbers them. The title page,
+# abstract, back matter and references are deliberately absent: Elsevier
+# numbers only the body of the article, leaving declarations and references
+# unnumbered.
+NUMBERED_SECTIONS = ["INTRODUCTION", "MATERIALS AND METHODS", "RESULTS",
+                     "DISCUSSION", "CONCLUSIONS"]
+
+
+def number_sections(text):
+    """
+    Add the section numbering Computational Toxicology requires.
+
+    The guide asks authors to "divide your manuscript into clearly defined and
+    numbered sections" and to number subsections 1.1, 1.2 and so on. Top-level
+    headings become "1. INTRODUCTION" and the run-in subheadings inside the
+    methods become "2.1. Computational environment".
+
+    A subheading is recognised as a short line that follows a blank line, ends
+    in a full stop and is followed by prose. That combination distinguishes a
+    genuine run-in heading from the last line of a wrapped paragraph, which
+    also ends in a full stop but does not follow a blank line. The rule was
+    checked against the whole manuscript: it finds the twelve methods
+    subheadings and nothing else.
+    """
+    lines = text.split("\n")
+    out = []
+    section_number = 0
+    subsection_number = 0
+
+    for i, line in enumerate(lines):
+        stripped = line.strip()
+
+        if stripped in NUMBERED_SECTIONS:
+            section_number += 1
+            subsection_number = 0
+            out.append(f"{section_number}. {stripped}")
+            continue
+
+        previous_blank = i > 0 and not lines[i - 1].strip()
+        next_has_text = i + 1 < len(lines) and bool(lines[i + 1].strip())
+        is_subheading = (section_number
+                         and previous_blank
+                         and next_has_text
+                         and stripped.endswith(".")
+                         and len(stripped) < 60
+                         and stripped[:1].isupper()
+                         and not stripped[0].isdigit())
+
+        if is_subheading:
+            subsection_number += 1
+            out.append(f"{section_number}.{subsection_number}. "
+                       f"{stripped[:-1]}")
+        else:
+            out.append(line)
+
+    return "\n".join(out)
+
+
 def gather():
     """Collect every number the manuscript quotes into one dictionary."""
     f = {}
@@ -850,7 +908,10 @@ def main():
         p = os.path.join(MANUSCRIPT, name)
         if os.path.exists(p):
             full.append(open(p, encoding="utf-8").read())
-    combined = "\n\n\n".join(full)
+    # Numbering is applied to the assembled text, not to the individual
+    # section files, because a section's number depends on where it sits in
+    # the whole. FULL_MANUSCRIPT.txt is the file that gets submitted.
+    combined = number_sections("\n\n\n".join(full))
     out = os.path.join(MANUSCRIPT, "FULL_MANUSCRIPT.txt")
     with open(out, "w", encoding="utf-8") as fh:
         fh.write(combined)

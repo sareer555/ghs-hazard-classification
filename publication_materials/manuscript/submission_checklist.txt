@@ -144,9 +144,9 @@ required.
 --------------------------------------------------------------------------
 7. FUNDING
 --------------------------------------------------------------------------
-This research received no specific grant from any funding agency in the
-public, commercial or not-for-profit sectors. The work was carried out by the
-author independently, using personal computing resources.
+This research did not receive any specific grant from funding agencies in
+the public, commercial, or not-for-profit sectors. The work was carried out by
+the author independently, using personal computing resources.
 
 [Computational Toxicology publishes on the subscription model, so no article
 processing charge applies to this submission. This note is for the submission
@@ -227,7 +227,8 @@ PERMANENT ARCHIVES
     posting in the submission form if asked about prior publication.
 [x] Employer clearance confirmed not required by the Federal Directorate of
     Education. The personal-capacity disclaimer remains on the title page.
-[x] Funding statement completed - see section 8.
+[x] Funding statement completed - see section 7, using the exact
+    sentence Elsevier recommends for unfunded research.
 [ ] Optional, cosmetic: add the affiliation to the Zenodo DATA record
     (10.5281/zenodo.21876611). Name and ORCID are correct there; the
     affiliation field is simply empty. The CODE record already carries it,

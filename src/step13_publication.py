@@ -737,6 +737,21 @@ JOHOR 2019 CHEMICAL EMERGENCY
 
 (26) Ahmad, R.; Ghazali, M. F. Environmental Health Response to the Pasir
      Gudang Chemical Disaster. Malays. J. Public Health Med. 2019, 19 (2), 1-8.
+
+DATA AND SOFTWARE
+-----------------
+Computational Toxicology applies Option C of Elsevier's research data policy,
+which requires the underlying data to be deposited in a repository and cited
+in the article. The [dataset] marker is Elsevier's convention for identifying
+a data reference; it is used for indexing and does not appear in print.
+
+[dataset] (27) Ahmad, S. Multi-Label GHS Hazard Classification Dataset and
+     Trained Models for 243,323 Chemical Compounds, v1.0.0; Zenodo, 2026.
+     https://doi.org/10.5281/zenodo.21876611.
+
+(28) Ahmad, S. Interpretable Machine Learning for Predicting GHS Chemical
+     Hazard Classifications, v1.0.1 [software]; Zenodo, 2026.
+     https://doi.org/10.5281/zenodo.21891029.
 """
 
 
@@ -1146,6 +1161,58 @@ application and as a command-line tool.
 """
 
 
+HIGHLIGHT_MAX_CHARS = 85     # Elsevier's limit, including spaces
+
+
+def build_highlights(facts):
+    """
+    Compose the Highlights file that Computational Toxicology requires.
+
+    The guide asks for three to five bullet points, each at most 85 characters
+    including spaces, capturing the novel results and any new methods. They go
+    in a separate file whose name contains the word "highlights".
+
+    Every number is taken from the pipeline outputs rather than typed in, and
+    the length limit is enforced here rather than trusted: a bullet that is
+    over length is a rejected submission, and it is far easier to catch that
+    now than in the submission system.
+    """
+    bullets = [
+        f"All nine GHS pictograms predicted from structure for "
+        f"{facts['n_clean']:,} compounds",
+
+        f"Scaffold-split validation: mean AUC {facts['mean_auc']:.3f} on unseen "
+        f"chemical skeletons",
+
+        "SHAP recovers known structure-hazard rules, e.g. nitro groups drive "
+        "explosivity",
+
+        "Validated on Malaysian industrial chemicals and the 2019 Johor "
+        "incident",
+
+        "Open dataset, code and a free web application for hazard screening",
+    ]
+
+    over = [(n, b) for n, b in enumerate(bullets, 1)
+            if len(b) > HIGHLIGHT_MAX_CHARS]
+    if over:
+        detail = "; ".join(f"bullet {n} is {len(b)} characters" for n, b in over)
+        raise ValueError(
+            f"Highlights exceed Elsevier's {HIGHLIGHT_MAX_CHARS}-character "
+            f"limit: {detail}. Shorten them in build_highlights().")
+
+    lines = ["HIGHLIGHTS", ""]
+    lines += [f"* {b}" for b in bullets]
+    lines += ["",
+              f"({len(bullets)} bullets; longest "
+              f"{max(len(b) for b in bullets)} of "
+              f"{HIGHLIGHT_MAX_CHARS} characters allowed.)",
+              "",
+              "Upload as a separate editable file. Elsevier requires the word",
+              "'highlights' in the file name, which this file has."]
+    return "\n".join(lines) + "\n"
+
+
 def build_back_matter(checklist_text):
     """
     Pull the sections that belong inside the manuscript out of the submission
@@ -1376,9 +1443,9 @@ required.
 --------------------------------------------------------------------------
 7. FUNDING
 --------------------------------------------------------------------------
-This research received no specific grant from any funding agency in the
-public, commercial or not-for-profit sectors. The work was carried out by the
-author independently, using personal computing resources.
+This research did not receive any specific grant from funding agencies in
+the public, commercial, or not-for-profit sectors. The work was carried out by
+the author independently, using personal computing resources.
 
 [Computational Toxicology publishes on the subscription model, so no article
 processing charge applies to this submission. This note is for the submission
@@ -1459,7 +1526,8 @@ PERMANENT ARCHIVES
     posting in the submission form if asked about prior publication.
 [x] Employer clearance confirmed not required by the Federal Directorate of
     Education. The personal-capacity disclaimer remains on the title page.
-[x] Funding statement completed - see section 8.
+[x] Funding statement completed - see section 7, using the exact
+    sentence Elsevier recommends for unfunded research.
 [ ] Optional, cosmetic: add the affiliation to the Zenodo DATA record
     (10.5281/zenodo.21876611). Name and ORCID are correct there; the
     affiliation field is simply empty. The CODE record already carries it,
@@ -1634,6 +1702,11 @@ def prepare_publication_materials():
     with open(back_matter_path, "w", encoding="utf-8") as fh:
         fh.write(back_matter)
     print(f"      Back matter -> {back_matter_path}")
+
+    highlights_path = os.path.join(MANUSCRIPT_DIR, "highlights.txt")
+    with open(highlights_path, "w", encoding="utf-8") as fh:
+        fh.write(build_highlights(facts))
+    print(f"      Highlights -> {highlights_path}")
 
     # ---- figure captions ---------------------------------------------------
     caption_path = os.path.join(FIG_DIR, "figure_captions.txt")

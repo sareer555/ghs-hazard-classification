@@ -124,3 +124,18 @@ JOHOR 2019 CHEMICAL EMERGENCY
 
 (26) Ahmad, R.; Ghazali, M. F. Environmental Health Response to the Pasir
      Gudang Chemical Disaster. Malays. J. Public Health Med. 2019, 19 (2), 1-8.
+
+DATA AND SOFTWARE
+-----------------
+Computational Toxicology applies Option C of Elsevier's research data policy,
+which requires the underlying data to be deposited in a repository and cited
+in the article. The [dataset] marker is Elsevier's convention for identifying
+a data reference; it is used for indexing and does not appear in print.
+
+[dataset] (27) Ahmad, S. Multi-Label GHS Hazard Classification Dataset and
+     Trained Models for 243,323 Chemical Compounds, v1.0.0; Zenodo, 2026.
+     https://doi.org/10.5281/zenodo.21876611.
+
+(28) Ahmad, S. Interpretable Machine Learning for Predicting GHS Chemical
+     Hazard Classifications, v1.0.1 [software]; Zenodo, 2026.
+     https://doi.org/10.5281/zenodo.21891029.

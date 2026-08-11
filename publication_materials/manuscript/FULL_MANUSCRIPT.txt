@@ -67,7 +67,7 @@ SHAP interpretability; chemical safety; scaffold splitting; QSAR
 
 
 
-INTRODUCTION
+1. INTRODUCTION
 ================================================================================
 
 The Globally Harmonized System of Classification and Labelling of Chemicals
@@ -152,9 +152,9 @@ full dataset showed to be illusory.
 
 
 
-MATERIALS AND METHODS
+2. MATERIALS AND METHODS
 
-Computational environment.
+2.1. Computational environment
 All computations were performed under Python 3.11.15 on a
 64-bit Windows 10 workstation equipped with an Intel Core i7-6500U processor
 (two physical cores, four logical processors) and 7.9 GB of system memory.
@@ -167,7 +167,7 @@ resampling procedure, so that all results reported here are exactly
 reproducible. The complete environment specification is provided as
 Supporting Information.
 
-Data collection.
+2.2. Data collection
 GHS hazard classifications were obtained from the PubChem PUG-View annotation
 service, which aggregates classifications contributed by independent
 regulatory bodies. The complete set of records filed under the heading "GHS
@@ -198,7 +198,7 @@ GHS08_HealthHazard and GHS09_Environmental to match the United Nations
 definitions. The correspondence with the original names is recorded in
 Supporting Information Table S0.
 
-Data cleaning and label reconciliation.
+2.3. Data cleaning and label reconciliation
 Every SMILES string was parsed with RDKit, and structures that could not be
 interpreted were discarded (14 records). Duplicate
 structures were identified by InChIKey, with canonical SMILES used as the
@@ -216,7 +216,7 @@ cleaned dataset comprised 243,323 unique compounds, of which
 26.2 per cent carried more than one hazard pictogram.
 All 243,323 compounds were used for model development.
 
-Effect of training-set size.
+2.4. Effect of training-set size
 An earlier version of this work modelled a 40,000-compound subset, drawn
 because the dense descriptor matrix for the complete dataset exceeded the
 memory of the workstation available. Whether that constraint had limited the
@@ -239,7 +239,7 @@ with additional data and the aggregate curve flattened prematurely. Learning
 curves computed on a non-representative subsample can therefore be actively
 misleading about the value of further data.
 
-Molecular descriptor computation.
+2.5. Molecular descriptor computation
 Each compound was represented by a concatenated feature vector comprising
 three descriptor families. Nineteen physicochemical descriptors were computed
 with RDKit: molecular weight, exact molecular weight, the Crippen
@@ -258,7 +258,7 @@ corresponding column, and 402 descriptors whose
 variance across the dataset fell below 0.01 were removed as uninformative,
 leaving 816 features.
 
-Dataset splitting.
+2.6. Dataset splitting
 The dataset was partitioned by Bemis-Murcko scaffold rather than at random. The
 scaffold of each compound, obtained by removing all side chains and retaining
 the ring systems and their connecting linkers, was computed with RDKit, and all
@@ -294,7 +294,7 @@ between partitions, to provide positive examples of all nine hazard classes in
 every partition, and to allocate no class a training share more than fifteen
 percentage points below the overall training share.
 
-Class imbalance handling.
+2.7. Class imbalance handling
 Class frequencies in the dataset spanned more than three orders of magnitude,
 from 220,020 compounds carrying the irritant pictogram to 184
 carrying the explosive pictogram. Two corrections were applied, and a third was
@@ -326,7 +326,7 @@ direct comparison of oversampling against class weighting was obtained at the
 reduced scale where both were feasible and is reported in the Supporting
 Information.
 
-Model training and hyperparameter optimisation.
+2.8. Model training and hyperparameter optimisation
 Three algorithms were trained. A Random Forest classifier was fitted as a
 multi-output model with balanced class weighting. Nine independent XGBoost
 classifiers were trained, one per hazard class, each with the positive-class
@@ -344,7 +344,7 @@ reported in Supporting Information Table S2. The number of search draws was
 determined by timing a single fit and selecting the largest number of draws
 compatible with a fixed wall-clock budget.
 
-Evaluation.
+2.9. Evaluation
 Models were evaluated on the held-out scaffold-split test partition. For each
 algorithm and each hazard class, the area under the receiver operating
 characteristic curve, the average precision, the F1 score, the Matthews
@@ -361,7 +361,7 @@ not inflated by a model that predicts the majority class throughout, and the
 area under the receiver operating characteristic curve was used for the
 remainder.
 
-Model interpretation.
+2.10. Model interpretation
 The best-performing model was interpreted with SHAP. Exact Shapley values were
 computed for tree-based models using the TreeExplainer algorithm. For each
 hazard class the descriptors were ranked by mean absolute SHAP value, and the
@@ -373,7 +373,7 @@ with their defining SMARTS patterns, and Morgan fingerprint bits with an
 example of the atomic environment that sets them, so that fingerprint
 contributions could be interpreted chemically rather than as opaque indices.
 
-Malaysian industrial validation.
+2.11. Malaysian industrial validation
 A validation set was assembled from chemicals used in four Malaysian
 industrial sectors - palm oil processing, rubber processing, petrochemicals
 and semiconductor manufacturing - together with the chemicals identified in
@@ -386,14 +386,14 @@ best-performing model and its calibrated thresholds, without any retraining or
 adjustment, and scored against the PubChem classifications for those compounds
 where classifications were available.
 
-Data and code availability.
+2.12. Data and code availability
 All datasets, trained models, figures and analysis code are provided in the
 project repository. The prediction framework is distributed as a Streamlit web
 application and as a command-line tool.
 
 
 
-RESULTS
+3. RESULTS
 ================================================================================
 
 Dataset assembly and composition
@@ -569,7 +569,7 @@ inhalation hazard.
 
 
 
-DISCUSSION
+4. DISCUSSION
 ================================================================================
 
 Ranking ability and decision quality are not the same thing
@@ -692,7 +692,7 @@ more accurate than the classifications it was trained on.
 
 
 
-CONCLUSIONS
+5. CONCLUSIONS
 ================================================================================
 
 A multi-label machine learning framework was developed to predict all nine GHS
@@ -819,9 +819,9 @@ required.
 --------------------------------------------------------------------------
 FUNDING
 --------------------------------------------------------------------------
-This research received no specific grant from any funding agency in the
-public, commercial or not-for-profit sectors. The work was carried out by the
-author independently, using personal computing resources.
+This research did not receive any specific grant from funding agencies in
+the public, commercial, or not-for-profit sectors. The work was carried out by
+the author independently, using personal computing resources.
 
 
 --------------------------------------------------------------------------
@@ -966,3 +966,18 @@ JOHOR 2019 CHEMICAL EMERGENCY
 
 (26) Ahmad, R.; Ghazali, M. F. Environmental Health Response to the Pasir
      Gudang Chemical Disaster. Malays. J. Public Health Med. 2019, 19 (2), 1-8.
+
+DATA AND SOFTWARE
+-----------------
+Computational Toxicology applies Option C of Elsevier's research data policy,
+which requires the underlying data to be deposited in a repository and cited
+in the article. The [dataset] marker is Elsevier's convention for identifying
+a data reference; it is used for indexing and does not appear in print.
+
+[dataset] (27) Ahmad, S. Multi-Label GHS Hazard Classification Dataset and
+     Trained Models for 243,323 Chemical Compounds, v1.0.0; Zenodo, 2026.
+     https://doi.org/10.5281/zenodo.21876611.
+
+(28) Ahmad, S. Interpretable Machine Learning for Predicting GHS Chemical
+     Hazard Classifications, v1.0.1 [software]; Zenodo, 2026.
+     https://doi.org/10.5281/zenodo.21891029.
