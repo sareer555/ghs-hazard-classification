@@ -1356,27 +1356,7 @@ identically. v1.0.1 is cited in preference because it is the release in which
 the accompanying application runs.
 
 --------------------------------------------------------------------------
-5. DECLARATION OF GENERATIVE AI IN THE WRITING PROCESS
---------------------------------------------------------------------------
-During the preparation of this work the author used Claude (Anthropic) to
-assist with software implementation, code review, data analysis and the
-drafting of the manuscript. The author reviewed, verified and edited all
-content, and takes full responsibility for the content of the publication.
-
-No artificial intelligence tool is listed as an author. Authorship requires
-accountability for the work, including the ability to approve the final
-version and to respond to questions about its accuracy and integrity, and an
-AI system cannot hold that accountability.
-
-[This declaration is REQUIRED. ACS, Springer Nature and Elsevier all mandate
-disclosure of generative AI use; none of them prohibit it. Failing to declare
-it is a research-integrity issue, whereas declaring it is routine. Place this
-statement immediately before the References, or wherever the target journal's
-author guidelines specify - check the current guidelines, as the required
-position and wording are revised periodically.]
-
---------------------------------------------------------------------------
-6. COMPETING INTERESTS AND EMPLOYER DISCLAIMER
+5. DECLARATION OF COMPETING INTEREST
 --------------------------------------------------------------------------
 The author declares no competing financial or non-financial interests.
 
@@ -1386,7 +1366,7 @@ Education or the Government of Pakistan. This research was conducted in the
 author's personal capacity, without departmental funding or resources.
 
 --------------------------------------------------------------------------
-7. ETHICAL STATEMENT
+6. ETHICAL STATEMENT
 --------------------------------------------------------------------------
 This research involved no human participants, no animal subjects and no
 personally identifiable data. It is a computational study based entirely on
@@ -1394,7 +1374,7 @@ publicly available chemical classification records. No ethical approval was
 required.
 
 --------------------------------------------------------------------------
-8. FUNDING
+7. FUNDING
 --------------------------------------------------------------------------
 This research received no specific grant from any funding agency in the
 public, commercial or not-for-profit sectors. The work was carried out by the
@@ -1404,6 +1384,25 @@ author independently, using personal computing resources.
 processing charge applies to this submission. This note is for the submission
 file only; the Funding section of the manuscript states the absence of a grant
 and nothing more.]
+
+--------------------------------------------------------------------------
+8. Declaration of generative AI and AI-assisted technologies in the manuscript preparation process
+--------------------------------------------------------------------------
+During the preparation of this work the author used Claude (Anthropic) in
+order to assist with software implementation, code review, data analysis and
+the drafting of the manuscript. After using this tool, the author reviewed and
+edited the content as needed and takes full responsibility for the content of
+the published article.
+
+No artificial intelligence tool is listed as an author. Authorship requires
+accountability for the work, including the ability to approve the final
+version and to respond to questions about its accuracy and integrity, and an
+AI system cannot hold that accountability.
+
+[Heading and wording follow Elsevier's stated policy verbatim, and this
+section is placed last so that in the assembled manuscript it falls
+immediately before the references, which is where Elsevier requires it. Do not
+move it above the funding or competing-interest sections.]
 
 --------------------------------------------------------------------------
 9. SUPPORTING INFORMATION LIST
@@ -1449,8 +1448,15 @@ PERMANENT ARCHIVES
 [ ] Supporting Information compiled as a single PDF plus the Excel workbook
 [x] TOC graphic prepared - publication_materials/figures/TOC_graphic.png
 [x] ORCID registered: 0009-0003-2580-091X (sole author)
-[x] Generative-AI declaration written (section 5 above)
-[ ] Position that declaration where the target journal's guidelines require
+[x] Generative-AI declaration written (section 8 above), using Elsevier's
+    prescribed heading and wording verbatim
+[x] Declaration positioned as Elsevier requires: last section of the back
+    matter, so it falls immediately before the references
+[x] Preprint check: the manuscript and data are public on GitHub and Zenodo.
+    Elsevier permits authors to share preprints anywhere at any time; the
+    exception is journals operating double-anonymised review, and
+    Computational Toxicology operates single-anonymised review. Declare the
+    posting in the submission form if asked about prior publication.
 [x] Employer clearance confirmed not required by the Federal Directorate of
     Education. The personal-capacity disclaimer remains on the title page.
 [x] Funding statement completed - see section 8.

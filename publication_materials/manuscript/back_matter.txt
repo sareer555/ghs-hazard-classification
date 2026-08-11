@@ -72,21 +72,7 @@ identically. v1.0.1 is cited in preference because it is the release in which
 the accompanying application runs.
 
 --------------------------------------------------------------------------
-DECLARATION OF GENERATIVE AI IN THE WRITING PROCESS
---------------------------------------------------------------------------
-During the preparation of this work the author used Claude (Anthropic) to
-assist with software implementation, code review, data analysis and the
-drafting of the manuscript. The author reviewed, verified and edited all
-content, and takes full responsibility for the content of the publication.
-
-No artificial intelligence tool is listed as an author. Authorship requires
-accountability for the work, including the ability to approve the final
-version and to respond to questions about its accuracy and integrity, and an
-AI system cannot hold that accountability.
-
-
---------------------------------------------------------------------------
-COMPETING INTERESTS AND EMPLOYER DISCLAIMER
+DECLARATION OF COMPETING INTEREST
 --------------------------------------------------------------------------
 The author declares no competing financial or non-financial interests.
 
@@ -109,3 +95,18 @@ FUNDING
 This research received no specific grant from any funding agency in the
 public, commercial or not-for-profit sectors. The work was carried out by the
 author independently, using personal computing resources.
+
+
+--------------------------------------------------------------------------
+Declaration of generative AI and AI-assisted technologies in the manuscript preparation process
+--------------------------------------------------------------------------
+During the preparation of this work the author used Claude (Anthropic) in
+order to assist with software implementation, code review, data analysis and
+the drafting of the manuscript. After using this tool, the author reviewed and
+edited the content as needed and takes full responsibility for the content of
+the published article.
+
+No artificial intelligence tool is listed as an author. Authorship requires
+accountability for the work, including the ability to approve the final
+version and to respond to questions about its accuracy and integrity, and an
+AI system cannot hold that accountability.
