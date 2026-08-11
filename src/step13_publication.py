@@ -740,11 +740,6 @@ JOHOR 2019 CHEMICAL EMERGENCY
 
 DATA AND SOFTWARE
 -----------------
-Computational Toxicology applies Option C of Elsevier's research data policy,
-which requires the underlying data to be deposited in a repository and cited
-in the article. The [dataset] marker is Elsevier's convention for identifying
-a data reference; it is used for indexing and does not appear in print.
-
 [dataset] (27) Ahmad, S. Multi-Label GHS Hazard Classification Dataset and
      Trained Models for 243,323 Chemical Compounds, v1.0.0; Zenodo, 2026.
      https://doi.org/10.5281/zenodo.21876611.
@@ -1201,16 +1196,12 @@ def build_highlights(facts):
             f"Highlights exceed Elsevier's {HIGHLIGHT_MAX_CHARS}-character "
             f"limit: {detail}. Shorten them in build_highlights().")
 
-    lines = ["HIGHLIGHTS", ""]
-    lines += [f"* {b}" for b in bullets]
-    lines += ["",
-              f"({len(bullets)} bullets; longest "
-              f"{max(len(b) for b in bullets)} of "
-              f"{HIGHLIGHT_MAX_CHARS} characters allowed.)",
-              "",
-              "Upload as a separate editable file. Elsevier requires the word",
-              "'highlights' in the file name, which this file has."]
-    return "\n".join(lines) + "\n"
+    # This file is uploaded to the journal exactly as it stands - Elsevier
+    # states that supplementary files appear online in the same way as
+    # received - so it contains the bullets and nothing else. Notes about how
+    # to upload it belong in the submission checklist, not in the file that
+    # gets submitted.
+    return "\n".join(f"* {b}" for b in bullets) + "\n"
 
 
 def build_back_matter(checklist_text):
@@ -1474,6 +1465,18 @@ move it above the funding or competing-interest sections.]
 --------------------------------------------------------------------------
 9. SUPPORTING INFORMATION LIST
 --------------------------------------------------------------------------
+[FILES TO UPLOAD, AND NOTES ON TWO OF THEM.
+
+ highlights.txt - required. Elsevier asks for the word "highlights" in the
+ file name, which this file has. It contains the five bullets and nothing
+ else, because supplementary files appear online exactly as received.
+
+ References 27 and 28 cite the Zenodo dataset and code. Computational
+ Toxicology applies Option C of Elsevier's research data policy, which
+ requires deposited data to be cited in the article. The [dataset] marker on
+ reference 27 is Elsevier's convention for identifying a data reference; it
+ is used for indexing and does not appear in print.]
+
 Table S0.  GHS label schema: column names, pictogram codes, their
            authoritative United Nations meanings, and the correspondence with
            the names used in the original study design.

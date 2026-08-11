@@ -127,11 +127,6 @@ JOHOR 2019 CHEMICAL EMERGENCY
 
 DATA AND SOFTWARE
 -----------------
-Computational Toxicology applies Option C of Elsevier's research data policy,
-which requires the underlying data to be deposited in a repository and cited
-in the article. The [dataset] marker is Elsevier's convention for identifying
-a data reference; it is used for indexing and does not appear in print.
-
 [dataset] (27) Ahmad, S. Multi-Label GHS Hazard Classification Dataset and
      Trained Models for 243,323 Chemical Compounds, v1.0.0; Zenodo, 2026.
      https://doi.org/10.5281/zenodo.21876611.

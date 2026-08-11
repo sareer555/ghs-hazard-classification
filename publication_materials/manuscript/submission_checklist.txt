@@ -175,6 +175,18 @@ move it above the funding or competing-interest sections.]
 --------------------------------------------------------------------------
 9. SUPPORTING INFORMATION LIST
 --------------------------------------------------------------------------
+[FILES TO UPLOAD, AND NOTES ON TWO OF THEM.
+
+ highlights.txt - required. Elsevier asks for the word "highlights" in the
+ file name, which this file has. It contains the five bullets and nothing
+ else, because supplementary files appear online exactly as received.
+
+ References 27 and 28 cite the Zenodo dataset and code. Computational
+ Toxicology applies Option C of Elsevier's research data policy, which
+ requires deposited data to be cited in the article. The [dataset] marker on
+ reference 27 is Elsevier's convention for identifying a data reference; it
+ is used for indexing and does not appear in print.]
+
 Table S0.  GHS label schema: column names, pictogram codes, their
            authoritative United Nations meanings, and the correspondence with
            the names used in the original study design.
