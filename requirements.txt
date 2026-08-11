@@ -1,0 +1,36 @@
+# Dependencies for the GHS hazard screening web application.
+#
+# Versions are pinned to exactly what the published results were produced with,
+# so a hosted deployment behaves identically to the local one. If you only want
+# to re-run the analysis pipeline rather than the app, see
+# STEP1_environment_requirements.txt, which records the full environment.
+
+streamlit==1.61.0
+
+# Streamlit's ASGI layer. Starlette 1.x changed GZipResponder in a way that is
+# incompatible with this Streamlit release and makes the app fail on startup.
+# Keep this pin until Streamlit itself declares support for Starlette 1.x.
+starlette<1.0
+
+# Chemistry: SMILES parsing, molecular descriptors, structure drawing.
+rdkit==2026.3.5
+
+# The trained model is an XGBoost booster; it must be loaded by the same major
+# version that wrote it.
+xgboost==3.2.0
+scikit-learn==1.9.0
+joblib==1.5.3
+
+numpy==2.4.6
+pandas==3.0.5
+
+# Interpretability panel and figures.
+shap==0.51.0
+matplotlib==3.11.1
+
+# PDF hazard report generation.
+reportlab==5.0.0
+pillow==12.3.0
+
+# PubChem lookups for the "search by name" box.
+requests==2.34.2
