@@ -40,6 +40,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from ghs_config import (FIGURE_DPI, SERIES_HUE, ACCENT_HUE, CONTEXT_GREY,
+                        GHS_TRUE_MEANING as _MEANING)
 from ghs_config import (RANDOM_SEED, DIR_EVAL, DIR_PUB, GHS_LABEL_COLUMNS,
                         GHS_TRUE_MEANING, seed_everything, stamped)
 
@@ -69,6 +71,71 @@ PARAMS = {
     "verbosity": 0,
 }
 N_ROUNDS = 200
+
+
+def make_figure(table, first):
+    """
+    Draw Figure 10 from the results table.
+
+    Separated from main() so the figure can be redrawn from the saved
+    CSV without re-running the experiment, which takes hours.
+    """
+    sns.set_style("whitegrid")
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
+    ax1.plot(table["n_train"], table["mean_auc"], "o-", linewidth=2.4,
+             markersize=9, color=ACCENT_HUE)
+    ax1.axhline(first["mean_auc"], linestyle="--", color="grey", alpha=0.8,
+                label=f"at 32,000 = {first['mean_auc']:.4f}")
+    ax1.fill_between(table["n_train"], first["mean_auc"] - 0.0139,
+                     first["mean_auc"] + 0.0139, color=ACCENT_HUE, alpha=0.12,
+                     label="bootstrap 95% CI (+/-0.0139)")
+    ax1.set_xlabel("Number of training compounds")
+    ax1.set_ylabel("Mean AUC-ROC across nine classes")
+    ax1.set_title("(a) Controlled comparison\nsame test set, same "
+                  "hyperparameters", fontweight="bold", fontsize=12)
+    ax1.legend(loc="lower right", fontsize=10)
+
+    # Nine generated hues are not distinguishable, so the mass is drawn in grey
+    # and only the best and worst classes are coloured and labelled - the two
+    # the caption discusses. See the same treatment in learning_curve.py.
+    plotted = [c for c in GHS_LABEL_COLUMNS
+               if c in table.columns and table[c].notna().any()]
+    finals = {c: table[c].dropna().iloc[-1] for c in plotted}
+    best = max(finals, key=finals.get)
+    worst = min(finals, key=finals.get)
+
+    for column in plotted:
+        highlight = column in (best, worst)
+        ax2.plot(table["n_train"], table[column], "o-",
+                 linewidth=2.4 if highlight else 1.3,
+                 markersize=6 if highlight else 3.5,
+                 color=(SERIES_HUE if column == best
+                        else ACCENT_HUE if column == worst else CONTEXT_GREY),
+                 zorder=3 if highlight else 1)
+
+    for column, colour in ((best, SERIES_HUE), (worst, ACCENT_HUE)):
+        ax2.annotate(f"{column.split('_')[0]} "
+                     f"{GHS_TRUE_MEANING[column].split('(')[0].strip()}",
+                     xy=(table["n_train"].iloc[-1], finals[column]),
+                     xytext=(-8, 8 if column == best else -16),
+                     textcoords="offset points", ha="right", fontsize=10,
+                     fontweight="bold", color=colour, zorder=4)
+
+    ax2.plot([], [], color=CONTEXT_GREY, linewidth=1.3,
+             label=f"other {len(plotted) - 2} classes")
+    ax2.legend(fontsize=9.5, loc="lower right")
+    ax2.set_xlabel("Number of training compounds")
+    ax2.set_ylabel("AUC-ROC")
+    ax2.set_title("(b) Per class, best and worst labelled", fontweight="bold",
+                  fontsize=12)
+
+    fig.suptitle("Effect of training-set size, with test set held fixed",
+                 fontsize=14, fontweight="bold")
+    fig.tight_layout()
+    for folder in (DIR_EVAL, os.path.join(DIR_PUB, "figures")):
+        fig.savefig(os.path.join(folder, "Figure10_controlled_size.png"),
+                    dpi=FIGURE_DPI, bbox_inches="tight")
+    plt.close(fig)
 
 
 def main():
@@ -228,40 +295,7 @@ def main():
     print("-" * 54)
 
     # ---- figure -------------------------------------------------------------
-    sns.set_style("whitegrid")
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
-    ax1.plot(table["n_train"], table["mean_auc"], "o-", linewidth=2.4,
-             markersize=9, color="#D55E00")
-    ax1.axhline(first["mean_auc"], linestyle="--", color="grey", alpha=0.8,
-                label=f"at 32,000 = {first['mean_auc']:.4f}")
-    ax1.fill_between(table["n_train"], first["mean_auc"] - 0.0139,
-                     first["mean_auc"] + 0.0139, color="#D55E00", alpha=0.12,
-                     label="bootstrap 95% CI (+/-0.0139)")
-    ax1.set_xlabel("Number of training compounds")
-    ax1.set_ylabel("Mean AUC-ROC across nine classes")
-    ax1.set_title("(a) Controlled comparison\nsame test set, same "
-                  "hyperparameters", fontweight="bold", fontsize=12)
-    ax1.legend(loc="lower right", fontsize=10)
-
-    colours = sns.color_palette("husl", 9)
-    for i, column in enumerate(GHS_LABEL_COLUMNS):
-        if column in table.columns and table[column].notna().any():
-            ax2.plot(table["n_train"], table[column], "o-", linewidth=1.7,
-                     markersize=5, color=colours[i],
-                     label=f"{column.split('_')[0]} "
-                           f"{GHS_TRUE_MEANING[column].split('(')[0].strip()}")
-    ax2.set_xlabel("Number of training compounds")
-    ax2.set_ylabel("AUC-ROC")
-    ax2.set_title("(b) Per class", fontweight="bold", fontsize=12)
-    ax2.legend(fontsize=8.5, loc="lower right")
-
-    fig.suptitle("Effect of training-set size, with test set held fixed",
-                 fontsize=14, fontweight="bold")
-    fig.tight_layout()
-    for folder in (DIR_EVAL, os.path.join(DIR_PUB, "figures")):
-        fig.savefig(os.path.join(folder, "Figure10_controlled_size.png"),
-                    dpi=300, bbox_inches="tight")
-    plt.close(fig)
+    make_figure(table, first)
 
     with open(stamped("EXTRA_controlled_size_verdict.txt"), "w",
               encoding="utf-8") as fh:

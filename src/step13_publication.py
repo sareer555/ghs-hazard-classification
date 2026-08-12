@@ -36,6 +36,9 @@ import seaborn as sns
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from ghs_config import (get_ablation_identity, manuscript_title,
+                        FIGURE_DPI, MODEL_COLOURS, SERIES_HUE, ACCENT_HUE,
+                        CONTEXT_GREY, INK_PRIMARY, INK_SECONDARY, INK_MUTED,
+                        GRIDLINE,
                         RANDOM_SEED, TODAY, PROJECT_ROOT, DIR_FEATURES,
                         DIR_SPLITS, DIR_EVAL, DIR_SHAP, DIR_MALAYSIA, DIR_PUB,
                         DIR_PUB_FIGS, DIR_LOGS, GHS_LABEL_COLUMNS,
@@ -55,8 +58,8 @@ ISSUE_LOG = []
 # ACS journals require 300 dpi minimum and legible type at the printed size.
 # ---------------------------------------------------------------------------
 plt.rcParams.update({
-    "figure.dpi": 300,
-    "savefig.dpi": 300,
+    "figure.dpi": 150,           # screen preview; savefig carries the real one
+    "savefig.dpi": FIGURE_DPI,
     "font.size": 12,             # the proposal's 12 pt minimum
     "axes.titlesize": 13,
     "axes.labelsize": 12,
@@ -69,9 +72,17 @@ plt.rcParams.update({
     "savefig.bbox": "tight",
 })
 
-# One colour per algorithm, used consistently in every figure.
-PALETTE = {"RandomForest": "#0072B2", "XGBoost": "#D55E00",
-           "SVM": "#009E73", _ABL_NAME: "#CC79A7"}
+# The shared model colours, with the ablation's slot keyed to whatever name
+# Step 7 actually gave it.
+PALETTE = {"RandomForest": MODEL_COLOURS["RandomForest"],
+           "XGBoost": MODEL_COLOURS["XGBoost"],
+           "SVM": MODEL_COLOURS["SVM"],
+           _ABL_NAME: MODEL_COLOURS["ablation"]}
+
+# Line style as well as colour, so the series stay distinguishable in greyscale
+# print and for readers who cannot separate the hues.
+LINESTYLES = {"RandomForest": "-", "XGBoost": "--",
+              "SVM": "-.", _ABL_NAME: ":"}
 
 FIG_DIR = os.path.join(DIR_PUB, "figures")
 TABLE_DIR = os.path.join(DIR_PUB, "tables")
@@ -89,11 +100,41 @@ def log_issue(step, message):
     print("   ! " + message)
 
 
+def describe_imbalance_handling():
+    """
+    Report the class-imbalance treatment that actually ran.
+
+    Step 6 records the method it used for each class in STEP6_smote_report.csv.
+    At this dataset size SMOTE was skipped for memory reasons and balanced class
+    weighting was used instead. The workflow figure previously stated "SMOTE +
+    class weights" as fixed text, which contradicted the supplementary data - a
+    reviewer comparing the two would read it as misrepresentation rather than as
+    a stale label. Reading the answer from Step 6's own output means the figure
+    cannot drift from what was done.
+    """
+    path = stamped("STEP6_smote_report.csv")
+    if not os.path.exists(path):
+        log_issue("13a", "SMOTE report missing; workflow figure will describe "
+                         "class weighting only")
+        return "Class imbalance handling\nbalanced class weights"
+
+    methods = pd.read_csv(path)["Method"].astype(str)
+    used_smote = methods.str.contains("smote", case=False, na=False)
+    if used_smote.all():
+        return "Class imbalance handling\nSMOTE + class weights"
+    if used_smote.any():
+        return (f"Class imbalance handling\nSMOTE on {int(used_smote.sum())} of "
+                f"{len(methods)} classes\n+ balanced class weights")
+    return ("Class imbalance handling\nbalanced class weights\n"
+            "(SMOTE not applied at this scale)")
+
+
 def save_figure(fig, number, name, caption):
     """Save a figure into both publication folders and record its caption."""
     filename = f"Figure{number}_{name}.png"
     for folder in (FIG_DIR, DIR_PUB_FIGS):
-        fig.savefig(os.path.join(folder, filename), dpi=300, bbox_inches="tight")
+        fig.savefig(os.path.join(folder, filename), dpi=FIGURE_DPI,
+                    bbox_inches="tight")
     plt.close(fig)
     CAPTIONS[f"Figure {number}"] = caption
     print(f"      Figure {number}: {filename}")
@@ -114,42 +155,51 @@ def load_json(path, default=None):
 # ===========================================================================
 def figure1_workflow():
     """Figure 1 - the research pipeline, drawn as a flow diagram."""
-    fig, ax = plt.subplots(figsize=(13, 8.5))
-    ax.set_xlim(0, 10); ax.set_ylim(0, 10); ax.axis("off"); ax.grid(False)
+    fig, ax = plt.subplots(figsize=(13, 9.4))
+    # The y range runs past the top box so the title has room of its own. It
+    # previously sat at y=9.4 while the top boxes reached 9.62, so the heading
+    # printed straight through them.
+    ax.set_xlim(-0.8, 10.8); ax.set_ylim(0, 11.4); ax.axis("off"); ax.grid(False)
+
+    # Four phases, each a tint of one hue rather than an unrelated pastel. The
+    # colour groups the stages; it is not an identity code, so a reader is not
+    # invited to look for meaning in eleven separate hues.
+    DATA, MODEL, ASSESS, SHIP = "#dce9f9", "#e4e0f2", "#dcf0e8", "#fbe4d8"
 
     stages = [
         (1.6, 9.0, "PubChem GHS Classification\nannotations (ECHA, HSDB,\n"
-                   "NITE-CMC, HCIS, EU CLP)", "#B3CDE3"),
+                   "NITE-CMC, HCIS, EU CLP)", DATA),
         (1.6, 7.4, "Data cleaning\nSMILES validation, InChIKey\n"
-                   "deduplication, majority vote", "#CCEBC5"),
+                   "deduplication, majority vote", DATA),
         (1.6, 5.8, "Molecular descriptors\n19 physicochemical + 1024 ECFP4\n"
-                   "+ 167 MACCS + 8 topological", "#DECBE4"),
-        (1.6, 4.2, "Bemis-Murcko scaffold split\n80 / 10 / 10", "#FED9A6"),
-        (1.6, 2.6, "Class imbalance handling\nSMOTE + class weights", "#FFFFCC"),
-        (5.0, 2.6, "Model training\nRandom Forest | XGBoost | SVM", "#E5D8BD"),
-        (8.4, 2.6, "Hyperparameter tuning\nRandomizedSearchCV", "#FDDAEC"),
+                   "+ 167 MACCS + 8 topological", DATA),
+        (1.6, 4.2, "Bemis-Murcko scaffold split\n80 / 10 / 10", DATA),
+        (1.6, 2.6, describe_imbalance_handling(), MODEL),
+        (5.0, 2.6, "Model training\nRandom Forest | XGBoost | SVM", MODEL),
+        (8.4, 2.6, "Hyperparameter tuning\nRandomizedSearchCV", MODEL),
         (8.4, 4.2, "Evaluation\nAUC, AP, F1, MCC + bootstrap CI\n"
-                   "threshold calibration", "#CCEBC5"),
-        (8.4, 5.8, "SHAP interpretation\nglobal + per-compound", "#B3CDE3"),
-        (8.4, 7.4, "Malaysian validation\n4 sectors + Johor 2019", "#FBB4AE"),
-        (8.4, 9.0, "Deployment\nStreamlit app + CLI + PDF report", "#DECBE4"),
+                   "threshold calibration", ASSESS),
+        (8.4, 5.8, "SHAP interpretation\nglobal + per-compound", ASSESS),
+        (8.4, 7.4, "Malaysian validation\n4 sectors + Johor 2019", ASSESS),
+        (8.4, 9.0, "Deployment\nStreamlit app + CLI + PDF report", SHIP),
     ]
 
     positions = {}
     for x, y, text, colour in stages:
         box = FancyBboxPatch((x - 1.45, y - 0.62), 2.9, 1.24,
-                             boxstyle="round,pad=0.06", linewidth=1.4,
-                             edgecolor="#333333", facecolor=colour, zorder=2)
+                             boxstyle="round,pad=0.06", linewidth=1.1,
+                             edgecolor="#8f9299", facecolor=colour, zorder=2)
         ax.add_patch(box)
         ax.text(x, y, text, ha="center", va="center", fontsize=9.5,
-                fontweight="bold", zorder=3, linespacing=1.35)
+                fontweight="bold", color=INK_PRIMARY, zorder=3,
+                linespacing=1.35)
         positions[text] = (x, y)
 
     def arrow(start, end):
         """Draw a curved arrow between two stage boxes."""
         ax.add_patch(FancyArrowPatch(start, end, arrowstyle="-|>",
                                      mutation_scale=17, linewidth=1.6,
-                                     color="#333333", zorder=1,
+                                     color=INK_SECONDARY, zorder=1,
                                      connectionstyle="arc3,rad=0"))
 
     order = [s[2] for s in stages]
@@ -166,15 +216,29 @@ def figure1_workflow():
         a, b = positions[order[i]], positions[order[i + 1]]
         arrow((a[0], a[1] + 0.64), (b[0], b[1] - 0.64))
 
-    ax.text(5.0, 9.4, "Interpretable Machine Learning for GHS Hazard "
-                      "Classification",
-            ha="center", fontsize=14, fontweight="bold")
-    ax.text(5.0, 8.85, "Multi-label prediction of nine GHS pictograms from "
+    # Phase labels sit in gutters outside the boxes, so the reader can see the
+    # shape of the pipeline without reading every box and the serpentine order
+    # is explicit. They need margins of their own: placed against the column
+    # edges they printed on top of the boxes.
+    ax.text(-0.35, 6.6, "1  Data", ha="center", va="center", fontsize=11,
+            fontweight="bold", color=INK_MUTED, rotation=90)
+    ax.text(5.0, 1.55, "2  Modelling", ha="center", va="center", fontsize=11,
+            fontweight="bold", color=INK_MUTED)
+    ax.text(10.35, 6.6, "3  Assessment", ha="center", va="center", fontsize=11,
+            fontweight="bold", color=INK_MUTED, rotation=270)
+
+    ax.text(5.0, 10.9, "Interpretable Machine Learning for GHS Hazard "
+                       "Classification",
+            ha="center", va="center", fontsize=15, fontweight="bold",
+            color=INK_PRIMARY)
+    ax.text(5.0, 10.3, "Multi-label prediction of nine GHS pictograms from "
                        "molecular structure",
-            ha="center", fontsize=11, style="italic", color="#444444")
-    ax.text(5.0, 0.7, "All steps use random seed 42. The test set shares no\n"
-                      "Bemis-Murcko scaffold with the training set.",
-            ha="center", fontsize=10, style="italic", color="#666666")
+            ha="center", va="center", fontsize=11, style="italic",
+            color=INK_SECONDARY)
+    ax.text(5.0, 0.75, "All steps use random seed 42. The test set shares no\n"
+                       "Bemis-Murcko scaffold with the training set.",
+            ha="center", va="center", fontsize=10, style="italic",
+            color=INK_MUTED)
 
     return save_figure(
         fig, 1, "research_workflow",
@@ -191,39 +255,67 @@ def figure1_workflow():
 def figure2_class_distribution():
     """Figure 2 - how many compounds carry each hazard."""
     table = pd.read_csv(stamped("STEP3_class_distribution_table.csv"))
-    fig, (ax_left, ax_right) = plt.subplots(1, 2, figsize=(15, 6.5))
 
-    labels = [f"{r.Pictogram_Code}\n{r.Actual_Meaning.split('(')[0].strip()}"
+    # Stacked rather than side by side, sharing one x axis. The two panels
+    # describe the same nine categories, so printing the category names twice
+    # spent space on repetition and invited the reader to check whether the two
+    # orderings matched.
+    fig, (ax_top, ax_bottom) = plt.subplots(
+        2, 1, figsize=(11, 9), sharex=True,
+        gridspec_kw={"hspace": 0.12})
+
+    labels = [f"{r.Pictogram_Code} {r.Actual_Meaning.split('(')[0].strip()}"
               for r in table.itertuples()]
+    positions = np.arange(len(labels))
     counts = table["N_Positive"].to_numpy()
-    colours = sns.color_palette("rocket_r", len(table))
-
-    bars = ax_left.bar(labels, counts, color=colours, edgecolor="black",
-                       linewidth=0.7)
-    ax_left.set_yscale("log")
-    ax_left.set_ylabel("Number of compounds (log scale)")
-    ax_left.set_title("(a) Positive examples per GHS hazard class",
-                      fontweight="bold")
-    ax_left.tick_params(axis="x", rotation=45, labelsize=9)
-    for bar, count in zip(bars, counts):
-        ax_left.text(bar.get_x() + bar.get_width() / 2, bar.get_height() * 1.08,
-                     f"{count:,}", ha="center", va="bottom", fontsize=8.5,
-                     fontweight="bold")
-
     ratios = table["Imbalance_Ratio_NegPerPos"].to_numpy()
-    bars = ax_right.bar(labels, ratios, color=sns.color_palette("mako",
-                                                               len(table)),
-                        edgecolor="black", linewidth=0.7)
-    ax_right.set_ylabel("Negatives per positive")
-    ax_right.set_title("(b) Class imbalance ratio", fontweight="bold")
-    ax_right.tick_params(axis="x", rotation=45, labelsize=9)
-    ax_right.set_yscale("log")
-    for bar, ratio in zip(bars, ratios):
-        ax_right.text(bar.get_x() + bar.get_width() / 2, bar.get_height() * 1.08,
-                      f"{ratio:.0f}:1", ha="center", va="bottom", fontsize=8.5,
-                      fontweight="bold")
 
-    fig.tight_layout()
+    def annotate(ax, bars, values, formatter):
+        """Write each bar's value just above it."""
+        for bar, value in zip(bars, values):
+            ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() * 1.10,
+                    formatter(value), ha="center", va="bottom", fontsize=9,
+                    fontweight="bold", color=INK_PRIMARY)
+
+    # One hue. The x axis already names each bar, so colouring the nine bars
+    # differently encodes nothing that position does not, and the two panels
+    # previously used two unrelated colour scales for the same categories.
+    bars = ax_top.bar(positions, counts, color=SERIES_HUE, width=0.68)
+    ax_top.set_yscale("log")
+    ax_top.set_ylabel("Compounds carrying\nthe pictogram (log scale)")
+    ax_top.set_title("(a) Positive examples per GHS hazard class",
+                     fontweight="bold", loc="left", color=INK_PRIMARY)
+    ax_top.set_ylim(top=counts.max() * 3)
+    annotate(ax_top, bars, counts, lambda v: f"{v:,}")
+
+    bars = ax_bottom.bar(positions, ratios, color=SERIES_HUE, width=0.68)
+    ax_bottom.set_yscale("log")
+    ax_bottom.set_ylabel("Negatives per positive\n(log scale)")
+    ax_bottom.set_title("(b) Class imbalance ratio", fontweight="bold",
+                        loc="left", color=INK_PRIMARY)
+    ax_bottom.set_ylim(top=ratios.max() * 4)
+    # A ratio below one rounds to "0:1" under integer formatting, which reads
+    # as "no negatives at all". GHS07 is the case: 23,303 negatives against
+    # 220,020 positives is 0.11:1, not 0:1.
+    annotate(ax_bottom, bars, ratios,
+             lambda v: f"{v:,.0f}:1" if v >= 10 else f"{v:.2f}:1")
+
+    # Rotated tick labels need an explicit right anchor, otherwise each label
+    # is centred on its rotated bounding box and drifts to the right of the bar
+    # it belongs to - which is what made the old figure look mislabelled.
+    ax_bottom.set_xticks(positions)
+    ax_bottom.set_xticklabels(labels, rotation=35, ha="right",
+                              rotation_mode="anchor", fontsize=10)
+
+    for ax in (ax_top, ax_bottom):
+        ax.set_axisbelow(True)
+        ax.grid(axis="y", color=GRIDLINE, linewidth=0.8)
+        ax.grid(axis="x", visible=False)
+        ax.tick_params(colors=INK_SECONDARY)
+        for side in ("top", "right"):
+            ax.spines[side].set_visible(False)
+        for side in ("left", "bottom"):
+            ax.spines[side].set_color(GRIDLINE)
     return save_figure(
         fig, 2, "class_distribution",
         "Figure 2. Class distribution of the nine GHS hazard categories in the "
@@ -260,34 +352,75 @@ def figure3_roc_all_classes(best_model):
         (p[:, 1] if p.shape[1] > 1 else p[:, 0])
         for p in model.predict_proba(X_test)])
 
-    fig, ax = plt.subplots(figsize=(9, 8))
-    colours = sns.color_palette("husl", 9)
+    # Nine curves on one axis needs nine distinguishable colours, and nine is
+    # past the point where that is possible - in the previous version two pairs
+    # of classes were near-indistinguishable, so a reader could not reliably
+    # trace any single curve. Small multiples give each class its own panel:
+    # identity comes from position, colour carries nothing, and the panels are
+    # ordered by AUC so the grid reads as a ranking from best to worst.
+    curves = []
     for class_index, column in enumerate(GHS_LABEL_COLUMNS):
         y_true = y_test[:, class_index]
         if len(np.unique(y_true)) < 2:
+            log_issue("13a", f"{column} has one class in the test split; "
+                             f"omitted from the ROC grid")
             continue
         fpr, tpr, _ = roc_curve(y_true, probabilities[:, class_index])
         auc = roc_auc_score(y_true, probabilities[:, class_index])
-        ax.plot(fpr, tpr, linewidth=2.1, color=colours[class_index],
-                label=f"{column.split('_')[0]} "
-                      f"{GHS_TRUE_MEANING[column].split('(')[0].strip()} "
-                      f"(AUC = {auc:.3f})")
-    ax.plot([0, 1], [0, 1], "k--", linewidth=1.2, alpha=0.6, label="Random guess")
-    ax.set_xlabel("False positive rate (1 - specificity)")
-    ax.set_ylabel("True positive rate (sensitivity)")
-    ax.set_title(f"ROC curves for {best_model} across all nine GHS classes\n"
-                 f"scaffold-split test set (n = {len(test_idx):,})",
-                 fontweight="bold")
-    ax.legend(loc="lower right", fontsize=9.5, framealpha=0.95)
-    ax.set_xlim(-0.02, 1.02); ax.set_ylim(-0.02, 1.02)
-    fig.tight_layout()
+        curves.append((auc, column, fpr, tpr, int(y_true.sum())))
+    curves.sort(key=lambda c: c[0], reverse=True)
+
+    fig, axes = plt.subplots(3, 3, figsize=(10.5, 10.5),
+                             sharex=True, sharey=True)
+    for panel, ax in enumerate(axes.ravel()):
+        if panel >= len(curves):
+            ax.axis("off")
+            continue
+        auc, column, fpr, tpr, n_positive = curves[panel]
+        ax.plot([0, 1], [0, 1], linestyle="--", linewidth=1.0,
+                color=INK_MUTED, zorder=1)
+        ax.fill_between(fpr, tpr, color=SERIES_HUE, alpha=0.12, zorder=2)
+        ax.plot(fpr, tpr, linewidth=2.0, color=SERIES_HUE, zorder=3)
+        ax.set_title(f"{column.split('_')[0]} "
+                     f"{GHS_TRUE_MEANING[column].split('(')[0].strip()}",
+                     fontsize=11, fontweight="bold", loc="left",
+                     color=INK_PRIMARY, pad=6)
+        # The AUC sits inside its own panel, so identity never depends on
+        # matching a colour to a legend entry.
+        ax.text(0.96, 0.10, f"AUC {auc:.3f}", transform=ax.transAxes,
+                ha="right", va="bottom", fontsize=11, fontweight="bold",
+                color=INK_PRIMARY)
+        ax.text(0.96, 0.02, f"{n_positive:,} positives", transform=ax.transAxes,
+                ha="right", va="bottom", fontsize=9, color=INK_SECONDARY)
+        ax.set_xlim(-0.02, 1.02); ax.set_ylim(-0.02, 1.02)
+        ax.set_xticks([0, 0.5, 1.0]); ax.set_yticks([0, 0.5, 1.0])
+        ax.set_axisbelow(True)
+        ax.grid(color=GRIDLINE, linewidth=0.7)
+        ax.tick_params(colors=INK_SECONDARY)
+        for side in ("top", "right"):
+            ax.spines[side].set_visible(False)
+        for side in ("left", "bottom"):
+            ax.spines[side].set_color(GRIDLINE)
+
+    fig.supxlabel("False positive rate (1 - specificity)", fontsize=12,
+                  color=INK_PRIMARY, y=0.045)
+    fig.supylabel("True positive rate (sensitivity)", fontsize=12,
+                  color=INK_PRIMARY, x=0.045)
+    fig.suptitle(f"ROC curves for {best_model}, one panel per GHS hazard class\n"
+                 f"scaffold-split test set (n = {len(test_idx):,}), "
+                 f"panels ordered by AUC",
+                 fontsize=13, fontweight="bold", color=INK_PRIMARY, y=0.985)
+    fig.tight_layout(rect=(0.055, 0.055, 1, 0.955))
     return save_figure(
         fig, 3, "ROC_curves_best_model",
         f"Figure 3. Receiver operating characteristic curves for the "
         f"best-performing model ({best_model}) across all nine GHS hazard "
         f"classes, evaluated on the held-out scaffold-split test set "
-        f"(n = {len(test_idx):,} compounds). The dashed diagonal marks the "
-        f"performance of random guessing.")
+        f"(n = {len(test_idx):,} compounds). Each class is shown in its own "
+        f"panel, ordered by area under the curve from the best-separated class "
+        f"to the worst; the dashed diagonal marks random guessing and the "
+        f"number of positive examples is given for each class, since the rarer "
+        f"classes carry the wider uncertainty.")
 
 
 def figure4_pr_two_classes():
@@ -405,21 +538,49 @@ def figure6_model_heatmap():
                      f"{GHS_TRUE_MEANING[c].split('(')[0].strip()}"
                      for c in display.index]
 
-    fig, ax = plt.subplots(figsize=(10, 7.5))
-    sns.heatmap(display, annot=True, fmt=".3f", cmap="RdYlGn", center=0.8,
-                vmin=0.5, vmax=1.0, linewidths=1.2, linecolor="white",
+    # The long ablation name forced the column labels to be printed vertically,
+    # far below the grid. Wrapping it lets every label sit horizontally under
+    # its own column, where it is read without turning the page.
+    display.columns = [c.replace("_NoClassWeight", "\n(no class weighting)")
+                       for c in display.columns]
+
+    fig, ax = plt.subplots(figsize=(10.5, 6.8))
+    # A single hue, light to dark. The previous red-yellow-green scale was a
+    # diverging palette applied to a quantity that has no meaningful midpoint -
+    # AUC runs from 0.5 to 1.0, and nothing special happens at 0.8 - and
+    # red-green is the pairing colour-blind readers are least able to separate.
+    # Every cell carries its number, so the colour supports the reading rather
+    # than carrying it.
+    sns.heatmap(display, annot=True, fmt=".3f", cmap="Blues",
+                vmin=0.5, vmax=1.0, linewidths=1.4, linecolor="white",
                 cbar_kws={"label": "AUC-ROC"},
                 annot_kws={"fontsize": 11, "fontweight": "bold"}, ax=ax)
     ax.set_title("Model comparison: AUC-ROC by algorithm and GHS hazard class\n"
-                 "scaffold-split test set", fontweight="bold", pad=14)
-    ax.set_xlabel("Algorithm"); ax.set_ylabel("")
-    plt.setp(ax.get_yticklabels(), rotation=0)
+                 "scaffold-split test set", fontweight="bold", pad=14,
+                 color=INK_PRIMARY)
+    ax.set_xlabel("Algorithm", color=INK_PRIMARY); ax.set_ylabel("")
+    plt.setp(ax.get_yticklabels(), rotation=0, color=INK_SECONDARY)
+    plt.setp(ax.get_xticklabels(), rotation=0, color=INK_SECONDARY, fontsize=10)
+    ax.tick_params(length=0)
+
+    # Set the annotation colour from the cell's own value. Left to itself the
+    # library put white text on the lighter cells, where the weakest results
+    # are - so the numbers a reader most wants to check were the hardest to
+    # read. Dark ink below the midpoint of the ramp, white above it.
+    for text in ax.texts:
+        try:
+            value = float(text.get_text())
+        except ValueError:
+            continue
+        text.set_color("#ffffff" if value >= 0.88 else INK_PRIMARY)
     fig.tight_layout()
     return save_figure(
         fig, 6, "model_comparison_heatmap",
         "Figure 6. Model comparison heat map showing AUC-ROC for every "
         "algorithm and every GHS hazard class on the scaffold-split test set. "
-        "Greener cells indicate better discrimination.")
+        "Darker cells indicate better discrimination; each cell is also "
+        "labelled with its value, so the comparison does not depend on reading "
+        "the colour.")
 
 
 def figure7_malaysia():

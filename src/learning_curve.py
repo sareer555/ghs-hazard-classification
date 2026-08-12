@@ -29,6 +29,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from ghs_config import (FIGURE_DPI, SERIES_HUE, ACCENT_HUE, CONTEXT_GREY)
 from ghs_config import (RANDOM_SEED, TODAY, DIR_FEATURES, DIR_SPLITS, DIR_EVAL,
                         DIR_PUB, GHS_LABEL_COLUMNS, GHS_TRUE_MEANING,
                         seed_everything, stamped)
@@ -74,6 +75,78 @@ def train_and_score(X_train, y_train, X_test, y_test, class_weights):
         aucs[column] = float(roc_auc_score(
             y_true, model.predict_proba(X_test)[:, 1]))
     return aucs
+
+
+def make_figure(table, final):
+    """
+    Draw Figure 9 from the results table.
+
+    Separated from main() so the figure can be redrawn from the saved
+    CSV without retraining every model, which takes hours.
+    """
+    # ---- figure -------------------------------------------------------------
+    sns.set_style("whitegrid")
+    fig, (ax_left, ax_right) = plt.subplots(1, 2, figsize=(15, 6))
+
+    ax_left.plot(table["n_train"], table["mean_auc"], "o-", linewidth=2.4,
+                 markersize=8, color=SERIES_HUE)
+    ax_left.axhline(final, linestyle="--", color="grey", alpha=0.7,
+                    label=f"final = {final:.4f}")
+    # The bootstrap uncertainty band from Step 9: differences inside this band
+    # are not meaningful.
+    ax_left.fill_between(table["n_train"], final - 0.0139, final + 0.0139,
+                         color=SERIES_HUE, alpha=0.12,
+                         label="bootstrap 95% CI half-width (0.0139)")
+    ax_left.set_xlabel("Number of training compounds")
+    ax_left.set_ylabel("Mean AUC-ROC across nine classes")
+    ax_left.set_title("(a) Learning curve, XGBoost on the scaffold-split test set",
+                      fontweight="bold", fontsize=12)
+    ax_left.legend(loc="lower right", fontsize=10)
+
+    # Nine lines on one axis previously took nine generated hues, several of
+    # which were indistinguishable, so no individual class could be traced. The
+    # mass is drawn in grey to show the shared shape, and only the best and
+    # worst classes are coloured and labelled where they end - the two the
+    # caption actually discusses.
+    plotted = [c for c in GHS_LABEL_COLUMNS
+               if c in table.columns and table[c].notna().any()]
+    finals = {c: table[c].dropna().iloc[-1] for c in plotted}
+    best = max(finals, key=finals.get)
+    worst = min(finals, key=finals.get)
+
+    for column in plotted:
+        highlight = column in (best, worst)
+        ax_right.plot(
+            table["n_train"], table[column], "o-",
+            linewidth=2.4 if highlight else 1.3,
+            markersize=6 if highlight else 3.5,
+            color=(SERIES_HUE if column == best
+                   else ACCENT_HUE if column == worst else CONTEXT_GREY),
+            zorder=3 if highlight else 1)
+
+    for column, colour in ((best, SERIES_HUE), (worst, ACCENT_HUE)):
+        ax_right.annotate(
+            f"{column.split('_')[0]} "
+            f"{GHS_TRUE_MEANING[column].split('(')[0].strip()}",
+            xy=(table["n_train"].iloc[-1], finals[column]),
+            xytext=(-8, 8 if column == best else -16), textcoords="offset points",
+            ha="right", fontsize=10, fontweight="bold", color=colour, zorder=4)
+
+    ax_right.plot([], [], color=CONTEXT_GREY, linewidth=1.3,
+                  label=f"other {len(plotted) - 2} classes")
+    ax_right.legend(fontsize=9.5, loc="lower right")
+    ax_right.set_xlabel("Number of training compounds")
+    ax_right.set_ylabel("AUC-ROC")
+    ax_right.set_title("(b) Per-class learning curves, best and worst labelled",
+                       fontweight="bold", fontsize=12)
+
+    fig.suptitle("Does more training data improve GHS hazard prediction?",
+                 fontsize=14, fontweight="bold")
+    fig.tight_layout()
+    for folder in (DIR_EVAL, os.path.join(DIR_PUB, "figures")):
+        fig.savefig(os.path.join(folder, "Figure9_learning_curve.png"), dpi=FIGURE_DPI,
+                    bbox_inches="tight")
+    plt.close(fig)
 
 
 def main():
@@ -242,45 +315,7 @@ def main():
               encoding="utf-8") as fh:
         fh.write(text + "\n")
 
-    # ---- figure -------------------------------------------------------------
-    sns.set_style("whitegrid")
-    fig, (ax_left, ax_right) = plt.subplots(1, 2, figsize=(15, 6))
-
-    ax_left.plot(table["n_train"], table["mean_auc"], "o-", linewidth=2.4,
-                 markersize=8, color="#0072B2")
-    ax_left.axhline(final, linestyle="--", color="grey", alpha=0.7,
-                    label=f"final = {final:.4f}")
-    # The bootstrap uncertainty band from Step 9: differences inside this band
-    # are not meaningful.
-    ax_left.fill_between(table["n_train"], final - 0.0139, final + 0.0139,
-                         color="#0072B2", alpha=0.12,
-                         label="bootstrap 95% CI half-width (0.0139)")
-    ax_left.set_xlabel("Number of training compounds")
-    ax_left.set_ylabel("Mean AUC-ROC across nine classes")
-    ax_left.set_title("(a) Learning curve, XGBoost on the scaffold-split test set",
-                      fontweight="bold", fontsize=12)
-    ax_left.legend(loc="lower right", fontsize=10)
-
-    colours = sns.color_palette("husl", 9)
-    for index, column in enumerate(GHS_LABEL_COLUMNS):
-        if column in table.columns and table[column].notna().any():
-            ax_right.plot(table["n_train"], table[column], "o-", linewidth=1.7,
-                          markersize=5, color=colours[index],
-                          label=f"{column.split('_')[0]} "
-                                f"{GHS_TRUE_MEANING[column].split('(')[0].strip()}")
-    ax_right.set_xlabel("Number of training compounds")
-    ax_right.set_ylabel("AUC-ROC")
-    ax_right.set_title("(b) Per-class learning curves", fontweight="bold",
-                       fontsize=12)
-    ax_right.legend(fontsize=8.5, loc="lower right", ncol=1)
-
-    fig.suptitle("Does more training data improve GHS hazard prediction?",
-                 fontsize=14, fontweight="bold")
-    fig.tight_layout()
-    for folder in (DIR_EVAL, os.path.join(DIR_PUB, "figures")):
-        fig.savefig(os.path.join(folder, "Figure9_learning_curve.png"), dpi=300,
-                    bbox_inches="tight")
-    plt.close(fig)
+    make_figure(table, final)
 
     print(f"\nSaved: {stamped('EXTRA_learning_curve.csv')}")
     print(f"Saved: {os.path.join(DIR_PUB, 'figures', 'Figure9_learning_curve.png')}")

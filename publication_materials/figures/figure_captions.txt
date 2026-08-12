@@ -17,8 +17,11 @@ class is the reason class-imbalance handling was required.
 
 Figure 3. Receiver operating characteristic curves for the best-performing
 model (XGBoost) across all nine GHS hazard classes, evaluated on the held-out
-scaffold-split test set (n = 24,352 compounds). The dashed diagonal marks the
-performance of random guessing.
+scaffold-split test set (n = 24,352 compounds). Each class is shown in its own
+panel, ordered by area under the curve from the best-separated class to the
+worst; the dashed diagonal marks random guessing and the number of positive
+examples is given for each class, since the rarer classes carry the wider
+uncertainty.
 
 Figure 4. Precision-recall curves for all three algorithms on two
 representative GHS classes: (a) the most abundant class, GHS07, and (b) the
@@ -32,8 +35,9 @@ the five most influential descriptors; colour indicates the direction of the
 mean signed effect.
 
 Figure 6. Model comparison heat map showing AUC-ROC for every algorithm and
-every GHS hazard class on the scaffold-split test set. Greener cells indicate
-better discrimination.
+every GHS hazard class on the scaffold-split test set. Darker cells indicate
+better discrimination; each cell is also labelled with its value, so the
+comparison does not depend on reading the colour.
 
 Figure 7. Validation on Malaysian industrial chemicals. (a) Per-class
 performance on the Malaysian validation set compared with the global scaffold-

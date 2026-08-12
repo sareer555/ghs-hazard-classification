@@ -162,6 +162,48 @@ def manuscript_title(n_compounds):
     """Return the manuscript title, with the compound count filled in."""
     return MANUSCRIPT_TITLE_TEMPLATE.format(n_compounds=n_compounds)
 
+
+# ---------------------------------------------------------------------------
+# FIGURE STYLE
+# ---------------------------------------------------------------------------
+# Held here because the figures are produced by three different scripts -
+# step13_publication.py, learning_curve.py and controlled_size_experiment.py -
+# and each used to carry its own colours. The result was that a given model
+# changed colour between figures in the same paper.
+#
+# Elsevier asks for 500 dpi on combination line/halftone artwork, which is what
+# a plot containing both line work and filled areas is. 300 dpi is the floor for
+# photographs only.
+FIGURE_DPI = 500
+
+# One colour per algorithm. Chosen by running the set through the colour-vision
+# checks rather than by eye: worst all-pairs separation 11.0 (OKLab dE x100)
+# under deuteranopia against a target of 8, and every colour clears 3:1 contrast
+# on white paper. The previous set placed the support vector machine and the
+# ablation at 7.6, inside the band where colour alone cannot separate two series.
+MODEL_COLOURS = {
+    "RandomForest": "#2a78d6",
+    "XGBoost": "#D55E00",
+    "SVM": "#009E73",
+    "ablation": "#4a3aa7",
+}
+
+# A single series needs no categorical colour: the axis already names each mark,
+# so colouring them differently encodes nothing that position does not.
+SERIES_HUE = "#2a78d6"
+ACCENT_HUE = "#D55E00"
+
+# Where many series must share one axis, the mass is drawn in this grey and only
+# the few the caption discusses are given colour. Nine distinguishable hues do
+# not exist; nine grey lines with two highlighted are read instantly.
+CONTEXT_GREY = "#b9b8b2"
+
+# Chart chrome. Grid and axis lines recede; ink carries the text.
+INK_PRIMARY = "#0b0b0b"
+INK_SECONDARY = "#52514e"
+INK_MUTED = "#898781"
+GRIDLINE = "#e1e0d9"
+
 # The name PubChem puts in the 'Extra' field of each pictogram icon.
 PICTOGRAM_EXTRA_TO_CODE = {
     "Explosive":            "GHS01",
