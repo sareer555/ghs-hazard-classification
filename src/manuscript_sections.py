@@ -223,6 +223,7 @@ def gather():
     f["mal_class"] = pd.read_csv(os.path.join(
         DIR_MALAYSIA, "STEP11_malaysia_per_class_metrics.csv"))
     f["size"] = pd.read_csv(stamped("EXTRA_controlled_size_experiment.csv"))
+    f["domain"] = load(stamped("EXTRA_applicability_domain.json"))
 
     best = f["eval"]["best_model"]
     x = f["results"][(f["results"].Model == best)
@@ -240,6 +241,52 @@ def _wrapped_title(f):
     title = manuscript_title(f["clean"]["final_cleaned_compounds"])
     return textwrap.fill(title, width=72,
                          initial_indent="    ", subsequent_indent="    ")
+
+
+def _domain_paragraph(f):
+    """
+    Compose the molecule-size limitation from the measured figures.
+
+    Written as a function rather than inline because it quotes several numbers
+    that must come from EXTRA_applicability_domain.json rather than being typed
+    in, and because it degrades to a shorter statement if that analysis has not
+    been run.
+    """
+    domain = f.get("domain") or {}
+    training = domain.get("training_distribution", {})
+    worst = domain.get("over_predicting_classes", [])
+    if not training or not worst:
+        return ("Very small molecules lie outside the applicability domain, as "
+                "the training set contains few of them.")
+
+    minimum = training["domain_min_heavy_atoms"]
+    named = "; ".join(
+        f"{w['pictogram']} is assigned to {w['pct_flagged']:.0f} per cent of "
+        f"such compounds when {w['pct_actual']:.0f} per cent carry it"
+        for w in worst)
+
+    return textwrap.fill(
+        f"A second and sharper domain limit is molecular size. The median "
+        f"training compound has {training['median_heavy_atoms']:.0f} heavy "
+        f"atoms and only {training['pct_below_domain']:.1f} per cent have "
+        f"fewer than {minimum}, so the model has seen very little of the "
+        f"small-molecule regime. What it has learned about that regime is "
+        f"real but over-applied: small molecules genuinely are more hazardous "
+        f"on average, and the model treats small size as near-proof of "
+        f"hazard. On the {domain['n_test_out_of_domain']} test compounds with "
+        f"fewer than {minimum} heavy atoms, {named}. The failure is easiest to "
+        f"see in a compound that is small and harmless: water is returned as "
+        f"corrosive, acutely toxic and a serious health hazard, and carries "
+        f"none of those pictograms. The accompanying application therefore "
+        f"marks any compound below {minimum} heavy atoms as outside the "
+        f"domain, in the interface, the command-line tool and the exported "
+        f"report, before any profile is shown. The profile is still produced "
+        f"rather than withheld, because the failure is over-prediction and "
+        f"suppressing a genuine hazard would be the worse error - butane's "
+        f"flammable and compressed-gas classes are correctly identified - but "
+        f"it is presented without the appearance of confidence. Within the "
+        f"domain the same classes are well calibrated, which is why this does "
+        f"not show in the aggregate metrics.", width=79)
 
 
 def title_page(f):
@@ -746,6 +793,8 @@ the two Malaysian sectors dominated by such species - rubber processing and
 semiconductor manufacturing - show markedly lower recall. Predictions for
 mineral acids, metal oxides and coordination compounds should be treated with
 corresponding caution.
+
+{_domain_paragraph(f)}
 
 The environmental class performed poorly on the Malaysian validation set,
 recovering only {float(ghs09.Recall.iloc[0]):.2f} of true labels despite an AUC

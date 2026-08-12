@@ -201,6 +201,11 @@ if submitted and user_input.strip():
     with column_hazards:
         st.subheader("GHS hazard profile")
 
+        # Shown before the profile, not after it, so it cannot be read as a
+        # footnote to a result the user has already believed.
+        if prediction.get("domain_warning"):
+            st.error("⚠️ " + prediction["domain_warning"])
+
         flagged = [h for h in prediction["hazards"] if h["predicted"]]
         if flagged:
             st.warning(f"**{len(flagged)} of 9 hazard classes flagged:** "

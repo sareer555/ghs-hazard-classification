@@ -102,6 +102,25 @@ semiconductor manufacturing - show markedly lower recall. Predictions for
 mineral acids, metal oxides and coordination compounds should be treated with
 corresponding caution.
 
+A second and sharper domain limit is molecular size. The median training
+compound has 14 heavy atoms and only 1.1 per cent have fewer than 6, so the
+model has seen very little of the small-molecule regime. What it has learned
+about that regime is real but over-applied: small molecules genuinely are more
+hazardous on average, and the model treats small size as near-proof of hazard.
+On the 260 test compounds with fewer than 6 heavy atoms, GHS06 is assigned to
+84 per cent of such compounds when 27 per cent carry it; GHS08 is assigned to
+80 per cent of such compounds when 33 per cent carry it. The failure is easiest
+to see in a compound that is small and harmless: water is returned as
+corrosive, acutely toxic and a serious health hazard, and carries none of those
+pictograms. The accompanying application therefore marks any compound below 6
+heavy atoms as outside the domain, in the interface, the command-line tool and
+the exported report, before any profile is shown. The profile is still produced
+rather than withheld, because the failure is over-prediction and suppressing a
+genuine hazard would be the worse error - butane's flammable and compressed-gas
+classes are correctly identified - but it is presented without the appearance
+of confidence. Within the domain the same classes are well calibrated, which is
+why this does not show in the aggregate metrics.
+
 The environmental class performed poorly on the Malaysian validation set,
 recovering only 0.16 of true labels despite an AUC of 0.897 on the global test
 set. The Malaysian set contains many industrial commodity chemicals whose

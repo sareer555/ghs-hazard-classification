@@ -62,6 +62,25 @@ DISCLAIMER = (
 # trained on anything like them.
 MAX_HEAVY_ATOMS = 200
 
+# Below this many heavy atoms the model is outside the chemistry it was trained
+# on. The median training compound has 14 heavy atoms and only about 1 per cent
+# have fewer than 6, so the small-molecule regime is barely represented.
+#
+# The model did learn something true about it - small molecules genuinely are
+# more hazardous on average - but it over-applies that, treating small size as
+# near-proof of hazard. Measured on the held-out test set, acute toxicity is
+# assigned to 84 per cent of compounds under 6 heavy atoms when 27 per cent
+# carry it, and serious health hazard to 80 per cent when 33 per cent carry it.
+# Water comes back corrosive, acutely toxic and a serious health hazard.
+#
+# The prediction is still shown rather than withheld: the failure is
+# over-prediction, and suppressing a real hazard would be the worse mistake -
+# butane's flammable and compressed-gas classes are correctly identified. What
+# is withheld is the impression of confidence.
+# See src/applicability_domain.py for the measurements.
+DOMAIN_MIN_HEAVY_ATOMS = 6
+DOMAIN_UNRELIABLE_CLASSES = ("GHS06", "GHS08")
+
 
 class GHSPredictor:
     """
@@ -235,7 +254,11 @@ class GHSPredictor:
         dict with the hazard table, the descriptor vector, SHAP contributions
         and any error message.
         """
-        output = {"ok": False, "error": None, "hazards": [], "shap": None,
+        # domain_warning is initialised here so that every caller can read it
+        # unconditionally rather than testing whether the key exists.
+        output = {"ok": False, "error": None, "domain_warning": None,
+                  "domain_unreliable_classes": [],
+                  "hazards": [], "shap": None,
                   "properties": {}}
 
         mol = Chem.MolFromSmiles(smiles)
@@ -255,6 +278,23 @@ class GHSPredictor:
         if n_heavy == 0:
             output["error"] = "This structure contains no heavy atoms."
             return output
+
+        # Not an error: the profile is still produced, but the caller is told
+        # that this molecule sits outside the training chemistry and which
+        # classes are unreliable there.
+        if n_heavy < DOMAIN_MIN_HEAVY_ATOMS:
+            output["domain_warning"] = (
+                f"OUTSIDE THE APPLICABILITY DOMAIN. This molecule has "
+                f"{n_heavy} heavy atom{'s' if n_heavy != 1 else ''}; the model "
+                f"was trained on compounds with a median of 14, and barely one "
+                f"per cent had fewer than {DOMAIN_MIN_HEAVY_ATOMS}. For "
+                f"molecules this small it treats small size as evidence of "
+                f"hazard and substantially over-predicts "
+                f"{' and '.join(DOMAIN_UNRELIABLE_CLASSES)} in particular. "
+                f"Treat the profile below as unreliable and confirm against "
+                f"the substance's safety data sheet.")
+            output["domain_unreliable_classes"] = list(
+                DOMAIN_UNRELIABLE_CLASSES)
 
         # ---- descriptors ---------------------------------------------------
         try:
@@ -450,6 +490,20 @@ def build_pdf_report(resolved, prediction, predictor, output_path=None):
         f"Generated {datetime.now().strftime('%d %B %Y, %H:%M')} &nbsp;|&nbsp; "
         f"Model: {predictor.model_name}", body))
     story.append(Spacer(1, 0.3 * cm))
+
+    # ---- applicability domain ----------------------------------------------
+    # Placed above the identity block, on the first screen of the first page.
+    # This report is the artefact somebody keeps and forwards, so a caveat
+    # buried at the end would travel separately from the number it qualifies.
+    if prediction.get("domain_warning"):
+        warning_style = ParagraphStyle(
+            "domain", parent=body, fontSize=9.5, leading=13,
+            textColor=colors.HexColor("#7a1a1a"),
+            backColor=colors.HexColor("#fdecec"),
+            borderColor=colors.HexColor("#c0392b"), borderWidth=1,
+            borderPadding=7, spaceAfter=10)
+        story.append(Paragraph(
+            f"<b>{prediction['domain_warning']}</b>", warning_style))
 
     # ---- identity ----------------------------------------------------------
     story.append(Paragraph("Chemical identity", heading))

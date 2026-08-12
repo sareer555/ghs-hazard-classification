@@ -1,0 +1,39 @@
+{
+  "training_distribution": {
+    "n_training_compounds": 194613,
+    "median_heavy_atoms": 14.0,
+    "percentile_1": 5.0,
+    "percentile_5": 8.0,
+    "pct_below_domain": 1.1145195850225833,
+    "domain_min_heavy_atoms": 6
+  },
+  "n_test_out_of_domain": 260,
+  "n_test_in_domain": 24092,
+  "pct_test_out_of_domain": 1.07,
+  "over_predicting_classes": [
+    {
+      "column": "GHS06_AcuteToxicity",
+      "pictogram": "GHS06",
+      "pct_flagged": 83.8,
+      "pct_actual": 27.3,
+      "factor": 3.1
+    },
+    {
+      "column": "GHS08_HealthHazard",
+      "pictogram": "GHS08",
+      "pct_flagged": 80.4,
+      "pct_actual": 32.7,
+      "factor": 2.5
+    }
+  ],
+  "worked_example": {
+    "compound": "water",
+    "heavy_atoms": 1,
+    "flagged_by_model": [
+      "GHS05_Corrosive",
+      "GHS06_AcuteToxicity",
+      "GHS08_HealthHazard"
+    ],
+    "actual_pictograms": []
+  }
+}

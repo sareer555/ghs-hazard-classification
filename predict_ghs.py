@@ -17,6 +17,7 @@ Author : Sareer Ahmad
 
 import os
 import sys
+import textwrap
 import csv
 import argparse
 from datetime import datetime
@@ -46,6 +47,15 @@ def print_report(resolved, prediction, predictor):
     print(f"SMILES    : {resolved.get('smiles')}")
     print(f"Source    : {resolved.get('source')}")
     print("-" * 78)
+
+    # Printed before the table so it cannot be mistaken for a footnote to a
+    # result the reader has already accepted.
+    if prediction.get("domain_warning"):
+        print()
+        print("!" * 78)
+        for line in textwrap.wrap(prediction["domain_warning"], width=78):
+            print(line)
+        print("!" * 78)
 
     print("\nPREDICTED GHS HAZARD PROFILE")
     print("-" * 78)

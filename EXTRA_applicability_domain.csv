@@ -1,0 +1,55 @@
+Size_Band_Heavy_Atoms,In_Domain,N_Compounds,GHS_Column,Pictogram_Code,Meaning,Pct_Flagged_By_Model,Pct_Actually_Positive,Over_Prediction_Factor,Mean_Predicted_Probability
+1-3,False,81,GHS01_Explosive,GHS01,Explosive (exploding bomb),0.0,0.0,,0.087
+1-3,False,81,GHS02_Flammable,GHS02,Flammable (flame),46.9,29.6,1.58,0.733
+1-3,False,81,GHS03_Oxidising,GHS03,Oxidiser (flame over circle),3.7,6.2,0.6,0.197
+1-3,False,81,GHS04_CompressedGas,GHS04,Compressed gas (gas cylinder),19.8,21.0,0.94,0.328
+1-3,False,81,GHS05_Corrosive,GHS05,Corrosive (corrosion),37.0,29.6,1.25,0.591
+1-3,False,81,GHS06_AcuteToxicity,GHS06,Acute toxicity (skull and crossbones),92.6,24.7,3.75,0.764
+1-3,False,81,GHS07_Irritant,GHS07,Irritant / harmful (exclamation mark),49.4,67.9,0.73,0.14
+1-3,False,81,GHS08_HealthHazard,GHS08,Serious health hazard (health hazard),97.5,38.3,2.55,0.9
+1-3,False,81,GHS09_Environmental,GHS09,Environmental hazard (environment),42.0,28.4,1.48,0.763
+4-5,False,179,GHS01_Explosive,GHS01,Explosive (exploding bomb),0.0,0.6,0.0,0.111
+4-5,False,179,GHS02_Flammable,GHS02,Flammable (flame),38.0,35.2,1.08,0.602
+4-5,False,179,GHS03_Oxidising,GHS03,Oxidiser (flame over circle),3.9,2.2,1.75,0.148
+4-5,False,179,GHS04_CompressedGas,GHS04,Compressed gas (gas cylinder),3.4,3.4,1.0,0.072
+4-5,False,179,GHS05_Corrosive,GHS05,Corrosive (corrosion),41.9,30.7,1.36,0.618
+4-5,False,179,GHS06_AcuteToxicity,GHS06,Acute toxicity (skull and crossbones),79.9,28.5,2.8,0.702
+4-5,False,179,GHS07_Irritant,GHS07,Irritant / harmful (exclamation mark),87.7,68.2,1.29,0.257
+4-5,False,179,GHS08_HealthHazard,GHS08,Serious health hazard (health hazard),72.6,30.2,2.41,0.806
+4-5,False,179,GHS09_Environmental,GHS09,Environmental hazard (environment),24.6,16.8,1.47,0.595
+6-10,True,4142,GHS01_Explosive,GHS01,Explosive (exploding bomb),0.0,0.0,1.0,0.077
+6-10,True,4142,GHS02_Flammable,GHS02,Flammable (flame),19.5,17.7,1.1,0.376
+6-10,True,4142,GHS03_Oxidising,GHS03,Oxidiser (flame over circle),0.2,0.3,0.91,0.005
+6-10,True,4142,GHS04_CompressedGas,GHS04,Compressed gas (gas cylinder),0.1,0.1,1.5,0.003
+6-10,True,4142,GHS05_Corrosive,GHS05,Corrosive (corrosion),30.5,28.2,1.08,0.484
+6-10,True,4142,GHS06_AcuteToxicity,GHS06,Acute toxicity (skull and crossbones),10.1,6.4,1.58,0.359
+6-10,True,4142,GHS07_Irritant,GHS07,Irritant / harmful (exclamation mark),99.0,90.2,1.1,0.644
+6-10,True,4142,GHS08_HealthHazard,GHS08,Serious health hazard (health hazard),6.9,5.3,1.3,0.294
+6-10,True,4142,GHS09_Environmental,GHS09,Environmental hazard (environment),1.9,3.4,0.56,0.153
+11-20,True,15905,GHS01_Explosive,GHS01,Explosive (exploding bomb),0.0,0.1,0.2,0.084
+11-20,True,15905,GHS02_Flammable,GHS02,Flammable (flame),0.7,1.3,0.53,0.076
+11-20,True,15905,GHS03_Oxidising,GHS03,Oxidiser (flame over circle),0.1,0.1,0.47,0.002
+11-20,True,15905,GHS04_CompressedGas,GHS04,Compressed gas (gas cylinder),0.0,0.0,,0.0
+11-20,True,15905,GHS05_Corrosive,GHS05,Corrosive (corrosion),16.2,17.0,0.95,0.322
+11-20,True,15905,GHS06_AcuteToxicity,GHS06,Acute toxicity (skull and crossbones),2.3,4.3,0.54,0.301
+11-20,True,15905,GHS07_Irritant,GHS07,Irritant / harmful (exclamation mark),99.9,93.4,1.07,0.745
+11-20,True,15905,GHS08_HealthHazard,GHS08,Serious health hazard (health hazard),2.5,3.8,0.66,0.166
+11-20,True,15905,GHS09_Environmental,GHS09,Environmental hazard (environment),6.1,5.5,1.11,0.187
+21-40,True,3685,GHS01_Explosive,GHS01,Explosive (exploding bomb),0.0,0.2,0.17,0.094
+21-40,True,3685,GHS02_Flammable,GHS02,Flammable (flame),0.3,0.7,0.37,0.074
+21-40,True,3685,GHS03_Oxidising,GHS03,Oxidiser (flame over circle),0.0,0.1,0.0,0.003
+21-40,True,3685,GHS04_CompressedGas,GHS04,Compressed gas (gas cylinder),0.0,0.0,,0.0
+21-40,True,3685,GHS05_Corrosive,GHS05,Corrosive (corrosion),4.2,9.4,0.44,0.196
+21-40,True,3685,GHS06_AcuteToxicity,GHS06,Acute toxicity (skull and crossbones),18.5,12.6,1.47,0.474
+21-40,True,3685,GHS07_Irritant,GHS07,Irritant / harmful (exclamation mark),97.2,79.8,1.22,0.431
+21-40,True,3685,GHS08_HealthHazard,GHS08,Serious health hazard (health hazard),12.3,9.6,1.29,0.421
+21-40,True,3685,GHS09_Environmental,GHS09,Environmental hazard (environment),25.9,18.0,1.44,0.489
+41+,True,360,GHS01_Explosive,GHS01,Explosive (exploding bomb),0.0,0.0,,0.088
+41+,True,360,GHS02_Flammable,GHS02,Flammable (flame),0.0,1.1,0.0,0.102
+41+,True,360,GHS03_Oxidising,GHS03,Oxidiser (flame over circle),0.0,0.3,0.0,0.005
+41+,True,360,GHS04_CompressedGas,GHS04,Compressed gas (gas cylinder),0.0,0.3,0.0,0.0
+41+,True,360,GHS05_Corrosive,GHS05,Corrosive (corrosion),3.3,8.6,0.39,0.218
+41+,True,360,GHS06_AcuteToxicity,GHS06,Acute toxicity (skull and crossbones),25.3,11.1,2.28,0.513
+41+,True,360,GHS07_Irritant,GHS07,Irritant / harmful (exclamation mark),91.9,71.9,1.28,0.294
+41+,True,360,GHS08_HealthHazard,GHS08,Serious health hazard (health hazard),50.6,26.9,1.88,0.717
+41+,True,360,GHS09_Environmental,GHS09,Environmental hazard (environment),9.2,13.1,0.7,0.46
