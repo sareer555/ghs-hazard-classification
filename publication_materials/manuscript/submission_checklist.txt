@@ -225,7 +225,12 @@ PERMANENT ARCHIVES
 [x] 26 references with DOIs where they exist. They are in ACS style;
     Elsevier does not require a specific style at initial submission, so
     they can stay as they are until revision.
-[ ] Supporting Information compiled as a single PDF plus the Excel workbook
+[x] Supporting Information compiled: GHS_Supporting_Information.pdf (23 pages,
+    Tables S0-S5c and File S1) plus publication_supplementary_tables.xlsx.
+    Built by src/build_supporting_information.py. Where a table is too wide to
+    print legibly the PDF shows the columns the manuscript discusses and states
+    how many were omitted and where the complete table is; nothing is dropped
+    silently.
 [x] TOC graphic prepared - publication_materials/figures/TOC_graphic.png
 [x] ORCID registered: 0009-0003-2580-091X (sole author)
 [x] Generative-AI declaration written (section 8 above), using Elsevier's
