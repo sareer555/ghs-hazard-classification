@@ -906,8 +906,8 @@ DATA AND SOFTWARE
      https://doi.org/10.5281/zenodo.21876611.
 
 (28) Ahmad, S. Interpretable Machine Learning for Predicting GHS Chemical
-     Hazard Classifications, v1.0.1 [software]; Zenodo, 2026.
-     https://doi.org/10.5281/zenodo.21891029.
+     Hazard Classifications, v1.0.2 [software]; Zenodo, 2026.
+     https://doi.org/10.5281/zenodo.21903565.
 """
 
 
@@ -1562,17 +1562,19 @@ machine.
 
 The analysis code is archived at Zenodo and developed at
 https://github.com/sareer555/ghs-hazard-classification under the MIT licence.
-Release v1.0.1, https://doi.org/10.5281/zenodo.21891029, is the version to
+Release v1.0.2, https://doi.org/10.5281/zenodo.21903565, is the version to
 cite; https://doi.org/10.5281/zenodo.21876531 resolves to the most recent
 version whichever that is.
 
-Every result reported here was produced by release v1.0.0. Release v1.0.1
-differs from it only in the prediction application: it corrects the way that
-application locates its own files, which prevented it from starting on any
-machine other than the one the analysis was run on. No numbered step of the
-analysis pipeline is touched, and both releases reproduce the reported results
-identically. v1.0.1 is cited in preference because it is the release in which
-the accompanying application runs.
+Every result reported here was produced by release v1.0.0, and v1.0.2
+reproduces all of them identically: no numbered step of the analysis pipeline
+differs between them. The later release is cited in preference because it
+corrects the workflow figure, which had stated that synthetic minority
+oversampling was applied when the imbalance report records that it was not,
+and because it adds the applicability-domain check described under
+Limitations, without which the accompanying application reports small
+molecules as hazardous with no indication that they lie outside the training
+chemistry.
 
 --------------------------------------------------------------------------
 5. DECLARATION OF COMPETING INTEREST
@@ -1654,7 +1656,7 @@ File S1.   STEP1_environment_requirements.txt - the complete software
            environment.
 
 PERMANENT ARCHIVES
-   Code, v1.0.1  : https://doi.org/10.5281/zenodo.21891029
+   Code, v1.0.2  : https://doi.org/10.5281/zenodo.21903565
    Code, latest  : https://doi.org/10.5281/zenodo.21876531
    Data, v1.0.0  : https://doi.org/10.5281/zenodo.21876611
    Data, latest  : https://doi.org/10.5281/zenodo.21876610
@@ -1710,7 +1712,7 @@ PERMANENT ARCHIVES
     numeric codes and were unaffected; the mapping to the original names is in
     Table S0.
 [x] DONE: repository and dataset archived on Zenodo with permanent DOIs -
-    code v1.0.1 10.5281/zenodo.21891029, data v1.0.0 10.5281/zenodo.21876611 -
+    code v1.0.2 10.5281/zenodo.21903565, data v1.0.0 10.5281/zenodo.21876611 -
     and both are cited in the availability statements above.
 [x] Limitations states that the support vector machine used a reduced
     feature set and a subsampled training partition, and is therefore not

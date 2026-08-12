@@ -132,5 +132,5 @@ DATA AND SOFTWARE
      https://doi.org/10.5281/zenodo.21876611.
 
 (28) Ahmad, S. Interpretable Machine Learning for Predicting GHS Chemical
-     Hazard Classifications, v1.0.1 [software]; Zenodo, 2026.
-     https://doi.org/10.5281/zenodo.21891029.
+     Hazard Classifications, v1.0.2 [software]; Zenodo, 2026.
+     https://doi.org/10.5281/zenodo.21903565.

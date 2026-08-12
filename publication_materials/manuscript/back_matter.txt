@@ -59,17 +59,19 @@ machine.
 
 The analysis code is archived at Zenodo and developed at
 https://github.com/sareer555/ghs-hazard-classification under the MIT licence.
-Release v1.0.1, https://doi.org/10.5281/zenodo.21891029, is the version to
+Release v1.0.2, https://doi.org/10.5281/zenodo.21903565, is the version to
 cite; https://doi.org/10.5281/zenodo.21876531 resolves to the most recent
 version whichever that is.
 
-Every result reported here was produced by release v1.0.0. Release v1.0.1
-differs from it only in the prediction application: it corrects the way that
-application locates its own files, which prevented it from starting on any
-machine other than the one the analysis was run on. No numbered step of the
-analysis pipeline is touched, and both releases reproduce the reported results
-identically. v1.0.1 is cited in preference because it is the release in which
-the accompanying application runs.
+Every result reported here was produced by release v1.0.0, and v1.0.2
+reproduces all of them identically: no numbered step of the analysis pipeline
+differs between them. The later release is cited in preference because it
+corrects the workflow figure, which had stated that synthetic minority
+oversampling was applied when the imbalance report records that it was not,
+and because it adds the applicability-domain check described under
+Limitations, without which the accompanying application reports small
+molecules as hazardous with no indication that they lie outside the training
+chemistry.
 
 --------------------------------------------------------------------------
 DECLARATION OF COMPETING INTEREST

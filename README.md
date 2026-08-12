@@ -7,10 +7,9 @@ chemical terms.
 **Author:** Sareer Ahmad — Federal Directorate of Education, Islamabad, Pakistan
 **ORCID:** [0009-0003-2580-091X](https://orcid.org/0009-0003-2580-091X)
 **Contact:** sareerkh9194@gmail.com
-**Target journals:** *Journal of Cheminformatics* (recommended),
-*Journal of Chemical Information and Modeling*, *Journal of Hazardous Materials*
+**Target journal:** *Computational Toxicology* (Elsevier)
 **Repository:** <https://github.com/sareer555/ghs-hazard-classification>
-**Archived code (v1.0.1):** [10.5281/zenodo.21891029](https://doi.org/10.5281/zenodo.21891029) · [all versions](https://doi.org/10.5281/zenodo.21876531)
+**Archived code (v1.0.2):** [10.5281/zenodo.21903565](https://doi.org/10.5281/zenodo.21903565) · [all versions](https://doi.org/10.5281/zenodo.21876531)
 **Archived data (v1.0.0):** [10.5281/zenodo.21876611](https://doi.org/10.5281/zenodo.21876611) · [all versions](https://doi.org/10.5281/zenodo.21876610)
 
 ### ▶ Try it live
@@ -33,10 +32,10 @@ around 30 seconds to wake; subsequent pages are immediate.
 > particular result. The data archive (366 MB) holds the curated dataset,
 > descriptor matrix and trained models that are too large for GitHub.
 >
-> Every published result was produced by code release **v1.0.0**. **v1.0.1**
-> is the release to cite: it is identical apart from fixes that let the
-> prediction application find its own files on machines other than the one the
-> analysis ran on. No pipeline step changed, and both reproduce the results.
+> Every published result was produced by code release **v1.0.0**. **v1.0.2**
+> is the release to cite: no pipeline step differs, so it reproduces every
+> result identically, but it corrects the workflow figure's claim that SMOTE
+> was applied and adds the applicability-domain warning for small molecules.
 
 > **Note on what is and is not in this repository.** The code, models needed to
 > run the application, figures, tables and manuscript are all here (~27 MB).
@@ -136,7 +135,7 @@ outputs can translate between the two.
 | 3 | `src/step3_data_cleaning.py` | Validate, deduplicate, reconcile labels |
 | 4 | `src/step4_descriptors.py` | Compute 1218 molecular descriptors |
 | 5 | `src/step5_scaffold_split.py` | Bemis-Murcko scaffold split (80/10/10) |
-| 6 | `src/step6_imbalance.py` | SMOTE, class weights, metric selection |
+| 6 | `src/step6_imbalance.py` | Class weights and metric selection. SMOTE is implemented but was not applied at this dataset size — see `STEP6_smote_report.csv` |
 | 7 | `src/step7_model_training.py` | Random Forest, XGBoost, SVM |
 | 8 | `src/step8_hyperparameter_tuning.py` | RandomizedSearchCV + refit on train |
 | 9 | `src/step9_evaluation.py` | Metrics, thresholds, bootstrap CIs, plots |
@@ -152,9 +151,12 @@ outputs can translate between the two.
 | `run_full_pipeline.py` | Runs Steps 4–13 on the full 243,323-compound dataset |
 | `src/controlled_size_experiment.py` | Does more training data help? Same test set, same hyperparameters, only size varies |
 | `src/learning_curve.py` | Learning curve within a fixed dataset |
+| `src/applicability_domain.py` | Where the model can be trusted: performance by molecule size |
+| `src/build_supporting_information.py` | Compiles Tables S0–S5 and File S1 into one PDF |
+| `src/redraw_figures_9_10.py` | Redraws Figures 9 and 10 from saved results, without retraining |
 | `src/step4_full_from_colab.py` | Builds the full feature matrix from cached Colab descriptors |
 | `src/migrate_column_names.py` | One-off rename of the three mislabelled GHS columns |
-| `src/verify_interface.py` | 25 end-to-end checks on the app and CLI |
+| `src/verify_interface.py` | 27 end-to-end checks on the app and CLI |
 | `src/verify_deliverables.py` | Audits that every required output exists |
 | `GHS_full_dataset_colab.ipynb` | Google Colab notebook for a full-dataset run |
 

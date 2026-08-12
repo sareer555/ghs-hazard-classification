@@ -230,7 +230,7 @@ def main():
         "models are archived at "
         "<font color='#2a78d6'>https://doi.org/10.5281/zenodo.21876611</font> "
         "and the analysis code at "
-        "<font color='#2a78d6'>https://doi.org/10.5281/zenodo.21891029</font>.",
+        "<font color='#2a78d6'>https://doi.org/10.5281/zenodo.21903565</font>.",
         s["caption"]))
     story.append(PageBreak())
 
