@@ -80,3 +80,9 @@ desktop.ini
 # (10.5281/zenodo.21876611). The README and the form guide beside it are small
 # and stay tracked, because they document what the archive contains.
 zenodo_data_archive/*.zip
+
+# ---- Word lock files ---------------------------------------------------------
+# Created the moment a .docx is opened for review and deleted when it closes.
+# `git add -A` swept two of these into earlier commits while the manuscript
+# was open for the very review that caught the defects those commits fixed.
+~$*.doc*
