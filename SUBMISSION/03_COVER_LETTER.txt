@@ -1,0 +1,43 @@
+Dear Editor,
+
+I am pleased to submit my manuscript entitled "Interpretable Machine
+Learning for Predicting GHS Chemical Hazard Classifications: A Multi-Label
+Approach Using 243,323 Compounds and Scaffold-Based Validation" for
+consideration as a research article in Computational Toxicology.
+
+Chemical hazard classification under the Globally Harmonized System governs
+how chemicals are labelled, stored, transported and handled worldwide, yet the
+experimental testing it depends on has been completed for only a small
+fraction of chemicals in industrial use. The consequences of that gap are not
+hypothetical: in March 2019 improperly identified chemical waste discharged
+into the Sungai Kim Kim river at Pasir Gudang, Johor, Malaysia, affected more
+than 2,500 people, most of them schoolchildren.
+
+The manuscript makes three contributions that I believe will interest the
+readership of this journal. First, I assemble and release a multi-label GHS
+dataset of 243,323 unique compounds reconciled across five
+independent regulatory sources by majority voting. Second, I evaluate under a
+Bemis-Murcko scaffold split rather than a random split, so the reported
+performance reflects generalisation to genuinely novel chemotypes rather than
+to near-duplicates of the training data; I regard this as essential for any
+claim that a hazard model is deployable. Third, I use SHAP to show that the
+learned decision rules recover established structure-hazard relationships,
+which is a prerequisite for regulatory acceptance of any computational
+screening tool.
+
+I further validate the framework on chemicals drawn from four Malaysian
+industrial sectors and on the chemicals implicated in the Johor 2019 incident.
+The complete analysis code, the curated dataset, the trained models and a
+browser-based screening interface are released as open-source software, so
+that every result in the manuscript can be reproduced and the tool can be run
+by any reader on their own machine.
+
+This manuscript has not been published elsewhere and is not under
+consideration by any other journal. As sole author I have approved the
+manuscript and agree to its submission.
+
+Yours sincerely,
+Sareer Ahmad
+Federal Directorate of Education, Islamabad
+ORCID: https://orcid.org/0009-0003-2580-091X
+sareerkh9194@gmail.com

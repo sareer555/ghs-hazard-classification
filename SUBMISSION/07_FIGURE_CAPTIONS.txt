@@ -1,0 +1,54 @@
+FIGURE CAPTIONS
+======================================================================
+
+Figure 1. Research workflow. GHS classification annotations were harvested
+from PubChem, cleaned and deduplicated, converted into 1218 molecular
+descriptors, and split by Bemis-Murcko scaffold so that no chemical skeleton
+appears in more than one split. Three algorithms were trained and tuned,
+evaluated with threshold calibration and bootstrap confidence intervals,
+interpreted with SHAP, and finally validated on Malaysian industrial chemicals
+before deployment as a screening tool.
+
+Figure 2. Class distribution of the nine GHS hazard categories in the cleaned
+dataset. (a) Number of compounds carrying each pictogram, on a logarithmic
+scale. (b) The corresponding imbalance ratio, expressed as negatives per
+positive. The two orders of magnitude separating the commonest from the rarest
+class is the reason class-imbalance handling was required.
+
+Figure 3. Receiver operating characteristic curves for the best-performing
+model (XGBoost) across all nine GHS hazard classes, evaluated on the held-out
+scaffold-split test set (n = 24,352 compounds). Each class is shown in its own
+panel, ordered by area under the curve from the best-separated class to the
+worst; the dashed diagonal marks random guessing and the number of positive
+examples is given for each class, since the rarer classes carry the wider
+uncertainty.
+
+Figure 4. Precision-recall curves for all three algorithms on two
+representative GHS classes: (a) the most abundant class, GHS07, and (b) the
+rarest, GHS01. Precision-recall curves are more informative than ROC curves
+for heavily imbalanced classes, because the baseline is the class prevalence
+rather than 0.5.
+
+Figure 5. SHAP feature-importance summaries for the three GHS classes with the
+greatest total feature attribution. Bars show the mean absolute SHAP value of
+the five most influential descriptors; colour indicates the direction of the
+mean signed effect.
+
+Figure 6. Model comparison heat map showing AUC-ROC for every algorithm and
+every GHS hazard class on the scaffold-split test set. Darker cells indicate
+better discrimination; each cell is also labelled with its value, so the
+comparison does not depend on reading the colour.
+
+Figure 7. Validation on Malaysian industrial chemicals. (a) Per-class
+performance on the Malaysian validation set compared with the global scaffold-
+split test set. (b) Recall of true hazard labels for each of the four
+industrial sectors examined, together with the chemicals implicated in the
+March 2019 Sungai Kim Kim incident at Pasir Gudang, Johor.
+
+Figure 8. SHAP waterfall plot explaining an individual prediction. The plot
+begins at the model's base value - its average output across the dataset - and
+each bar shows how one molecular descriptor moved the prediction towards or
+away from the hazard classification, ending at the final predicted
+probability. This per-compound explanation is what allows a safety officer to
+audit and challenge any individual prediction.
+

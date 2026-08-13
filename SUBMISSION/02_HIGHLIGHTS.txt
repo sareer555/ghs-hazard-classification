@@ -1,0 +1,5 @@
+* All nine GHS pictograms predicted from structure for 243,323 compounds
+* Scaffold-split validation: mean AUC 0.915 on unseen chemical skeletons
+* SHAP recovers known structure-hazard rules, e.g. nitro groups drive explosivity
+* Validated on Malaysian industrial chemicals and the 2019 Johor incident
+* Open dataset, code and a free web application for hazard screening
