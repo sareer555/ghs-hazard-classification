@@ -24,8 +24,8 @@ nothing that belongs only to you has been copied in.
     Graphical abstract.
     Upload as 'Graphical Abstract'. Optional but encouraged.
 
-05_SUPPORTING_INFORMATION.pdf   (61 KB)
-    Tables S0-S5c and File S1, 23 pages.
+05_SUPPORTING_INFORMATION.pdf   (85 KB)
+    Tables S0-S5c and File S1.
     Upload as 'Supplementary Material'.
 
 06_SUPPLEMENTARY_TABLES.xlsx   (43 KB)

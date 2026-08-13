@@ -55,7 +55,7 @@ ITEMS = [
      "Upload as 'Graphical Abstract'. Optional but encouraged."),
     ("05_SUPPORTING_INFORMATION.pdf",
      os.path.join(SUPPORTING, "GHS_Supporting_Information.pdf"),
-     "Tables S0-S5c and File S1, 23 pages.",
+     "Tables S0-S5c and File S1.",
      "Upload as 'Supplementary Material'."),
     ("06_SUPPLEMENTARY_TABLES.xlsx",
      os.path.join(TABLES, "publication_supplementary_tables.xlsx"),
@@ -101,11 +101,22 @@ def main():
     print("ASSEMBLING THE SUBMISSION FOLDER")
     print("=" * 78)
 
-    if os.path.isdir(OUT):
-        shutil.rmtree(OUT)
+    # Overwrite in place rather than deleting the folder first. Deleting it
+    # fails outright if any file is open - and the manuscript being open in
+    # Word is the expected state, since the whole point of the folder is that
+    # its contents get read before submission.
     os.makedirs(os.path.join(OUT, "figures"), exist_ok=True)
 
-    manifest, missing = [], []
+    manifest, missing, locked = [], [], []
+
+    def copy(source, target):
+        """Copy over a file, reporting rather than raising if it is open."""
+        try:
+            shutil.copy2(source, target)
+            return True
+        except PermissionError:
+            locked.append(os.path.basename(target))
+            return os.path.exists(target)
 
     for name, source, description, where in ITEMS:
         target = os.path.join(OUT, name)
@@ -118,7 +129,9 @@ def main():
             with open(target, "w", encoding="utf-8") as fh:
                 fh.write(letter)
         elif os.path.exists(source):
-            shutil.copy2(source, target)
+            if not copy(source, target):
+                missing.append((name, source))
+                continue
         else:
             missing.append((name, source))
             continue
@@ -135,8 +148,8 @@ def main():
         source = os.path.join(FIGURES, matches[0])
         name = f"Figure{number:02d}_{matches[0].split('_', 1)[1]}"
         target = os.path.join(OUT, "figures", name)
-        shutil.copy2(source, target)
-        figure_rows.append((name, os.path.getsize(target)))
+        if copy(source, target):
+            figure_rows.append((name, os.path.getsize(target)))
 
     # ---- the folder's own README ------------------------------------------
     lines = ["SUBMISSION PACKAGE",

@@ -69,7 +69,7 @@ SHEETS = [
     ("S4_SHAP_top20", "S4",
      "The twenty most influential SHAP features per hazard class.",
      ["GHS_Column", "Rank", "Feature", "Mean_Abs_SHAP",
-      "Mean_Signed_SHAP"]),
+      "Mean_Signed_SHAP", "Description"]),
     ("S4b_SHAP_interpretation", "S4b",
      "Chemical interpretation of the five most influential features per "
      "hazard class.",
@@ -113,9 +113,16 @@ def styles():
     }
 
 
-def shorten(value, limit=34):
+def shorten(value, limit=340):
     """
-    Trim a cell so a wide table still fits, marking anything cut.
+    Return a cell's text, trimming only if it is implausibly long.
+
+    Cells are Paragraph objects and wrap, so a long value produces a taller row
+    rather than one that overflows the page; the limit is a guard against a
+    runaway value, not a layout device. It was originally 34 characters, which
+    silently cut the SMARTS pattern identifying the leading explosive
+    descriptor - the most specific chemical claim in the paper. The longest
+    cell in the workbook is 319 characters, so nothing is trimmed in practice.
 
     The marker is three full stops rather than a single ellipsis character:
     reportlab's built-in fonts do not carry every Unicode glyph, and a missing
@@ -147,15 +154,31 @@ def select_columns(frame, priority):
     return frame, ""
 
 
+def escape(text):
+    """
+    Make a cell value safe to put inside a reportlab Paragraph.
+
+    Paragraph content is parsed as markup, so a value containing an angle
+    bracket or an ampersand can be read as a tag rather than as text. The
+    tables hold 175 cells reading "higher value -> more hazardous", and the
+    SMARTS patterns are full of characters that look like syntax. Reportlab
+    happens to tolerate a lone closing bracket, but relying on that is not
+    worth the risk of a silently mangled chemical pattern.
+    """
+    return (text.replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;"))
+
+
 def build_table(frame, doc_styles):
     """Lay out one dataframe as a reportlab Table."""
-    header = [Paragraph(f"<b>{str(c).replace('_', ' ')}</b>",
+    header = [Paragraph(f"<b>{escape(str(c).replace('_', ' '))}</b>",
                         ParagraphStyle("th", fontSize=7.5, leading=9,
                                        textColor=colors.white))
               for c in frame.columns]
     rows = [header]
     for record in frame.itertuples(index=False):
-        rows.append([Paragraph(shorten(v),
+        rows.append([Paragraph(escape(shorten(v)),
                                ParagraphStyle("td", fontSize=7, leading=8.6))
                      for v in record])
 
