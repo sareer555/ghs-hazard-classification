@@ -1011,25 +1011,27 @@ def write_abstract(facts):
 
 Chemical hazard classification under the Globally Harmonized System (GHS)
 depends on experimental testing that is slow, costly and unavailable for most
-chemicals in industrial circulation. The March 2019 Sungai Kim Kim incident at
-Pasir Gudang, Johor, in which improperly identified chemical waste affected
-over 2,500 people, illustrates the cost of that gap. This work asked whether
-the nine GHS pictograms can be predicted from molecular structure alone, and
-made interpretable enough for regulatory use. GHS classifications for
+industrial chemicals, a gap illustrated by the March 2019 Sungai Kim Kim
+incident at Pasir Gudang, Johor, which affected over 2,500 people. This work
+asked whether the nine GHS pictograms can be predicted from structure alone,
+interpretably enough for regulatory use. GHS classifications for
 {facts['n_raw']:,} compound records were harvested from PubChem, contributed by
-five regulatory bodies, and reduced by structural validation, InChIKey
-deduplication and multi-source majority voting to {facts['n_clean']:,} unique
-compounds, each described by {facts['n_features']:,}
-descriptors combining physicochemical properties, Morgan (ECFP4) and MACCS
-fingerprints, and topological indices. Random Forest, XGBoost and support
-vector machine classifiers were trained as multi-label predictors and evaluated
-on a Bemis-Murcko scaffold split, so that no chemical skeleton was shared
-between training and test sets. {best} performed best, achieving a mean AUC-ROC
-of {facts['mean_auc']:.3f} across the nine classes (range
-{facts['min_auc']:.3f}-{facts['max_auc']:.3f}). {shap_sentence}. Validation on
-{facts['n_malaysia']} chemicals from four Malaysian industrial sectors and the
-Johor 2019 incident confirmed transferability. The framework is released as
-open-source software with a browser-based screening interface.
+five regulatory bodies, and reduced by validation, deduplication and majority
+voting to {facts['n_clean']:,} unique compounds, each described by
+{facts['n_features']:,} physicochemical, Morgan (ECFP4), MACCS and topological
+descriptors. Random Forest, XGBoost and support vector machine classifiers were
+trained as multi-label predictors and evaluated on a Bemis-Murcko scaffold
+split, sharing no chemical skeleton between training and test. {best} performed
+best, with a mean AUC-ROC of {facts['mean_auc']:.3f} across the nine classes
+(range {facts['min_auc']:.3f}-{facts['max_auc']:.3f}). {shap_sentence}. Recall
+on {facts['n_malaysia']} Malaysian industrial and Johor 2019 compounds ranged
+{facts['malaysia_recall_min']:.2f}-{facts['malaysia_recall_max']:.2f} across
+classes (lowest for environmental hazard), too small a set to generalise from.
+Below six heavy atoms the model over-predicts acute toxicity and health hazard
+{facts['domain_worst_factor_b']:.1f}-{facts['domain_worst_factor_a']:.1f}-fold;
+the application flags such compounds as out of domain rather than reporting
+them with unwarranted confidence. The framework and a browser-based screening
+interface are released as open-source software.
 
 KEYWORDS: GHS classification; multi-label learning; molecular descriptors;
 SHAP interpretability; chemical safety; scaffold splitting; QSAR
@@ -1318,6 +1320,41 @@ application and as a command-line tool.
 
 
 HIGHLIGHT_MAX_CHARS = 85     # Elsevier's limit, including spaces
+
+
+def _malaysia_recall_range():
+    """
+    Return the best and worst per-class recall on the Malaysian set.
+
+    Reported as a range because a single mean would hide that one class
+    recovers almost nothing. Classes with no true positives in the set are
+    excluded: a recall of zero over zero examples is not a measurement.
+    """
+    path = os.path.join(DIR_MALAYSIA, "STEP11_malaysia_per_class_metrics.csv")
+    table = pd.read_csv(path)
+    measured = table[table["N_True_Positive_In_Set"] > 0]
+    return {"malaysia_recall_max": float(measured["Recall"].max()),
+            "malaysia_recall_min": float(measured["Recall"].min())}
+
+
+def _domain_over_prediction():
+    """
+    Return how far the two worst classes are over-predicted out of domain.
+
+    Read from the applicability-domain analysis rather than restated, so the
+    abstract cannot disagree with the Limitations section.
+    """
+    path = stamped("EXTRA_applicability_domain.json")
+    if not os.path.exists(path):
+        raise SystemExit(
+            "EXTRA_applicability_domain.json is missing, and the abstract "
+            "quotes it. Run src/applicability_domain.py first.")
+    with open(path, encoding="utf-8") as fh:
+        worst = json.load(fh)["over_predicting_classes"]
+    factors = sorted((w["factor"] for w in worst), reverse=True)
+    return {"domain_worst_factor_a": factors[0],
+            "domain_worst_factor_b": factors[1] if len(factors) > 1
+            else factors[0]}
 
 
 def build_highlights(facts):
@@ -1792,6 +1829,16 @@ def prepare_publication_materials():
         "min_auc": float(np.min(auc_values)) if auc_values else float("nan"),
         "max_auc": float(np.max(auc_values)) if auc_values else float("nan"),
         "n_malaysia": n_malaysia,
+        # The abstract states the range of Malaysian recall rather than
+        # claiming transferability. With 44 compounds and one class recovering
+        # 0.16 of its true labels, "confirmed transferability" was a claim the
+        # evidence did not support, and a reviewer checking the per-class table
+        # would have found that immediately.
+        **_malaysia_recall_range(),
+        # The applicability-domain failure is a headline finding in Limitations
+        # and belonged in the abstract too: anyone who types "water" into the
+        # deployed application meets it within seconds.
+        **_domain_over_prediction(),
         "n_ghs07": counts.get("GHS07_Irritant", 0),
         "n_ghs01": counts.get("GHS01_Explosive", 0),
         "n_ghs01_train": n_ghs01_train,
@@ -1897,11 +1944,11 @@ def prepare_publication_materials():
     print("\n" + "=" * 78)
     print("STEP 13 PROGRESS REPORT")
     print("=" * 78)
-    print("WHAT WAS DONE : Generated eight 300-dpi publication figures with")
-    print("                captions, five supplementary tables, the ACS-style")
+    print(f"WHAT WAS DONE : Generated {len(CAPTIONS)} {FIGURE_DPI}-dpi publication figures with")
+    print("                captions, nine supplementary tables, the ACS-style")
     print("                reference list, the abstract, the Methods section and")
-    print("                the JCIM submission checklist.")
-    print(f"FIGURES       : {len(CAPTIONS)} of 8 generated -> {FIG_DIR}")
+    print("                the Computational Toxicology submission checklist.")
+    print(f"FIGURES       : {len(CAPTIONS)} of {len(CAPTIONS)} generated -> {FIG_DIR}")
     print(f"TABLES        : {len(sheets)} sheets -> {table_path}")
     print(f"ABSTRACT      : {word_count} words")
     print(f"METHODS       : {methods_words:,} words")

@@ -27,7 +27,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from ghs_config import (manuscript_title,
+from ghs_config import (manuscript_title, get_ablation_identity,
                         PROJECT_ROOT, DIR_MALAYSIA, DIR_PUB, GHS_LABEL_COLUMNS,
                         GHS_TRUE_MEANING, stamped)
 
@@ -236,6 +236,28 @@ def gather():
 # ===========================================================================
 # TITLE PAGE
 # ===========================================================================
+def _ablation_mean(scores):
+    """
+    Return the ablation's mean score, looked up under the name it actually has.
+
+    The ablation was renamed from RandomForest_SMOTE to
+    RandomForest_NoClassWeight once it was established that SMOTE never ran.
+    This lookup kept the old name with a NaN default, so the results section
+    printed "nan" in prose for a model that had scored perfectly well - which
+    reads to a reviewer as a failed run rather than a stale key.
+
+    Raises rather than defaulting: a missing score is a real problem and must
+    not reach the page as a quiet placeholder.
+    """
+    name = get_ablation_identity()[0]
+    if name not in scores:
+        raise KeyError(
+            f"No score recorded for the ablation model {name!r}. Available: "
+            f"{sorted(scores)}. Re-run Step 9 before regenerating the "
+            f"manuscript.")
+    return scores[name]
+
+
 def _wrapped_title(f):
     """Return the shared manuscript title, wrapped and indented for the page."""
     title = manuscript_title(f["clean"]["final_cleaned_compounds"])
@@ -490,7 +512,7 @@ def results(f):
     for _, r in top.iterrows():
         shap_lines.append(f"  {r.GHS_Column.split('_')[0]:<6}"
                           f"{r.Feature:<16}{r.Value_SHAP_Correlation:>+8.3f}   "
-                          f"{str(r.What_The_Descriptor_Measures)[:44]}")
+                          f"{str(r.What_The_Descriptor_Measures)}")
     shap_tbl = "\n".join(shap_lines)
 
     sector = "\n".join(
@@ -562,24 +584,42 @@ Model performance
 
 Four models were evaluated on the held-out test partition of {s['n_test']:,}
 compounds. Mean AUC-ROC across the nine classes was {means.get(best):.4f} for
-{best}, {means.get('RandomForest_SMOTE', float('nan')):.4f} for the Random
+{best}, {_ablation_mean(means):.4f} for the Random
 Forest without class weighting, {means.get('RandomForest'):.4f} for the
 class-weighted Random Forest and {means.get('SVM'):.4f} for the support vector
 machine. Mean Matthews correlation coefficients were {mccs.get(best):.4f},
-{mccs.get('RandomForest_SMOTE', float('nan')):.4f},
+{_ablation_mean(mccs):.4f},
 {mccs.get('RandomForest'):.4f} and {mccs.get('SVM'):.4f} respectively.
 {best} was selected as the best model on both metrics. The bootstrap 95 per
 cent confidence interval had a median half-width of {ci:.4f}, so differences
 smaller than that are not meaningful; the two leading models were separated on
 Matthews correlation coefficient rather than on area under the curve.
 
-Per-class performance for {best} is given below; N is the number of positive
-examples in the test partition and the interval is the bootstrap 95 per cent
-confidence interval on AUC-ROC.
+Per-class performance for {best} is given in Table 1.
+
+Table 1. Per-class performance of {best} on the scaffold-split test partition
+of {s['n_test']:,} compounds. N is the number of positive examples in the
+partition; the interval is the bootstrap 95 per cent confidence interval on
+AUC-ROC over 1,000 resamples. AP is average precision. Thresholds are the
+F1-optimal values calibrated on the validation partition.
 
   Code  Hazard                         N     AUC       CI 95%        AP      F1     MCC
   ---------------------------------------------------------------------------------------
 {per_class}
+
+The irritant class in Table 1 requires a caveat that the general rule in
+Section 2.9 does not cover. Its F1 of {f['best_rows'].loc['GHS07_Irritant'].F1:.3f}
+is not evidence of a good classifier: {100 * 21967 / s['n_test']:.0f} per cent of
+the test compounds carry that pictogram, so a model predicting the class for
+every compound would score an F1 near {2 * (21967 / s['n_test']) / (1 + 21967 / s['n_test']):.2f}.
+The Matthews correlation coefficient of
+{f['best_rows'].loc['GHS07_Irritant'].MCC:.3f} is the honest figure, and the two
+should be read together for this class. The rule stated in Section 2.9 - that
+the Matthews coefficient is primary for classes with fewer than 500 positive
+examples - does not apply here, since irritant has
+{int(f['best_rows'].loc['GHS07_Irritant'].N_Test_Positive):,}; the reason is
+prevalence rather than rarity, and it is the only class in which the two
+metrics disagree this sharply.
 
 Discrimination is excellent for the physically determined hazards - compressed
 gas ({auc['GHS04_CompressedGas']:.3f}), explosive
@@ -603,7 +643,12 @@ Effect of training-set size
 
 Models were trained on nested subsets of the training partition and evaluated
 on the same fixed test partition with identical hyperparameters, so that
-training-set size was the only quantity varying.
+training-set size was the only quantity varying (Table 2).
+
+Table 2. Effect of training-set size on mean AUC-ROC across the nine hazard
+classes, with the test partition, hyperparameters and feature set held fixed.
+Each training subset is a superset of the smaller ones, so the comparison
+reflects quantity rather than which compounds were drawn.
 
      n_train    mean AUC
   -----------------------
@@ -627,7 +672,14 @@ SHAP values were computed for {f['shap']['n_compounds_explained']} test
 compounds. Across all nine classes the most influential descriptors were
 {', '.join(f['shap']['top3_features_overall'])}. The single most influential
 descriptor for each class, with the correlation between descriptor value and
-SHAP value (positive meaning that higher values push towards the hazard):
+SHAP value (positive meaning that higher values push towards the hazard) is
+given in Table 3.
+
+Table 3. The most influential descriptor for each hazard class, ranked by mean
+absolute SHAP value, with the correlation r between descriptor value and SHAP
+value. A positive r means that higher values of the descriptor push the
+prediction towards the hazard. The complete ranking of twenty descriptors per
+class is in Supporting Information Table S4.
 
   Code  Descriptor         r      Measures
   -------------------------------------------------------------------------
@@ -655,7 +707,13 @@ Malaysian industrial validation
 --------------------------------------------------------------------------------
 
 The framework was applied without retraining to chemicals from four Malaysian
-industrial sectors and to the substances implicated in the Johor 2019 incident.
+industrial sectors and to the substances implicated in the Johor 2019
+incident, with the results in Table 4.
+
+Table 4. Performance by Malaysian industrial sector, applied without
+retraining. Label accuracy is the proportion of the nine binary labels
+predicted correctly; recall is the proportion of true hazard assignments
+recovered. n is the number of compounds in each sector.
 
   Sector                        n  Label acc.    Recall
   ------------------------------------------------------

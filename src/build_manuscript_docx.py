@@ -26,6 +26,7 @@ from docx.enum.section import WD_SECTION
 from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_LINE_SPACING
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
+from docx.enum.table import WD_TABLE_ALIGNMENT
 from docx.shared import Pt, Cm, RGBColor
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -113,13 +114,53 @@ def classify(line, previous_blank, next_line, after_conclusions):
     return "body"
 
 
+def split_columns(line, expected):
+    """
+    Split one row of a fixed-width ASCII table into its fields.
+
+    Fields are separated by runs of two or more spaces. The data rows put the
+    pictogram code and the hazard name in one field separated by a single
+    space, so a row one field short of the header is split again on its first
+    space. Anything else is returned as it is, padded, rather than guessed at.
+    """
+    fields = re.split(r" {2,}", line.strip())
+    if len(fields) == expected - 1 and " " in fields[0]:
+        head, _, rest = fields[0].partition(" ")
+        fields = [head, rest] + fields[1:]
+    if len(fields) < expected:
+        fields += [""] * (expected - len(fields))
+    return fields[:expected]
+
+
+def read_table(lines, start):
+    """
+    Read the ASCII table whose header is at `start`.
+
+    Returns (header_fields, data_rows, index_after_the_table), or None when
+    what follows the rule is not a table after all. The plain text marks a
+    table as a columnar header, a rule of dashes, then rows until a blank line.
+    """
+    header = re.split(r" {2,}", lines[start].strip())
+    if len(header) < 2:
+        return None
+    rows, position = [], start + 2          # skip the header and its rule
+    while position < len(lines) and lines[position].strip():
+        if is_rule(lines[position]):
+            break
+        rows.append(split_columns(lines[position], len(header)))
+        position += 1
+    return (header, rows, position) if rows else None
+
+
 def parse(text):
     """
     Turn the wrapped plain text into a list of (kind, content) blocks.
 
     Consecutive body lines are joined back into one paragraph, which is the
     whole point: the source is wrapped for reading in a terminal, and those
-    line breaks must not survive into Word.
+    line breaks must not survive into Word. The ASCII tables are recovered as
+    structured rows: left as text they reflow into a run-on line, which is
+    exactly the defect that made the results unreadable.
     """
     lines = text.split("\n")
     blocks = []
@@ -133,8 +174,23 @@ def parse(text):
 
     previous_blank = True
     after_conclusions = False
+    skip_until = 0
     for position, line in enumerate(lines):
+        if position < skip_until:
+            continue
         next_line = lines[position + 1] if position + 1 < len(lines) else None
+
+        # A columnar line above a rule of dashes opens an ASCII table.
+        if (line.strip() and next_line is not None and is_rule(next_line)
+                and looks_like_table_header(line)):
+            table = read_table(lines, position)
+            if table:
+                header, rows, skip_until = table
+                flush()
+                blocks.append(("table", (header, rows)))
+                buffer_kind = None
+                previous_blank = False
+                continue
         kind = classify(line, previous_blank, next_line, after_conclusions)
         previous_blank = kind == "blank"
 
@@ -244,7 +300,38 @@ def build(blocks):
     document = docx.Document()
     configure(document)
 
+    TABLE_CAPTION = re.compile(r"^Table \d+\.\s")
+
+    def add_table(header, rows):
+        """Render one parsed ASCII table as a real Word table."""
+        table = document.add_table(rows=1, cols=len(header))
+        table.style = "Table Grid"
+        table.alignment = WD_TABLE_ALIGNMENT.CENTER
+        table.autofit = True
+        for cell, name in zip(table.rows[0].cells, header):
+            cell.text = ""
+            run = cell.paragraphs[0].add_run(name)
+            run.bold = True
+            run.font.size = Pt(9)
+            cell.paragraphs[0].paragraph_format.line_spacing_rule =                 WD_LINE_SPACING.SINGLE
+            cell.paragraphs[0].paragraph_format.space_after = Pt(0)
+        for values in rows:
+            cells = table.add_row().cells
+            for cell, value in zip(cells, values):
+                cell.text = ""
+                run = cell.paragraphs[0].add_run(value)
+                run.font.size = Pt(9)
+                cell.paragraphs[0].paragraph_format.line_spacing_rule =                     WD_LINE_SPACING.SINGLE
+                cell.paragraphs[0].paragraph_format.space_after = Pt(0)
+        # A table butted against the next paragraph is unreadable.
+        spacer = document.add_paragraph()
+        spacer.paragraph_format.space_after = Pt(6)
+        spacer.paragraph_format.line_spacing_rule = WD_LINE_SPACING.SINGLE
+
     for kind, content in blocks:
+        if kind == "table":
+            add_table(*content)
+            continue
         # The text file's own banner, not a manuscript section; the title page
         # content follows it either way.
         if content == "TITLE PAGE":
@@ -267,6 +354,18 @@ def build(blocks):
         elif kind == "indented":
             paragraph = document.add_paragraph(content)
             paragraph.paragraph_format.left_indent = Cm(1.0)
+        elif TABLE_CAPTION.match(content):
+            paragraph = document.add_paragraph()
+            number, _, rest = content.partition(". ")
+            bold = paragraph.add_run(number + ". ")
+            bold.bold = True
+            paragraph.add_run(rest)
+            paragraph.paragraph_format.line_spacing_rule =                 WD_LINE_SPACING.SINGLE
+            paragraph.paragraph_format.space_before = Pt(10)
+            paragraph.paragraph_format.space_after = Pt(4)
+            paragraph.paragraph_format.keep_with_next = True
+            for run in paragraph.runs:
+                run.font.size = Pt(10)
         else:
             document.add_paragraph(content)
 
@@ -296,7 +395,8 @@ def main():
     for kind in sorted(counts):
         print(f"      {kind:<12}{counts[kind]:>5}")
 
-    words = sum(len(c.split()) for k, c in blocks)
+    # Table blocks carry (header, rows), not text; word count is prose only.
+    words = sum(len(c.split()) for k, c in blocks if k != "table")
     print(f"\n   {words:,} words")
     print(f"   {OUTPUT}")
     print(f"   {os.path.getsize(OUTPUT) / 1024:,.0f} KB")

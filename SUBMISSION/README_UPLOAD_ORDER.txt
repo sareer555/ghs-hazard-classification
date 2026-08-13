@@ -8,7 +8,7 @@ Submit at https://submit.elsevier.com/COMTOX
 Upload in this order. Everything in this folder is submitted;
 nothing that belongs only to you has been copied in.
 
-01_MANUSCRIPT.docx   (56 KB)
+01_MANUSCRIPT.docx   (58 KB)
     The manuscript. A4, single column, double spaced, line numbered.
     Upload as 'Manuscript'.
 

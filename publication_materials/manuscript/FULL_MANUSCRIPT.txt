@@ -42,25 +42,27 @@ ABSTRACT
 
 Chemical hazard classification under the Globally Harmonized System (GHS)
 depends on experimental testing that is slow, costly and unavailable for most
-chemicals in industrial circulation. The March 2019 Sungai Kim Kim incident at
-Pasir Gudang, Johor, in which improperly identified chemical waste affected
-over 2,500 people, illustrates the cost of that gap. This work asked whether
-the nine GHS pictograms can be predicted from molecular structure alone, and
-made interpretable enough for regulatory use. GHS classifications for
+industrial chemicals, a gap illustrated by the March 2019 Sungai Kim Kim
+incident at Pasir Gudang, Johor, which affected over 2,500 people. This work
+asked whether the nine GHS pictograms can be predicted from structure alone,
+interpretably enough for regulatory use. GHS classifications for
 243,707 compound records were harvested from PubChem, contributed by
-five regulatory bodies, and reduced by structural validation, InChIKey
-deduplication and multi-source majority voting to 243,323 unique
-compounds, each described by 816
-descriptors combining physicochemical properties, Morgan (ECFP4) and MACCS
-fingerprints, and topological indices. Random Forest, XGBoost and support
-vector machine classifiers were trained as multi-label predictors and evaluated
-on a Bemis-Murcko scaffold split, so that no chemical skeleton was shared
-between training and test sets. XGBoost performed best, achieving a mean AUC-ROC
-of 0.915 across the nine classes (range
-0.830-0.995). SHAP analysis showed the model had recovered recognised structure-hazard relationships, most clearly the dependence of explosivity on the substructure [!#6;!#1]~[#7]~[!#6;!#1], flammability on low structural complexity, and aquatic hazard on high lipophilicity. Validation on
-44 chemicals from four Malaysian industrial sectors and the
-Johor 2019 incident confirmed transferability. The framework is released as
-open-source software with a browser-based screening interface.
+five regulatory bodies, and reduced by validation, deduplication and majority
+voting to 243,323 unique compounds, each described by
+816 physicochemical, Morgan (ECFP4), MACCS and topological
+descriptors. Random Forest, XGBoost and support vector machine classifiers were
+trained as multi-label predictors and evaluated on a Bemis-Murcko scaffold
+split, sharing no chemical skeleton between training and test. XGBoost performed
+best, with a mean AUC-ROC of 0.915 across the nine classes
+(range 0.830-0.995). SHAP analysis showed the model had recovered recognised structure-hazard relationships, most clearly the dependence of explosivity on the substructure [!#6;!#1]~[#7]~[!#6;!#1], flammability on low structural complexity, and aquatic hazard on high lipophilicity. Recall
+on 44 Malaysian industrial and Johor 2019 compounds ranged
+0.16-1.00 across
+classes (lowest for environmental hazard), too small a set to generalise from.
+Below six heavy atoms the model over-predicts acute toxicity and health hazard
+2.5-3.1-fold;
+the application flags such compounds as out of domain rather than reporting
+them with unwarranted confidence. The framework and a browser-based screening
+interface are released as open-source software.
 
 KEYWORDS: GHS classification; multi-label learning; molecular descriptors;
 SHAP interpretability; chemical safety; scaffold splitting; QSAR
@@ -444,18 +446,22 @@ Model performance
 --------------------------------------------------------------------------------
 
 Four models were evaluated on the held-out test partition of 24,352 compounds.
-Mean AUC-ROC across the nine classes was 0.9146 for XGBoost, nan for the Random
-Forest without class weighting, 0.8900 for the class-weighted Random Forest and
-0.8711 for the support vector machine. Mean Matthews correlation coefficients
-were 0.4705, nan, 0.3633 and 0.3683 respectively. XGBoost was selected as the
-best model on both metrics. The bootstrap 95 per cent confidence interval had a
-median half-width of 0.0077, so differences smaller than that are not
-meaningful; the two leading models were separated on Matthews correlation
-coefficient rather than on area under the curve.
+Mean AUC-ROC across the nine classes was 0.9146 for XGBoost, 0.9078 for the
+Random Forest without class weighting, 0.8900 for the class-weighted Random
+Forest and 0.8711 for the support vector machine. Mean Matthews correlation
+coefficients were 0.4705, 0.4590, 0.3633 and 0.3683 respectively. XGBoost was
+selected as the best model on both metrics. The bootstrap 95 per cent
+confidence interval had a median half-width of 0.0077, so differences smaller
+than that are not meaningful; the two leading models were separated on Matthews
+correlation coefficient rather than on area under the curve.
 
-Per-class performance for XGBoost is given below; N is the number of positive
-examples in the test partition and the interval is the bootstrap 95 per cent
-confidence interval on AUC-ROC.
+Per-class performance for XGBoost is given in Table 1.
+
+Table 1. Per-class performance of XGBoost on the scaffold-split test partition
+of 24,352 compounds. N is the number of positive examples in the partition; the
+interval is the bootstrap 95 per cent confidence interval on AUC-ROC over 1,000
+resamples. AP is average precision. Thresholds are the F1-optimal values
+calibrated on the validation partition.
 
   Code  Hazard                         N     AUC       CI 95%        AP      F1     MCC
   ---------------------------------------------------------------------------------------
@@ -468,6 +474,17 @@ confidence interval on AUC-ROC.
   GHS07 Irritant / harmful        21,967   0.8336  [0.826, 0.841]    0.977   0.950   0.202
   GHS08 Serious health hazard      1,360   0.9004  [0.893, 0.908]    0.452   0.467   0.434
   GHS09 Environmental hazard       1,773   0.8969  [0.890, 0.903]    0.459   0.474   0.431
+
+The irritant class in Table 1 requires a caveat that the general rule in
+Section 2.9 does not cover. Its F1 of 0.950 is not evidence of a good
+classifier: 90 per cent of the test compounds carry that pictogram, so a model
+predicting the class for every compound would score an F1 near 0.95. The
+Matthews correlation coefficient of 0.202 is the honest figure, and the two
+should be read together for this class. The rule stated in Section 2.9 - that
+the Matthews coefficient is primary for classes with fewer than 500 positive
+examples - does not apply here, since irritant has 21,967; the reason is
+prevalence rather than rarity, and it is the only class in which the two
+metrics disagree this sharply.
 
 Discrimination is excellent for the physically determined hazards - compressed
 gas (0.995), explosive (0.986) and flammable (0.971) - and substantially lower
@@ -486,7 +503,12 @@ Effect of training-set size
 
 Models were trained on nested subsets of the training partition and evaluated
 on the same fixed test partition with identical hyperparameters, so that
-training-set size was the only quantity varying.
+training-set size was the only quantity varying (Table 2).
+
+Table 2. Effect of training-set size on mean AUC-ROC across the nine hazard
+classes, with the test partition, hyperparameters and feature set held fixed.
+Each training subset is a superset of the smaller ones, so the comparison
+reflects quantity rather than which compounds were drawn.
 
      n_train    mean AUC
   -----------------------
@@ -513,19 +535,25 @@ SHAP values were computed for 500 test compounds. Across all nine classes the
 most influential descriptors were LabuteASA, TPSA, Kappa2. The single most
 influential descriptor for each class, with the correlation between descriptor
 value and SHAP value (positive meaning that higher values push towards the
-hazard):
+hazard) is given in Table 3.
+
+Table 3. The most influential descriptor for each hazard class, ranked by mean
+absolute SHAP value, with the correlation r between descriptor value and SHAP
+value. A positive r means that higher values of the descriptor push the
+prediction towards the hazard. The complete ranking of twenty descriptors per
+class is in Supporting Information Table S4.
 
   Code  Descriptor         r      Measures
   -------------------------------------------------------------------------
-  GHS01 MACCS_70          +0.834   MACCS substructure key 70: matches SMARTS pa
+  GHS01 MACCS_70          +0.834   MACCS substructure key 70: matches SMARTS pattern [!#6;!#1]~[#7]~[!#6;!#1]
   GHS02 BertzCT           -0.493   structural complexity
   GHS03 Chi3n             -0.157   third-order connectivity index
-  GHS04 Kappa2            -0.080   second-order shape index - how linear or sta
+  GHS04 Kappa2            -0.080   second-order shape index - how linear or star-like the skeleton is
   GHS05 BertzCT           -0.610   structural complexity
   GHS06 ExactMolWt        +0.547   monoisotopic molecular mass
-  GHS07 Chi1              -0.647   first-order connectivity index - bond-level
+  GHS07 Chi1              -0.647   first-order connectivity index - bond-level branching
   GHS08 Chi4n             +0.484   fourth-order connectivity index
-  GHS09 MolLogP           +0.450   lipophilicity - how strongly the compound pr
+  GHS09 MolLogP           +0.450   lipophilicity - how strongly the compound prefers oil to water
 
 The explosive class is the most striking. Its leading descriptor is MACCS key
 70, defined by the SMARTS pattern [!#6;!#1]~[#7]~[!#6;!#1] - a heteroatom
@@ -545,7 +573,13 @@ Malaysian industrial validation
 --------------------------------------------------------------------------------
 
 The framework was applied without retraining to chemicals from four Malaysian
-industrial sectors and to the substances implicated in the Johor 2019 incident.
+industrial sectors and to the substances implicated in the Johor 2019 incident,
+with the results in Table 4.
+
+Table 4. Performance by Malaysian industrial sector, applied without
+retraining. Label accuracy is the proportion of the nine binary labels
+predicted correctly; recall is the proportion of true hazard assignments
+recovered. n is the number of compounds in each sector.
 
   Sector                        n  Label acc.    Recall
   ------------------------------------------------------
