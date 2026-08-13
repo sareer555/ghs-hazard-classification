@@ -1,0 +1,12 @@
+{
+  "n_checked": 15,
+  "n_confirmed": 15,
+  "n_per_column": 5,
+  "columns_audited": [
+    "GHS07_Irritant",
+    "GHS08_HealthHazard",
+    "GHS09_Environmental"
+  ],
+  "all_confirmed": true,
+  "random_seed": 42
+}

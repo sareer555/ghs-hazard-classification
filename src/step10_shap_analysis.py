@@ -617,11 +617,35 @@ def build_interpretation_tables(shap_by_class, feature_names, X_explain,
             else:
                 direction = ("non-monotonic - the descriptor matters, but its "
                              "effect is not a simple increase or decrease")
-            expected = ("yes - this is a descriptor a chemist would expect to "
-                        "matter for this hazard"
-                        if feature in chemistry["expected"] else
-                        "not among the classically expected bulk descriptors; "
-                        "likely acting as a structural marker")
+            # "expected" is a curated list of BULK physicochemical descriptors
+            # per class (MolWt, TPSA, and the like). A MACCS or Morgan
+            # substructure key can never appear on it - it is a different kind
+            # of feature, not a bulk property - so checking a substructure key
+            # against that list always failed, regardless of whether the
+            # substructure itself is textbook chemistry for the hazard. That
+            # previously marked MACCS_70, the nitro/nitrate/nitramine/azide
+            # motif the abstract cites as the clearest example of the model
+            # recovering known chemistry, as "not among the classically
+            # expected descriptors" - directly undercutting the paper's own
+            # headline SHAP finding in its own supporting data. Substructure
+            # keys are now reported as not evaluated by this check rather than
+            # as failing it; their chemical relevance is judged narratively in
+            # Chemical_Interpretation instead, which is what a substructure
+            # key actually needs - a chemist's reading of the motif, not
+            # membership on a five-item list built for a different kind of
+            # descriptor.
+            is_substructure = feature.startswith(("MACCS_", "Morgan_"))
+            if is_substructure:
+                expected = ("not evaluated by this check - it covers bulk "
+                           "physicochemical descriptors only; see Chemical "
+                           "Interpretation for this substructure's relevance")
+            elif feature in chemistry["expected"]:
+                expected = ("yes - this is a descriptor a chemist would "
+                           "expect to matter for this hazard")
+            else:
+                expected = ("not among the classically expected bulk "
+                           "descriptors for this class; likely a secondary "
+                           "or class-specific contributor")
             rows.append({
                 "GHS_Column": column,
                 "Pictogram_Code": column.split("_")[0],

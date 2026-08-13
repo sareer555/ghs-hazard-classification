@@ -593,9 +593,12 @@ machine. Mean Matthews correlation coefficients were {mccs.get(best):.4f},
 {best} was selected as the best model on both metrics. The bootstrap 95 per
 cent confidence interval had a median half-width of {ci:.4f}, so differences
 smaller than that are not meaningful; the two leading models were separated on
-Matthews correlation coefficient rather than on area under the curve.
+Matthews correlation coefficient rather than on area under the curve. AUC-ROC
+for every algorithm against every class is shown as a heat map in Figure 6.
 
-Per-class performance for {best} is given in Table 1.
+Per-class performance for {best} is given in Table 1 and as receiver operating
+characteristic curves in Figure 3; precision-recall curves for the most
+abundant and rarest classes, GHS07 and GHS01, are given in Figure 4.
 
 Table 1. Per-class performance of {best} on the scaffold-split test partition
 of {s['n_test']:,} compounds. N is the number of positive examples in the
@@ -643,7 +646,7 @@ Effect of training-set size
 
 Models were trained on nested subsets of the training partition and evaluated
 on the same fixed test partition with identical hyperparameters, so that
-training-set size was the only quantity varying (Table 2).
+training-set size was the only quantity varying (Table 2, Figure 10).
 
 Table 2. Effect of training-set size on mean AUC-ROC across the nine hazard
 classes, with the test partition, hyperparameters and feature set held fixed.
@@ -659,8 +662,9 @@ times the confidence interval - and every one of the nine classes improved. The
 rare classes gained most.
 
 A learning curve computed earlier within a 40,000-compound convenience
-subsample had appeared to plateau, with the final increment of data changing
-mean AUC-ROC by less than 0.001. That appearance was an artefact of how the
+subsample (Figure 9) had appeared to plateau, with the final increment of
+data changing mean AUC-ROC by less than 0.001. That appearance was an
+artefact of how the
 subsample had been constructed: it deliberately retained every positive example
 of the rare classes, so those classes could not improve with additional data
 and the aggregate curve flattened prematurely.
@@ -670,7 +674,9 @@ Interpretability
 
 SHAP values were computed for {f['shap']['n_compounds_explained']} test
 compounds. Across all nine classes the most influential descriptors were
-{', '.join(f['shap']['top3_features_overall'])}. The single most influential
+{', '.join(f['shap']['top3_features_overall'])}; feature-importance summaries
+for the three classes with the greatest total attribution are given in
+Figure 5. The single most influential
 descriptor for each class, with the correlation between descriptor value and
 SHAP value (positive meaning that higher values push towards the hazard) is
 given in Table 3.
@@ -703,12 +709,16 @@ Flammability decreases with structural complexity
 ({float(top[top.GHS_Column=='GHS02_Flammable'].Value_SHAP_Correlation.iloc[0]):+.3f}),
 reflecting that small simple molecules are the volatile ones.
 
+These are class-level, aggregate attributions. Figure 8 shows the same method
+applied to a single compound, as a worked example of the per-prediction
+explanation available for any structure a user submits.
+
 Malaysian industrial validation
 --------------------------------------------------------------------------------
 
 The framework was applied without retraining to chemicals from four Malaysian
 industrial sectors and to the substances implicated in the Johor 2019
-incident, with the results in Table 4.
+incident, with the results in Table 4 and Figure 7.
 
 Table 4. Performance by Malaysian industrial sector, applied without
 retraining. Label accuracy is the proportion of the nine binary labels
@@ -936,8 +946,8 @@ def toc_graphic(f):
              color="#444444")
     axl.annotate("", xy=(0.5, 0.60), xytext=(0.5, 0.71),
                  arrowprops=dict(arrowstyle="-|>", lw=2, color="#333333"))
-    axl.text(0.5, 0.50, "1218 molecular descriptors", ha="center", fontsize=10.5,
-             fontweight="bold")
+    axl.text(0.5, 0.50, "1218 descriptors -> 816 after filtering",
+             ha="center", fontsize=10.5, fontweight="bold")
     axl.text(0.5, 0.395, "scaffold split  •  XGBoost  •  SHAP", ha="center",
              fontsize=9.5, color="#444444")
     axl.annotate("", xy=(0.5, 0.24), xytext=(0.5, 0.35),

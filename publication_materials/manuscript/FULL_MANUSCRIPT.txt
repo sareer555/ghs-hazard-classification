@@ -49,8 +49,9 @@ interpretably enough for regulatory use. GHS classifications for
 243,707 compound records were harvested from PubChem, contributed by
 five regulatory bodies, and reduced by validation, deduplication and majority
 voting to 243,323 unique compounds, each described by
-816 physicochemical, Morgan (ECFP4), MACCS and topological
-descriptors. Random Forest, XGBoost and support vector machine classifiers were
+1,218 physicochemical, Morgan (ECFP4), MACCS and
+topological descriptors reduced by variance filtering to 816.
+Random Forest, XGBoost and support vector machine classifiers were
 trained as multi-label predictors and evaluated on a Bemis-Murcko scaffold
 split, sharing no chemical skeleton between training and test. XGBoost performed
 best, with a mean AUC-ROC of 0.915 across the nine classes
@@ -156,6 +157,9 @@ full dataset showed to be illusory.
 
 2. MATERIALS AND METHODS
 
+The overall pipeline, from data collection through deployment, is summarised
+in Figure 1.
+
 2.1. Computational environment
 All computations were performed under Python 3.11.15 on a
 64-bit Windows 10 workstation equipped with an Intel Core i7-6500U processor
@@ -191,14 +195,30 @@ of 243,707 compound records was assembled.
 The numeric pictogram code was treated as authoritative throughout, so that
 data filed under GHS07 correspond to the exclamation-mark (irritant)
 pictogram, GHS08 to the health-hazard pictogram and GHS09 to the environmental
-pictogram, as defined in the tenth revised edition of the GHS. The descriptive
-suffixes attached to three of the nine label columns in the original study
-design did not follow this scheme; because the data were bound to the numeric
-code rather than to the label, the classifications themselves were unaffected,
-and the three columns were subsequently renamed to GHS07_Irritant,
+pictogram, as defined in the tenth revised edition of the GHS.
+
+The descriptive suffixes attached to three of the nine label columns in the
+original study design did not follow this scheme: columns holding the data for
+pictograms GHS07, GHS08 and GHS09 were named GHS07_HealthHazard,
+GHS08_Environmental and GHS09_Irritant, a three-way rotation of the suffixes
+relative to the numbering above. The values in those columns were written
+according to the numeric pictogram code identified from the PubChem markup, as
+described above, and were never read back through the descriptive name at any
+point in the pipeline; the rotation was therefore a naming error introduced
+when the columns were first labelled, not a data-mapping error affecting which
+compound received which classification. That distinction was verified rather
+than assumed. 5 compounds carrying exactly one of the three affected pictograms
+were selected for each of the three columns (15 in total) and checked against
+PubChem's live GHS Classification page for that compound; 15 of 15 confirmed
+that the pictogram recorded under the corrected column name is the one PubChem
+reports today. The three columns were then renamed to GHS07_Irritant,
 GHS08_HealthHazard and GHS09_Environmental to match the United Nations
-definitions. The correspondence with the original names is recorded in
-Supporting Information Table S0.
+definitions; no value in the label matrix was altered, and no model was
+retrained. The audit method and the full compound-level results, one row per
+compound checked, are given in Supporting Information Table S6.
+
+The correspondence with the original names is recorded in Supporting
+Information Table S0.
 
 2.3. Data cleaning and label reconciliation
 Every SMILES string was parsed with RDKit, and structures that could not be
@@ -453,9 +473,12 @@ coefficients were 0.4705, 0.4590, 0.3633 and 0.3683 respectively. XGBoost was
 selected as the best model on both metrics. The bootstrap 95 per cent
 confidence interval had a median half-width of 0.0077, so differences smaller
 than that are not meaningful; the two leading models were separated on Matthews
-correlation coefficient rather than on area under the curve.
+correlation coefficient rather than on area under the curve. AUC-ROC for every
+algorithm against every class is shown as a heat map in Figure 6.
 
-Per-class performance for XGBoost is given in Table 1.
+Per-class performance for XGBoost is given in Table 1 and as receiver operating
+characteristic curves in Figure 3; precision-recall curves for the most
+abundant and rarest classes, GHS07 and GHS01, are given in Figure 4.
 
 Table 1. Per-class performance of XGBoost on the scaffold-split test partition
 of 24,352 compounds. N is the number of positive examples in the partition; the
@@ -503,7 +526,7 @@ Effect of training-set size
 
 Models were trained on nested subsets of the training partition and evaluated
 on the same fixed test partition with identical hyperparameters, so that
-training-set size was the only quantity varying (Table 2).
+training-set size was the only quantity varying (Table 2, Figure 10).
 
 Table 2. Effect of training-set size on mean AUC-ROC across the nine hazard
 classes, with the test partition, hyperparameters and feature set held fixed.
@@ -522,20 +545,21 @@ the confidence interval - and every one of the nine classes improved. The rare
 classes gained most.
 
 A learning curve computed earlier within a 40,000-compound convenience
-subsample had appeared to plateau, with the final increment of data changing
-mean AUC-ROC by less than 0.001. That appearance was an artefact of how the
-subsample had been constructed: it deliberately retained every positive example
-of the rare classes, so those classes could not improve with additional data
-and the aggregate curve flattened prematurely.
+subsample (Figure 9) had appeared to plateau, with the final increment of data
+changing mean AUC-ROC by less than 0.001. That appearance was an artefact of
+how the subsample had been constructed: it deliberately retained every positive
+example of the rare classes, so those classes could not improve with additional
+data and the aggregate curve flattened prematurely.
 
 Interpretability
 --------------------------------------------------------------------------------
 
 SHAP values were computed for 500 test compounds. Across all nine classes the
-most influential descriptors were LabuteASA, TPSA, Kappa2. The single most
-influential descriptor for each class, with the correlation between descriptor
-value and SHAP value (positive meaning that higher values push towards the
-hazard) is given in Table 3.
+most influential descriptors were LabuteASA, TPSA, Kappa2; feature-importance
+summaries for the three classes with the greatest total attribution are given
+in Figure 5. The single most influential descriptor for each class, with the
+correlation between descriptor value and SHAP value (positive meaning that
+higher values push towards the hazard) is given in Table 3.
 
 Table 3. The most influential descriptor for each hazard class, ranked by mean
 absolute SHAP value, with the correlation r between descriptor value and SHAP
@@ -569,12 +593,16 @@ increases with molecular mass (+0.547). Flammability decreases with structural
 complexity (-0.493), reflecting that small simple molecules are the volatile
 ones.
 
+These are class-level, aggregate attributions. Figure 8 shows the same method
+applied to a single compound, as a worked example of the per-prediction
+explanation available for any structure a user submits.
+
 Malaysian industrial validation
 --------------------------------------------------------------------------------
 
 The framework was applied without retraining to chemicals from four Malaysian
 industrial sectors and to the substances implicated in the Johor 2019 incident,
-with the results in Table 4.
+with the results in Table 4 and Figure 7.
 
 Table 4. Performance by Malaysian industrial sector, applied without
 retraining. Label accuracy is the proportion of the nine binary labels

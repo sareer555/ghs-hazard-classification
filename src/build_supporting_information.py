@@ -77,7 +77,11 @@ SHEETS = [
       "What_The_Descriptor_Measures", "Chemical_Interpretation",
       "Matches_Chemical_Expectation"]),
     ("S5_malaysia_per_class", "S5",
-     "Malaysian industrial validation, per hazard class.", None),
+     "Malaysian industrial validation, per hazard class. N/A marks GHS01 "
+     "explosive, for which no compound in this validation set carries that "
+     "pictogram; accuracy, precision, recall, F1 and MCC are not evaluable "
+     "on a class with zero true positives, whatever a formula returns for "
+     "the attempt.", None),
     ("S5b_malaysia_per_sector", "S5b",
      "Malaysian industrial validation, per sector.", None),
     ("S5c_johor_2019", "S5c",
@@ -85,6 +89,12 @@ SHEETS = [
      "Gudang, Johor, with predicted and reference hazard profiles.",
      ["Query_Name", "PubChem_Name", "CID", "MolecularFormula", "Sector",
       "Incident_Role", "Substitution_Note"]),
+    ("S6_relabel_audit", "S6",
+     "Audit of the GHS07/08/09 column rename against live PubChem data. "
+     "Fifteen compounds, five per renamed column, each carrying exactly one "
+     "of the three affected pictograms, checked against PubChem's current "
+     "GHS Classification page for that compound. See Methods for how these "
+     "were selected and what the result supports.", None),
 ]
 
 
@@ -262,7 +272,12 @@ def main():
         if sheet not in workbook.sheet_names:
             print(f"   ! sheet missing, skipped: {sheet}")
             continue
-        frame = workbook.parse(sheet)
+        # keep_default_na=False, matching the fix in step13_publication.py:
+        # pandas otherwise re-parses the literal "N/A" written for GHS01's
+        # Malaysian metrics - not evaluable, since that class has zero true
+        # positives in the validation set - back into NaN, which would print
+        # as a blank cell indistinguishable from a missing value.
+        frame = workbook.parse(sheet, keep_default_na=False, na_values=[])
         printed, note = select_columns(frame, priority)
 
         story.append(Paragraph(f"Table {number}", s["heading"]))

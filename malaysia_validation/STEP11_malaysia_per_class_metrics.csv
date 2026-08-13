@@ -1,5 +1,5 @@
 GHS_Column,Pictogram_Code,Meaning,N_True_Positive_In_Set,Accuracy,Precision,Recall,F1,MCC
-GHS01_Explosive,GHS01,Explosive (exploding bomb),0,1.0,0.0,0.0,0.0,
+GHS01_Explosive,GHS01,Explosive (exploding bomb),0,N/A,N/A,N/A,N/A,N/A
 GHS02_Flammable,GHS02,Flammable (flame),28,0.8837,0.871,0.9643,0.9153,0.7413
 GHS03_Oxidising,GHS03,Oxidiser (flame over circle),2,1.0,1.0,1.0,1.0,1.0
 GHS04_CompressedGas,GHS04,Compressed gas (gas cylinder),10,0.9535,0.8333,1.0,0.9091,0.8848

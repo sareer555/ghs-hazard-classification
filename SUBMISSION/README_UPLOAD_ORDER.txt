@@ -8,7 +8,7 @@ Submit at https://submit.elsevier.com/COMTOX
 Upload in this order. Everything in this folder is submitted;
 nothing that belongs only to you has been copied in.
 
-01_MANUSCRIPT.docx   (58 KB)
+01_MANUSCRIPT.docx   (59 KB)
     The manuscript. A4, single column, double spaced, line numbered.
     Upload as 'Manuscript'.
 
@@ -20,19 +20,19 @@ nothing that belongs only to you has been copied in.
     Cover letter addressed to the editor.
     Paste into the 'Cover Letter' box, or upload if the form prefers a file.
 
-04_GRAPHICAL_ABSTRACT.png   (160 KB)
+04_GRAPHICAL_ABSTRACT.png   (163 KB)
     Graphical abstract.
     Upload as 'Graphical Abstract'. Optional but encouraged.
 
-05_SUPPORTING_INFORMATION.pdf   (85 KB)
+05_SUPPORTING_INFORMATION.pdf   (89 KB)
     Tables S0-S5c and File S1.
     Upload as 'Supplementary Material'.
 
-06_SUPPLEMENTARY_TABLES.xlsx   (43 KB)
+06_SUPPLEMENTARY_TABLES.xlsx   (45 KB)
     The same tables in full, as a workbook.
     Upload as 'Supplementary Material'.
 
-07_FIGURE_CAPTIONS.txt   (3 KB)
+07_FIGURE_CAPTIONS.txt   (4 KB)
     Captions for all ten figures.
     Some forms ask for these separately; otherwise they are already in the manuscript.
 
@@ -40,7 +40,7 @@ figures/   (10 files)
     Figures 1-10 at 500 dpi, one file each.
     Upload each as a separate 'Figure' item, in order.
 
-      Figure01_research_workflow.png                   576 KB
+      Figure01_research_workflow.png                   591 KB
       Figure02_class_distribution.png                  553 KB
       Figure03_ROC_curves_best_model.png               857 KB
       Figure04_PR_curves_two_classes.png               523 KB

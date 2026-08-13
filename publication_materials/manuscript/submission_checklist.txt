@@ -221,7 +221,7 @@ PERMANENT ARCHIVES
     format for initial submission under Elsevier's "Your Paper Your Way", so
     no template work is needed before submitting. Formatting and reference
     style are only required if the paper is invited for revision.
-[x] Abstract within the 250-word limit (239 words)
+[x] Abstract within the 250-word limit (245 words)
 [x] All figures at 300 dpi with 12 pt minimum type (verified)
 [x] Figure captions written - publication_materials/figures/figure_captions.txt
 [x] 26 references with DOIs where they exist. They are in ACS style;

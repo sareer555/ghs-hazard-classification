@@ -56,9 +56,12 @@ coefficients were 0.4705, 0.4590, 0.3633 and 0.3683 respectively. XGBoost was
 selected as the best model on both metrics. The bootstrap 95 per cent
 confidence interval had a median half-width of 0.0077, so differences smaller
 than that are not meaningful; the two leading models were separated on Matthews
-correlation coefficient rather than on area under the curve.
+correlation coefficient rather than on area under the curve. AUC-ROC for every
+algorithm against every class is shown as a heat map in Figure 6.
 
-Per-class performance for XGBoost is given in Table 1.
+Per-class performance for XGBoost is given in Table 1 and as receiver operating
+characteristic curves in Figure 3; precision-recall curves for the most
+abundant and rarest classes, GHS07 and GHS01, are given in Figure 4.
 
 Table 1. Per-class performance of XGBoost on the scaffold-split test partition
 of 24,352 compounds. N is the number of positive examples in the partition; the
@@ -106,7 +109,7 @@ Effect of training-set size
 
 Models were trained on nested subsets of the training partition and evaluated
 on the same fixed test partition with identical hyperparameters, so that
-training-set size was the only quantity varying (Table 2).
+training-set size was the only quantity varying (Table 2, Figure 10).
 
 Table 2. Effect of training-set size on mean AUC-ROC across the nine hazard
 classes, with the test partition, hyperparameters and feature set held fixed.
@@ -125,20 +128,21 @@ the confidence interval - and every one of the nine classes improved. The rare
 classes gained most.
 
 A learning curve computed earlier within a 40,000-compound convenience
-subsample had appeared to plateau, with the final increment of data changing
-mean AUC-ROC by less than 0.001. That appearance was an artefact of how the
-subsample had been constructed: it deliberately retained every positive example
-of the rare classes, so those classes could not improve with additional data
-and the aggregate curve flattened prematurely.
+subsample (Figure 9) had appeared to plateau, with the final increment of data
+changing mean AUC-ROC by less than 0.001. That appearance was an artefact of
+how the subsample had been constructed: it deliberately retained every positive
+example of the rare classes, so those classes could not improve with additional
+data and the aggregate curve flattened prematurely.
 
 Interpretability
 --------------------------------------------------------------------------------
 
 SHAP values were computed for 500 test compounds. Across all nine classes the
-most influential descriptors were LabuteASA, TPSA, Kappa2. The single most
-influential descriptor for each class, with the correlation between descriptor
-value and SHAP value (positive meaning that higher values push towards the
-hazard) is given in Table 3.
+most influential descriptors were LabuteASA, TPSA, Kappa2; feature-importance
+summaries for the three classes with the greatest total attribution are given
+in Figure 5. The single most influential descriptor for each class, with the
+correlation between descriptor value and SHAP value (positive meaning that
+higher values push towards the hazard) is given in Table 3.
 
 Table 3. The most influential descriptor for each hazard class, ranked by mean
 absolute SHAP value, with the correlation r between descriptor value and SHAP
@@ -172,12 +176,16 @@ increases with molecular mass (+0.547). Flammability decreases with structural
 complexity (-0.493), reflecting that small simple molecules are the volatile
 ones.
 
+These are class-level, aggregate attributions. Figure 8 shows the same method
+applied to a single compound, as a worked example of the per-prediction
+explanation available for any structure a user submits.
+
 Malaysian industrial validation
 --------------------------------------------------------------------------------
 
 The framework was applied without retraining to chemicals from four Malaysian
 industrial sectors and to the substances implicated in the Johor 2019 incident,
-with the results in Table 4.
+with the results in Table 4 and Figure 7.
 
 Table 4. Performance by Malaysian industrial sector, applied without
 retraining. Label accuracy is the proportion of the nine binary labels

@@ -172,7 +172,8 @@ def figure1_workflow():
         (1.6, 7.4, "Data cleaning\nSMILES validation, InChIKey\n"
                    "deduplication, majority vote", DATA),
         (1.6, 5.8, "Molecular descriptors\n19 physicochemical + 1024 ECFP4\n"
-                   "+ 167 MACCS + 8 topological", DATA),
+                   "+ 167 MACCS + 8 topological = 1218\n"
+                   "-> 816 after variance filtering", DATA),
         (1.6, 4.2, "Bemis-Murcko scaffold split\n80 / 10 / 10", DATA),
         (1.6, 2.6, describe_imbalance_handling(), MODEL),
         (5.0, 2.6, "Model training\nRandom Forest | XGBoost | SVM", MODEL),
@@ -244,7 +245,8 @@ def figure1_workflow():
         fig, 1, "research_workflow",
         "Figure 1. Research workflow. GHS classification annotations were "
         "harvested from PubChem, cleaned and deduplicated, converted into "
-        "1218 molecular descriptors, and split by Bemis-Murcko scaffold so "
+        "1218 molecular descriptors and reduced by variance filtering to the "
+        "816 used for modelling, and split by Bemis-Murcko scaffold so "
         "that no chemical skeleton appears in more than one split. Three "
         "algorithms were trained and tuned, evaluated with threshold "
         "calibration and bootstrap confidence intervals, interpreted with "
@@ -751,8 +753,14 @@ def build_supplementary_tables():
                     ("S5c_johor_2019", "STEP11_johor_2019_predictions.csv")]:
                 source = os.path.join(DIR_MALAYSIA, filename)
                 if os.path.exists(source):
-                    pd.read_csv(source).to_excel(writer, sheet_name=name,
-                                                 index=False)
+                    # keep_default_na=False stops pandas silently re-parsing
+                    # the literal "N/A" that Step 11 writes for GHS01 - which
+                    # has zero true positives in this validation set, so
+                    # accuracy, precision, recall, F1 and MCC are not
+                    # evaluable - back into NaN, which Excel would then show
+                    # as an empty cell indistinguishable from a missing value.
+                    pd.read_csv(source, keep_default_na=False, na_values=[]
+                               ).to_excel(writer, sheet_name=name, index=False)
                     written.append(name)
         except Exception as exc:
             log_issue("13b", f"Table S5 failed: {exc}")
@@ -764,6 +772,16 @@ def build_supplementary_tables():
             written.append("S0_label_schema")
         except Exception as exc:
             log_issue("13b", f"label schema sheet failed: {exc}")
+
+        # ---- S6: the relabelling audit --------------------------------------
+        try:
+            audit_path = stamped("EXTRA_relabel_audit.csv")
+            if os.path.exists(audit_path):
+                pd.read_csv(audit_path).to_excel(
+                    writer, sheet_name="S6_relabel_audit", index=False)
+                written.append("S6_relabel_audit")
+        except Exception as exc:
+            log_issue("13b", f"relabel audit sheet failed: {exc}")
 
     print(f"      {len(written)} sheets written to {path}")
     return path, written
@@ -1018,8 +1036,9 @@ interpretably enough for regulatory use. GHS classifications for
 {facts['n_raw']:,} compound records were harvested from PubChem, contributed by
 five regulatory bodies, and reduced by validation, deduplication and majority
 voting to {facts['n_clean']:,} unique compounds, each described by
-{facts['n_features']:,} physicochemical, Morgan (ECFP4), MACCS and topological
-descriptors. Random Forest, XGBoost and support vector machine classifiers were
+{facts['n_features_computed']:,} physicochemical, Morgan (ECFP4), MACCS and
+topological descriptors reduced by variance filtering to {facts['n_features']:,}.
+Random Forest, XGBoost and support vector machine classifiers were
 trained as multi-label predictors and evaluated on a Bemis-Murcko scaffold
 split, sharing no chemical skeleton between training and test. {best} performed
 best, with a mean AUC-ROC of {facts['mean_auc']:.3f} across the nine classes
@@ -1041,6 +1060,53 @@ SHAP interpretability; chemical safety; scaffold splitting; QSAR
     return text, words
 
 
+def _relabel_disclosure_paragraph():
+    """
+    Compose the disclosure of the GHS07/08/09 rename, with the audit evidence.
+
+    A one-line footnote asserting that the columns were bound to the numeric
+    code, not the label, is not something a reviewer can check. This states
+    the claim and the evidence for it together: what was found, why a naming
+    bug is distinguishable from a data-mapping error, and the result of
+    checking that distinction against live PubChem data rather than against
+    the pipeline's own reasoning about itself.
+    """
+    path = stamped("EXTRA_relabel_audit.json")
+    if not os.path.exists(path):
+        raise SystemExit(
+            "EXTRA_relabel_audit.json is missing, and the Methods section "
+            "quotes it. Run src/audit_ghs_relabelling.py first.")
+    with open(path, encoding="utf-8") as fh:
+        audit = json.load(fh)
+
+    return textwrap.fill(
+        "The descriptive suffixes attached to three of the nine label "
+        "columns in the original study design did not follow this scheme: "
+        "columns holding the data for pictograms GHS07, GHS08 and GHS09 "
+        "were named GHS07_HealthHazard, GHS08_Environmental and "
+        "GHS09_Irritant, a three-way rotation of the suffixes relative to "
+        "the numbering above. The values in those columns were written "
+        "according to the numeric pictogram code identified from the "
+        "PubChem markup, as described above, and were never read back "
+        "through the descriptive name at any point in the pipeline; the "
+        "rotation was therefore a naming error introduced when the columns "
+        "were first labelled, not a data-mapping error affecting which "
+        "compound received which classification. That distinction was "
+        "verified rather than assumed. "
+        f"{audit['n_per_column']} compounds carrying exactly one of the "
+        f"three affected pictograms were selected for each of the three "
+        f"columns ({audit['n_checked']} in total) and checked against "
+        f"PubChem's live GHS Classification page for that compound; "
+        f"{audit['n_confirmed']} of {audit['n_checked']} confirmed that the "
+        f"pictogram recorded under the corrected column name is the one "
+        f"PubChem reports today. The three columns were then renamed to "
+        "GHS07_Irritant, GHS08_HealthHazard and GHS09_Environmental to "
+        "match the United Nations definitions; no value in the label "
+        "matrix was altered, and no model was retrained. The audit method "
+        "and the full compound-level results, one row per compound "
+        "checked, are given in Supporting Information Table S6.", width=79)
+
+
 def write_methods(facts):
     """Compose the Methods section in ACS past-tense passive voice."""
     best = facts["best_model"]
@@ -1049,6 +1115,7 @@ def write_methods(facts):
     n_ghs01 = facts.get("n_ghs01", 0)
     n_ghs01_train = facts.get("n_ghs01_train", 0)
     n_ghs01_smote = facts.get("n_ghs01_smote", 0)
+    relabel_paragraph = _relabel_disclosure_paragraph()
 
     # The imbalance paragraph MUST describe what the pipeline actually did.
     # An earlier version asserted unconditionally that SMOTE "was applied",
@@ -1107,6 +1174,9 @@ reduced scale where both were feasible and is reported in the Supporting
 Information."""
     return f"""MATERIALS AND METHODS
 
+The overall pipeline, from data collection through deployment, is summarised
+in Figure 1.
+
 Computational environment.
 All computations were performed under Python {facts['python_version']} on a
 64-bit Windows 10 workstation equipped with an Intel Core i7-6500U processor
@@ -1142,14 +1212,12 @@ of {facts['n_raw']:,} compound records was assembled.
 The numeric pictogram code was treated as authoritative throughout, so that
 data filed under GHS07 correspond to the exclamation-mark (irritant)
 pictogram, GHS08 to the health-hazard pictogram and GHS09 to the environmental
-pictogram, as defined in the tenth revised edition of the GHS. The descriptive
-suffixes attached to three of the nine label columns in the original study
-design did not follow this scheme; because the data were bound to the numeric
-code rather than to the label, the classifications themselves were unaffected,
-and the three columns were subsequently renamed to GHS07_Irritant,
-GHS08_HealthHazard and GHS09_Environmental to match the United Nations
-definitions. The correspondence with the original names is recorded in
-Supporting Information Table S0.
+pictogram, as defined in the tenth revised edition of the GHS.
+
+{relabel_paragraph}
+
+The correspondence with the original names is recorded in Supporting
+Information Table S0.
 
 Data cleaning and label reconciliation.
 Every SMILES string was parsed with RDKit, and structures that could not be
@@ -1823,6 +1891,7 @@ def prepare_publication_materials():
         "pct_multilabel": (100 * cleaning.get("multilabel_compounds", 0)
                            / max(cleaning.get("final_cleaned_compounds", 1), 1)),
         "n_features": descriptors.get("n_features_after_variance_filter", 0),
+        "n_features_computed": descriptors.get("n_features_computed", 0),
         "n_features_removed": descriptors.get("n_features_removed", 0),
         "best_model": evaluation.get("best_model", "n/a"),
         "mean_auc": float(np.mean(auc_values)) if auc_values else float("nan"),
@@ -1925,6 +1994,52 @@ def prepare_publication_materials():
     with open(highlights_path, "w", encoding="utf-8") as fh:
         fh.write(build_highlights(facts))
     print(f"      Highlights -> {highlights_path}")
+
+    # ---- figures 9 and 10 -------------------------------------------------
+    # Produced by two standalone scripts, learning_curve.py and
+    # controlled_size_experiment.py, which is why they never reached the
+    # CAPTIONS dict this function fills in for Figures 1-8: nothing else
+    # wrote a caption for them, so figure_captions.txt stopped at Figure 8
+    # while the figures/ folder held ten files. Captions are composed here
+    # instead, from the same saved result tables the two scripts themselves
+    # read, so the numbers cannot drift from what the panels show.
+    curve_path = stamped("EXTRA_learning_curve.csv")
+    size_path = stamped("EXTRA_controlled_size_experiment.csv")
+    if os.path.exists(curve_path):
+        curve = pd.read_csv(curve_path)
+        gain = curve["mean_auc"].iloc[-1] - curve["mean_auc"].iloc[0]
+        CAPTIONS["Figure 9"] = (
+            f"Figure 9. Learning curve: does more training data improve "
+            f"performance within the {int(curve['n_train'].iloc[-1]):,}-compound "
+            f"training set actually used? (a) Mean AUC-ROC across the nine "
+            f"classes as the training subset grows from "
+            f"{int(curve['n_train'].iloc[0]):,} to "
+            f"{int(curve['n_train'].iloc[-1]):,} compounds, a gain of "
+            f"{gain:.3f}, against the bootstrap 95 per cent confidence "
+            f"interval on the final result. (b) The same subsets scored "
+            f"per class; the best and worst classes are coloured and "
+            f"labelled, the remaining seven shown in grey to keep the panel "
+            f"legible.")
+    else:
+        log_issue("13a", "EXTRA_learning_curve.csv missing - Figure 9 caption "
+                         "not written.")
+    if os.path.exists(size_path):
+        size = pd.read_csv(size_path)
+        gain = size["mean_auc"].iloc[-1] - size["mean_auc"].iloc[0]
+        CAPTIONS["Figure 10"] = (
+            f"Figure 10. Controlled comparison of training-set size, with the "
+            f"test set, hyperparameters and feature set held fixed so that "
+            f"quantity of training data is the only variable. (a) Mean "
+            f"AUC-ROC across the nine classes from "
+            f"{int(size['n_train'].iloc[0]):,} to "
+            f"{int(size['n_train'].iloc[-1]):,} training compounds, a gain "
+            f"of {gain:.3f} - the memory-limited subset used for the "
+            f"reported results was not a meaningfully worse starting point "
+            f"than the full training partition. (b) The same conditions "
+            f"scored per class, best and worst labelled as in Figure 9.")
+    else:
+        log_issue("13a", "EXTRA_controlled_size_experiment.csv missing - "
+                         "Figure 10 caption not written.")
 
     # ---- figure captions ---------------------------------------------------
     caption_path = os.path.join(FIG_DIR, "figure_captions.txt")

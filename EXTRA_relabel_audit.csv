@@ -1,0 +1,16 @@
+column,expected_code,cid,name,live_pictograms,outcome
+GHS07_Irritant,GHS07,23668352,Sodium n-heptyl sulfate,GHS07,CONFIRMED
+GHS07_Irritant,GHS07,13270780,2-((4-Methylphenyl)methoxy)acetic acid,GHS07,CONFIRMED
+GHS07_Irritant,GHS07,16427083,2-Amino-4-(methoxycarbonyl)benzeneboronic acid hydrochloride,GHS07,CONFIRMED
+GHS07_Irritant,GHS07,35751,2-(4-Acetylphenoxy)-1-(1-piperidinyl)ethanone,GHS07,CONFIRMED
+GHS07_Irritant,GHS07,85743515,Tert-butyl 2-(2-formyl-6-methoxyphenoxy)acetate,GHS07,CONFIRMED
+GHS08_HealthHazard,GHS08,71309877,N-Ethyl-d5-maleimide,"GHS05,GHS06,GHS08",CONFIRMED
+GHS08_HealthHazard,GHS08,7010559,H-Leu-ala-betana,GHS08,CONFIRMED
+GHS08_HealthHazard,GHS08,444865,Equilenin,GHS08,CONFIRMED
+GHS08_HealthHazard,GHS08,5453,Thiotepa,"GHS06,GHS07,GHS08",CONFIRMED
+GHS08_HealthHazard,GHS08,118984441,Teriparatide acetate hydrate,GHS08,CONFIRMED
+GHS09_Environmental,GHS09,51060846,4-(Allyloxy)-N'-(2-methyl-3-phenyl-2-propenylidene)benzohydrazide,GHS09,CONFIRMED
+GHS09_Environmental,GHS09,57330099,2-Isopropylphenyl (2-(naphthalen-2-yl)ethyl)carbamate,"GHS06,GHS09",CONFIRMED
+GHS09_Environmental,GHS09,4064248,Naphthyl methacrylate,GHS09,CONFIRMED
+GHS09_Environmental,GHS09,11337568,"Poly(oxy-1,2-ethanediyl), alpha-acetyl-omega-(3-(1,3,3,3-tetramethyl-1-((trimethylsilyl)oxy)disiloxanyl)propoxy)-",GHS09,CONFIRMED
+GHS09_Environmental,GHS09,9679019,4-(2-((1-Naphthyloxy)acetyl)carbohydrazonoyl)phenyl 3-bromobenzoate,GHS09,CONFIRMED

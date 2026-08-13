@@ -1,5 +1,8 @@
 MATERIALS AND METHODS
 
+The overall pipeline, from data collection through deployment, is summarised
+in Figure 1.
+
 Computational environment.
 All computations were performed under Python 3.11.15 on a
 64-bit Windows 10 workstation equipped with an Intel Core i7-6500U processor
@@ -35,14 +38,30 @@ of 243,707 compound records was assembled.
 The numeric pictogram code was treated as authoritative throughout, so that
 data filed under GHS07 correspond to the exclamation-mark (irritant)
 pictogram, GHS08 to the health-hazard pictogram and GHS09 to the environmental
-pictogram, as defined in the tenth revised edition of the GHS. The descriptive
-suffixes attached to three of the nine label columns in the original study
-design did not follow this scheme; because the data were bound to the numeric
-code rather than to the label, the classifications themselves were unaffected,
-and the three columns were subsequently renamed to GHS07_Irritant,
+pictogram, as defined in the tenth revised edition of the GHS.
+
+The descriptive suffixes attached to three of the nine label columns in the
+original study design did not follow this scheme: columns holding the data for
+pictograms GHS07, GHS08 and GHS09 were named GHS07_HealthHazard,
+GHS08_Environmental and GHS09_Irritant, a three-way rotation of the suffixes
+relative to the numbering above. The values in those columns were written
+according to the numeric pictogram code identified from the PubChem markup, as
+described above, and were never read back through the descriptive name at any
+point in the pipeline; the rotation was therefore a naming error introduced
+when the columns were first labelled, not a data-mapping error affecting which
+compound received which classification. That distinction was verified rather
+than assumed. 5 compounds carrying exactly one of the three affected pictograms
+were selected for each of the three columns (15 in total) and checked against
+PubChem's live GHS Classification page for that compound; 15 of 15 confirmed
+that the pictogram recorded under the corrected column name is the one PubChem
+reports today. The three columns were then renamed to GHS07_Irritant,
 GHS08_HealthHazard and GHS09_Environmental to match the United Nations
-definitions. The correspondence with the original names is recorded in
-Supporting Information Table S0.
+definitions; no value in the label matrix was altered, and no model was
+retrained. The audit method and the full compound-level results, one row per
+compound checked, are given in Supporting Information Table S6.
+
+The correspondence with the original names is recorded in Supporting
+Information Table S0.
 
 Data cleaning and label reconciliation.
 Every SMILES string was parsed with RDKit, and structures that could not be

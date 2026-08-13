@@ -374,19 +374,40 @@ def score_malaysian_performance(results):
     for column in GHS_LABEL_COLUMNS:
         y_true = scorable[column].to_numpy()
         y_predicted = scorable[f"PRED_{column}"].to_numpy()
+        n_positive = int(y_true.sum())
+
+        # A class with no true positive in the validation set is not
+        # evaluable, whatever precision/recall/accuracy formulas return for
+        # it. sklearn's zero_division=0 convention reports precision, recall
+        # and F1 as 0.0 for such a slice, and accuracy_score reports 1.0
+        # because predicting "no" for everyone is technically correct when
+        # there is nothing to detect - together those numbers look like a
+        # measured result rather than the absence of one, which is what they
+        # actually are. GHS01 explosive is the only such class in this
+        # dataset: no Malaysian compound in this validation set is
+        # classified as explosive.
+        if n_positive == 0:
+            metrics = {"Accuracy": np.nan, "Precision": np.nan,
+                      "Recall": np.nan, "F1": np.nan, "MCC": np.nan}
+        else:
+            metrics = {
+                "Accuracy": round(float(accuracy_score(y_true, y_predicted)), 4),
+                "Precision": round(float(precision_score(
+                    y_true, y_predicted, zero_division=0)), 4),
+                "Recall": round(float(recall_score(
+                    y_true, y_predicted, zero_division=0)), 4),
+                "F1": round(float(f1_score(
+                    y_true, y_predicted, zero_division=0)), 4),
+                "MCC": round(float(matthews_corrcoef(y_true, y_predicted))
+                            if len(np.unique(y_true)) > 1 else np.nan, 4),
+            }
+
         rows.append({
             "GHS_Column": column,
             "Pictogram_Code": column.split("_")[0],
             "Meaning": GHS_TRUE_MEANING[column],
-            "N_True_Positive_In_Set": int(y_true.sum()),
-            "Accuracy": round(float(accuracy_score(y_true, y_predicted)), 4),
-            "Precision": round(float(precision_score(y_true, y_predicted,
-                                                     zero_division=0)), 4),
-            "Recall": round(float(recall_score(y_true, y_predicted,
-                                               zero_division=0)), 4),
-            "F1": round(float(f1_score(y_true, y_predicted, zero_division=0)), 4),
-            "MCC": round(float(matthews_corrcoef(y_true, y_predicted))
-                         if len(np.unique(y_true)) > 1 else np.nan, 4),
+            "N_True_Positive_In_Set": n_positive,
+            **metrics,
         })
     table = pd.DataFrame(rows)
 
@@ -394,13 +415,16 @@ def score_malaysian_performance(results):
     print(f"{'Class':<22}{'meaning':<26}{'n+':>5}{'Acc':>8}{'Prec':>8}"
           f"{'Rec':>8}{'F1':>8}{'MCC':>8}")
     print("-" * 96)
+    def cell(value):
+        """Format one metric, showing n/a rather than a computed-looking NaN."""
+        return f"{value:>8.3f}" if pd.notna(value) else f"{'n/a':>8}"
+
     for row in rows:
-        mcc = f"{row['MCC']:>8.3f}" if pd.notna(row["MCC"]) else f"{'n/a':>8}"
         print(f"{row['GHS_Column']:<22}"
               f"{row['Meaning'].split('(')[0].strip()[:24]:<26}"
-              f"{row['N_True_Positive_In_Set']:>5}{row['Accuracy']:>8.3f}"
-              f"{row['Precision']:>8.3f}{row['Recall']:>8.3f}"
-              f"{row['F1']:>8.3f}{mcc}")
+              f"{row['N_True_Positive_In_Set']:>5}"
+              f"{cell(row['Accuracy'])}{cell(row['Precision'])}"
+              f"{cell(row['Recall'])}{cell(row['F1'])}{cell(row['MCC'])}")
     print("-" * 96)
 
     # Per-sector performance, which is what a sector regulator will look at.
@@ -810,9 +834,19 @@ def malaysia_validation():
 
     results.to_csv(stamped("STEP11_malaysia_validation_results.csv"), index=False)
     if len(class_table):
-        class_table.to_csv(os.path.join(DIR_MALAYSIA,
-                                        "STEP11_malaysia_per_class_metrics.csv"),
-                           index=False)
+        # class_table itself stays numeric, because the comparison figure
+        # below plots it directly and a NaN there simply omits the bar, which
+        # is correct. The file that Table S5 is built from is a separate
+        # display copy with NaN spelled out as "N/A", so a class with no true
+        # positive in this validation set reads unambiguously as not
+        # evaluable rather than as a blank cell that looks like an omission.
+        display_copy = class_table.copy()
+        for metric_column in ("Accuracy", "Precision", "Recall", "F1", "MCC"):
+            display_copy[metric_column] = display_copy[metric_column].apply(
+                lambda v: "N/A" if pd.isna(v) else v)
+        display_copy.to_csv(os.path.join(
+            DIR_MALAYSIA, "STEP11_malaysia_per_class_metrics.csv"),
+            index=False)
     if len(sector_table):
         sector_table.to_csv(os.path.join(DIR_MALAYSIA,
                                          "STEP11_malaysia_per_sector_metrics.csv"),

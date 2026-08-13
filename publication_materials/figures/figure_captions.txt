@@ -3,11 +3,12 @@ FIGURE CAPTIONS
 
 Figure 1. Research workflow. GHS classification annotations were harvested
 from PubChem, cleaned and deduplicated, converted into 1218 molecular
-descriptors, and split by Bemis-Murcko scaffold so that no chemical skeleton
-appears in more than one split. Three algorithms were trained and tuned,
-evaluated with threshold calibration and bootstrap confidence intervals,
-interpreted with SHAP, and finally validated on Malaysian industrial chemicals
-before deployment as a screening tool.
+descriptors and reduced by variance filtering to the 816 used for modelling,
+and split by Bemis-Murcko scaffold so that no chemical skeleton appears in
+more than one split. Three algorithms were trained and tuned, evaluated with
+threshold calibration and bootstrap confidence intervals, interpreted with
+SHAP, and finally validated on Malaysian industrial chemicals before
+deployment as a screening tool.
 
 Figure 2. Class distribution of the nine GHS hazard categories in the cleaned
 dataset. (a) Number of compounds carrying each pictogram, on a logarithmic
@@ -51,4 +52,20 @@ each bar shows how one molecular descriptor moved the prediction towards or
 away from the hazard classification, ending at the final predicted
 probability. This per-compound explanation is what allows a safety officer to
 audit and challenge any individual prediction.
+
+Figure 9. Learning curve: does more training data improve performance within
+the 32,000-compound training set actually used? (a) Mean AUC-ROC across the
+nine classes as the training subset grows from 1,600 to 32,000 compounds, a
+gain of 0.055, against the bootstrap 95 per cent confidence interval on the
+final result. (b) The same subsets scored per class; the best and worst
+classes are coloured and labelled, the remaining seven shown in grey to keep
+the panel legible.
+
+Figure 10. Controlled comparison of training-set size, with the test set,
+hyperparameters and feature set held fixed so that quantity of training data
+is the only variable. (a) Mean AUC-ROC across the nine classes from 32,000 to
+194,658 training compounds, a gain of 0.055 - the memory-limited subset used
+for the reported results was not a meaningfully worse starting point than the
+full training partition. (b) The same conditions scored per class, best and
+worst labelled as in Figure 9.
 
